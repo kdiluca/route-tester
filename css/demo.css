@@ -1,0 +1,19 @@
+body {
+  font: 14px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  background-color: black;
+}
+
+#map {
+  height:100vh;
+  width: 100%;
+/*  position: absolute;
+  background: #fff;
+  margin:0;*/
+}
+
+.modes {
+  width:20px;
+  height:20px;
+}
