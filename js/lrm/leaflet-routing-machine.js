@@ -1115,8 +1115,8 @@ if (typeof module !== undefined) module.exports = polyline;
 		options: {
 			styles: [
 				{color: 'black', opacity: 0.15, weight: 9},
-				{color: 'white', opacity: 0.8, weight: 6},
-				{color: 'red', opacity: 1, weight: 2}
+				{color: 'blue', opacity: 0.8, weight: 7},
+				{color: 'orange', opacity: 1, weight: 3}
 			],
 			missingRouteStyles: [
 				{color: 'black', opacity: 0.15, weight: 7},

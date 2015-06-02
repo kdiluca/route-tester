@@ -169,6 +169,7 @@
 .leaflet-popup-pane,
 .leaflet-control {
 	cursor: auto;
+	background-color: beige;
 	}
 .leaflet-dragging .leaflet-container,
 .leaflet-dragging .leaflet-clickable {
