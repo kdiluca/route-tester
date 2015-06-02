@@ -82,6 +82,7 @@
 	position: relative;
 	z-index: 7;
 	pointer-events: auto;
+	background-color: beige;
 	}
 .leaflet-top,
 .leaflet-bottom {
