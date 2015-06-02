@@ -197,7 +197,7 @@ if (typeof module !== undefined) module.exports = polyline;
 
   L.Routing.Valhalla = L.Class.extend({
     options: {
-      serviceUrl: '//valhalla.dev.mapzen.com/',
+      serviceUrl: 'http://valhalla.dev.mapzen.com/',
       timeout: 30 * 1000,
       transitmode: 'auto'
     },

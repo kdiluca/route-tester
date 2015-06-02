@@ -3,8 +3,13 @@ var map = L.map('map',{
   inertia: false
 });
 
-var layer = Tangram.leafletLayer({ scene: 'resource/scene.yaml' });
-layer.addTo(map);
+	L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
+	    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+	    maxZoom: 18
+	}).addTo(map);
+	new L.Control.Zoom({ position: 'topright' }).addTo(map);
+	//L.control.locate({ position: 'topright', keepCurrentZoomLevel: true }).addTo(map);
+	//L.control.modes({ position: 'topright', keepCurrentZoomLevel: true, map:map, mode_icons: mode_icons }).addTo(map);
 
 var rr = L.Routing.control({
     routeWhileDragging: false,
