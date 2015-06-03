@@ -21,18 +21,25 @@
 
         #drive_btn{
             position:absolute;
-            top:130px;
+            top:100px;
         }
 
         #bike_btn{
             position:absolute;
-            top:160px;
+            top:130px;
         }
 
         #walk_btn{
             position:absolute;
-            top:190px;
+            top:160px;
         }
+				#multi_btn{
+						position:absolute;
+						top:190px;
+				}
+				#time_btn{
+						position:absolute;
+						top:220px;
     </style>
    
     <script type="text/javascript" src="js/leaflet.js"></script>
@@ -45,9 +52,13 @@
 </head>
 <body>
     <div id="map" class="map"></div>
+
     <button id="drive_btn" type="button">Drive Me!</button>
     <button id="bike_btn" type="button">Bike Me!</button>
     <button id="walk_btn" type="button">Walk Me!</button>
+    <button id="multi_btn" type="button">Transport Me!</button>
+
+    <!--button id="time_btn" type="button">Set Time</button-->
     
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
     <script src="js/lrm/L.Routing.OSRM.js"></script>

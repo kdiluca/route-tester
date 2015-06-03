@@ -199,7 +199,7 @@ if (typeof module !== undefined) module.exports = polyline;
     options: {
       serviceUrl: 'http://valhalla.dev.mapzen.com/',
       timeout: 30 * 1000,
-      transitmode: 'auto'
+      transitmode: 'auto',
     },
 
     initialize: function(accessToken, transitmode, options) {
@@ -358,6 +358,17 @@ if (typeof module !== undefined) module.exports = polyline;
           locationKey,
           hint;
       var transitM = options.transitmode || this._transitmode;
+			var time = new Date();
+			var day = time.getDate();
+			if (day < 10) {
+				day = '0' + day;
+			}
+			var month = time.getMonth() + 1;
+			if (month < 10) {
+				month = '0' + month;
+			}
+			var year = time.getFullYear();
+			var dateStr = year + "-" + month + "-" + day + "T" + "12:15";
 
        for (var i = 0; i < waypoints.length; i++) {
          locationKey = this._locationKey(waypoints[i].latLng).split(',');
@@ -365,12 +376,12 @@ if (typeof module !== undefined) module.exports = polyline;
            lat: parseFloat(locationKey[0]),
            lon: parseFloat(locationKey[1])
          }
+				 if (i === 0 && transitM === "multimodal") loc.date_time = dateStr;
          locs.push(loc);
        }
-
-       var params = JSON.stringify({
-         locations: locs,
-         costing: transitM});
+			var params = JSON.stringify({
+        locations: locs,
+        costing: transitM});
 
       return this.options.serviceUrl + 'route?json=' +
               params + '&api_key=' + this._accessToken;
