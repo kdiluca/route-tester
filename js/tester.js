@@ -25,6 +25,7 @@ var bikeBtn = document.getElementById("bike_btn");
 var walkBtn = document.getElementById("walk_btn");
 var multiBtn = document.getElementById("multi_btn");
 var timeBtn = document.getElementById("time_btn");
+var dateBtn = document.getElementById("date_btn");
 
 var time = new Date();
 var day = time.getDate();
@@ -35,9 +36,10 @@ var month = time.getMonth() + 1;
 if (month < 10) {
   month = '0' + month;
 }
+var year = time.getFullYear();
 var hour = 12;
 var minute = 15;
-var dateStr = "";
+dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
 
 driveBtn.addEventListener('click', function (e) {
 
@@ -64,12 +66,40 @@ multiBtn.addEventListener('click', function (e) {
 });
 
 timeBtn.addEventListener('click', function (e) {
-  var year = time.getFullYear();
   var newTime = prompt("Set time to depart (24 hour clock)", "HH:mm");
   var newHour = newTime.substring(0,2);
   hour = (newHour <= 24 && newHour >= 0) ? newHour : hour;
   var newMin = newTime.substring(3,5);
   minute = (newMin < 60  && newMin >= 0) ? newMin : minute;
   dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+  multiBtn.click();
+});
+
+dateBtn.addEventListener('click', function (e) {
+  var newMonth = prompt("Enter new month of departure", "MM");
+  if (newMonth > 0 && newMonth <= 12) {
+    if (newMonth < time.getMonth() + 1) {
+      year++;
+    } else {
+      year = time.getFullYear();
+    }
+    month = newMonth;
+    var newDay = prompt("Enter new day of month", "dd");
+    if (newDay > 0 && newDay <= 31) {
+      day = newDay;
+    }
+  } else if (newMonth === "reset" || newMonth === "r") {
+    year = time.getFullYear();
+    month = time.getMonth() + 1;
+    if (month < 10) {
+      month = '0' + month;
+    }
+    var day = time.getDate();
+    if (day < 10) {
+      day = '0' + day;
+    }
+  } 
+  dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+  multiBtn.click();
 });
 
