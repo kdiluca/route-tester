@@ -71,21 +71,22 @@ timeBtn.addEventListener('click', function (e) {
     hour = (newHour <= 24 && newHour >= 0) ? newHour : hour;
     var newMin = newTime.substring(3,5);
     minute = (newMin < 60  && newMin >= 0) ? newMin : minute;
-  } else if (newTime.length === 11) {
-    var mdStr = newTime.substring(6, newTime.length);
-    var newMonth = mdStr.substring(0,2);
-    var newDay = mdStr.substring(3,5);
-    if (newMonth > 0 && newMonth <= 12) {
-      if (newMonth < time.getMonth() + 1) {
-        year++;
-      } else {
-        year = time.getFullYear();
-      }
-      month = newMonth;
-      if (newDay > 0 && newDay <= 31) {
-        day = newDay;
-      }
-    }   
+    if (newTime.length === 11) {
+      var mdStr = newTime.substring(6, newTime.length);
+      var newMonth = mdStr.substring(0,2);
+      var newDay = mdStr.substring(3,5);
+      if (newMonth > 0 && newMonth <= 12) {
+        if (newMonth < time.getMonth() + 1) {
+          year++;
+        } else {
+          year = time.getFullYear();
+        }
+        month = newMonth;
+        if (newDay > 0 && newDay <= 31) {
+          day = newDay;
+        }
+      }   
+    }
   } else if (newTime === "r") {
     year = time.getFullYear();
     month = time.getMonth() + 1;
@@ -96,8 +97,10 @@ timeBtn.addEventListener('click', function (e) {
     if (day < 10) {
       day = '0' + day;
     }
+    hour = 12;
+    minute = 15;
   } 
-dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+  dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
   multiBtn.click();
 });
 
