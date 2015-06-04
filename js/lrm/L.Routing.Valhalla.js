@@ -372,7 +372,7 @@ if (typeof module !== undefined) module.exports = polyline;
         var hour = 12;
         var minute = 15;
         var year = time.getFullYear();
-        var newTime = prompt("Set time to what? (24 hour clock)", "HH:mm");
+        var newTime = prompt("Set time to depart (24 hour clock)", "HH:mm");
         var newHour = newTime.substring(0,2);
         hour = (newHour <= 24 && newHour >= 0) ? newHour : hour;
         var newMin = newTime.substring(3,5);
