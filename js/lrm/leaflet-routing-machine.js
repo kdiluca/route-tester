@@ -2150,6 +2150,7 @@ if (typeof module !== undefined) module.exports = polyline;
 				}
 				this._markers.push(m);
 			}
+			this._removeMarkers();
 		},
 
 		_fireChanged: function() {
@@ -2257,6 +2258,7 @@ if (typeof module !== undefined) module.exports = polyline;
 
 			this._map.on('mousemove', mouseMove);
 			this._map.on('mouseup', mouseUp);
+			this._removeMarkers();
 		},
 
 		_focusGeocoder: function(i) {
