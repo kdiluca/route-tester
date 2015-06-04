@@ -1,6 +1,6 @@
 var app = angular.module('routing', []);
 var hash_params = L.Hash.parseHash(location.hash);
-var mode_mapping = { 'foot' : 'pedestrian', 'car' : 'auto', 'bicycle' : 'bicycle', 'multimodal' : 'multimodal'};
+var mode_mapping = { 'foot' : 'pedestrian', 'car' : 'auto', 'bicycle' : 'bicycle', 'transit' : 'multimodal'};
 
 
 app.run(function($rootScope) {
@@ -172,7 +172,7 @@ var getEndIcon = function(icon){
 		geocoder: null,
 	  transitmode: valhalla_mode,
 	  routeWhileDragging: false,
-	  router: L.Routing.valhalla('valhalla-T_YY31g','auto'),
+	  router: L.Routing.valhalla('valhalla-T_YY31g','multimodal'),
 	  summaryTemplate:'<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>'
 	}).addTo(map);
 	  
@@ -207,7 +207,7 @@ walkBtn.addEventListener('click', function (e) {
 }); 
 
 multiBtn.addEventListener('click', function (e) {
-  rr.route({transitmode: 'multimodal'});
+  rr.route({transitmode: 'transit'});
 });
 
 /*timeBtn.addEventListener('click', function (e) {
