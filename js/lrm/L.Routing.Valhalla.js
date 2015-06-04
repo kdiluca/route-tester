@@ -359,33 +359,13 @@ if (typeof module !== undefined) module.exports = polyline;
           hint;
       var transitM = options.transitmode || this._transitmode;
       var dateStr;
-      if (transitM === "multimodal") {
-        var time = new Date();
-        var day = time.getDate();
-        if (day < 10) {
-          day = '0' + day;
-        }
-        var month = time.getMonth() + 1;
-        if (month < 10) {
-          month = '0' + month;
-        }
-        var hour = 12;
-        var minute = 15;
-        var year = time.getFullYear();
-        var newTime = prompt("Set time to depart (24 hour clock)", "HH:mm");
-        var newHour = newTime.substring(0,2);
-        hour = (newHour <= 24 && newHour >= 0) ? newHour : hour;
-        var newMin = newTime.substring(3,5);
-        minute = (newMin < 60  && newMin >= 0) ? newMin : minute;
-        dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
-      }
        for (var i = 0; i < waypoints.length; i++) {
          locationKey = this._locationKey(waypoints[i].latLng).split(',');
          var loc = {
            lat: parseFloat(locationKey[0]),
            lon: parseFloat(locationKey[1])
          }
-         if (i === 0 && transitM === "multimodal") loc.date_time = dateStr;
+         if (i === 0 && transitM === "multimodal") loc.date_time = options.date_time;
          locs.push(loc);
        }
       var params = JSON.stringify({
