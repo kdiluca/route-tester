@@ -378,6 +378,7 @@ if (typeof module !== undefined) module.exports = polyline;
            lat: parseFloat(locationKey[0]),
            lon: parseFloat(locationKey[1])
          }
+         if (i === 0 && transitM === "multimodal") loc.date_time = dateStr;
          locs.push(loc);
        }
 

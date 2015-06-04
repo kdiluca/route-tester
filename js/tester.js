@@ -180,21 +180,21 @@ var getEndIcon = function(icon){
   var bikeBtn = document.getElementById("bike_btn");
   var walkBtn = document.getElementById("walk_btn");
   var multiBtn = document.getElementById("multi_btn");
-
+  
   /*var timeBtn = document.getElementById("time_btn");
   var time = new Date();
   var day = time.getDate();
   if (day < 10) {
-	  day = '0' + day;
+  	day = '0' + day;
   };
   var month = time.getMonth() + 1;
-    if (month < 10) {
-	    month = '0' + month;
-    };
+  if (month < 10) {
+  	month = '0' + month;
+  };
   var year = time.getFullYear();
   var hour = 12;
   var minute = 15;*/
-
+	
 driveBtn.addEventListener('click', function (e) {
   rr.route({transitmode: 'auto'});
 });
