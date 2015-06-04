@@ -18,8 +18,8 @@ var rr = L.Routing.control({
 
 }).addTo(map);
 
+rr.setWaypoints([L.Routing.waypoint(L.latLng(40.713,-74.005)),L.Routing.waypoint( L.latLng(40.749,-73.97))]);
 
-rr.setWaypoints([L.Routing.waypoint(L.latLng(40.645244,-73.9449975)),L.Routing.waypoint( L.latLng(40.7590615,-73.969231))]);
 var driveBtn = document.getElementById("drive_btn");
 var bikeBtn = document.getElementById("bike_btn");
 var walkBtn = document.getElementById("walk_btn");
