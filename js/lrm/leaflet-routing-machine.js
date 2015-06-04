@@ -494,9 +494,12 @@ if (typeof module !== undefined) module.exports = polyline;
 
 			this._updateLine(route);
 
-			if (fitBounds) {
-				this._map.fitBounds(this._line.getBounds());
-			}
+      if (fitBounds) {
+        this._map.fitBounds(this._line.getBounds(),{
+          paddingTopLeft:[30,100],
+          paddingBottomRight:[200,30],
+        });
+      }
 
 			if (this.options.waypointMode === 'snap') {
 				this._plan.off('waypointschanged', this._onWaypointsChanged, this);
@@ -919,17 +922,17 @@ if (typeof module !== undefined) module.exports = polyline;
 
 		_createAlternative: function(alt, i) {
 
-			var altDiv = L.DomUtil.create('div', 'leaflet-routing-alt ' +
-				this.options.alternativeClassName +
-				(i > 0 ? ' leaflet-routing-alt-minimized ' + this.options.minimizedClassName : '')),
-				template = this.options.summaryTemplate,
-				data = L.extend({
-					name: alt.name,
-					distance: this._formatter.formatDistance(alt.summary.totalDistance),
-					time: this._formatter.formatTime(alt.summary.totalTime)
-				}, alt);
-			altDiv.innerHTML = typeof(template) === 'function' ? template(data) : L.Util.template(template, data);
-			L.DomEvent.addListener(altDiv, 'click', this._onAltClicked, this);
+      var altDiv = L.DomUtil.create('div', 'leaflet-routing-alt ' +
+        this.options.alternativeClassName +
+        (i > 0 ? ' leaflet-routing-alt-minimized ' + this.options.minimizedClassName : '')),
+        template = this.options.summaryTemplate,
+        data = L.extend({
+          name: alt.name,
+          distance: this._getReadableDistance(alt.summary.totalDistance, alt.unit),
+          time: this._formatter.formatTime(alt.summary.totalTime)
+        }, alt);
+      altDiv.innerHTML = typeof(template) === 'function' ? template(data) : L.Util.template(template, data);
+      L.DomEvent.addListener(altDiv, 'click', this._onAltClicked, this);
 
 			altDiv.appendChild(this._createItineraryContainer(alt));
 			return altDiv;
@@ -1081,20 +1084,17 @@ if (typeof module !== undefined) module.exports = polyline;
 			return L.DomUtil.create('tbody', '');
 		},
 
-		createStep: function(text, distance, icon, steps) {
-			var row = L.DomUtil.create('tr', '', steps),
-				span,
-				td;
-			td = L.DomUtil.create('td', '', row);
-			span = L.DomUtil.create('span', 'leaflet-routing-icon leaflet-routing-icon-'+icon, td);
-			td.appendChild(span);
-			td = L.DomUtil.create('td', '', row);
-			td.appendChild(document.createTextNode(text));
-			td = L.DomUtil.create('td', '', row);
-			td.appendChild(document.createTextNode(distance));
-			return row;
-		}
-	});
+    createStep: function(text, distance, icon, steps) {
+      var row = L.DomUtil.create('tr', '', steps),
+        span,
+        td;
+      td = L.DomUtil.create('td', 'guide', row);
+      td.appendChild(document.createTextNode(text));
+      td = L.DomUtil.create('td', 'measure', row);
+      td.appendChild(document.createTextNode(distance));
+      return row;
+    }
+  });
 
 	module.exports = L.Routing;
 })();

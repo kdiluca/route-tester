@@ -196,11 +196,11 @@ if (typeof module !== undefined) module.exports = polyline;
   L.Routing = L.Routing || {};
 
   L.Routing.Valhalla = L.Class.extend({
-    options: {
-      serviceUrl: 'http://valhalla.dev.mapzen.com/',
-      timeout: 30 * 1000,
-      transitmode: 'auto'
-    },
+	    options: {
+	      serviceUrl: 'http://valhalla.dev.mapzen.com/',
+	      timeout: 30 * 1000,
+	      transitmode: 'auto',
+	    },
 
     initialize: function(accessToken, transitmode, options) {
       L.Util.setOptions(this, options);
@@ -300,6 +300,7 @@ if (typeof module !== undefined) module.exports = polyline;
         waypoints: actualWaypoints,
         waypointIndices: this._clampIndices([0,response.trip.legs[0].maneuvers.length], coordinates)
       }];
+      this._changeURL(this._transitmode, inputWaypoints[0].latLng.lat, inputWaypoints[0].latLng.lng, inputWaypoints[1].latLng.lat, inputWaypoints[1].latLng.lng);
 
 /*
       if (response.trip.legs[0].shape) {
@@ -358,6 +359,18 @@ if (typeof module !== undefined) module.exports = polyline;
           locationKey,
           hint;
       var transitM = options.transitmode || this._transitmode;
+		var time = new Date();
+		var day = time.getDate();
+		if (day < 10) {
+			day = '0' + day;
+		}
+		var month = time.getMonth() + 1;
+		if (month < 10) {
+			month = '0' + month;
+		}
+		var year = time.getFullYear();
+		var dateStr = year + "-" + month + "-" + day + "T" + "12:15";
+
 
        for (var i = 0; i < waypoints.length; i++) {
          locationKey = this._locationKey(waypoints[i].latLng).split(',');
@@ -425,6 +438,9 @@ if (typeof module !== undefined) module.exports = polyline;
       return result;
     },
 
+    _changeURL: function(transitM,startLat,startLng,destLat,destLng){
+      window.location.hash = transitM + '/' + startLat + '/' + startLng + '/' + destLat + '/' + destLng;
+    },
 
     _drivingDirectionType: function(d) {
       switch (parseInt(d, 10)) {

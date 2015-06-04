@@ -18,37 +18,17 @@ body {
   height:20px;
 }
 
-
-a.routing {
-  opacity: 0.5;
-  /*-webkit-box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
-  -moz-box-shadow: 0px 0px 15px 5px rgba(255, 255, 190, .75);
-  box-shadow: 0px 0px 15px 5px rgba(255, 0, 0, .75);*/
+#instructions h1, h4 {
+    color:white;
 }
 
-.aside {
-  position:absolute;
-  top:0px;
-  right:0px;
-  padding: 0 0 0 5px;
-  background: white;
+div#route_inst {
+  height: 50vh;
+  overflow: auto;
+  color: #ccc;
 }
 
-.label {
-  padding: 8px 5px;
-}
-
-.aside em {
-  -webkit-border-top-right-radius: 0px;
-  -webkit-border-bottom-right-radius: 0px;
-  -moz-border-radius-topright: 0px;
-  -moz-border-radius-bottomright: 0px;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-}
-/* small mobile devices */
-@media(max-width:767px){
-  #searchbar {
-    width:250px;
-  }
+div#route_inst table td.distance {
+  width: 60px;
+  text-align: right;
 }
