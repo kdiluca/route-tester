@@ -66,7 +66,7 @@ multiBtn.addEventListener('click', function (e) {
 
 timeBtn.addEventListener('click', function (e) {
   var newTime = prompt("Set time/date to depart (24 hour clock)", "hh:mm MM-DD");
-  if (newTime.length === 5) {
+  if (newTime.length >= 5) {
     var newHour = newTime.substring(0,2);
     hour = (newHour <= 24 && newHour >= 0) ? newHour : hour;
     var newMin = newTime.substring(3,5);
