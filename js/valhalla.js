@@ -22,7 +22,7 @@ app.run(function($rootScope) {
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  
   $scope.route_instructions = '';
-
+  
   var map = L.map('map', {
       zoom: $rootScope.geobase.zoom,
       zoomControl: false,
@@ -140,7 +140,7 @@ var getEndIcon = function(icon){
 	      'lon': e.latlng.lng
 	    };
 	    
-	    if (locations == 0) {
+        if (locations == 0) {
 	      Locations.push({lat: geo.lat, lon: geo.lon })
 	      $rootScope.$emit( 'map.dropMarker', [geo.lat, geo.lon], mode);
 	      locations++;

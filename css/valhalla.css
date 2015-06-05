@@ -33,10 +33,18 @@ div#route_inst table td.distance{
   text-align: right;
 }
 
-.leaflet-control {
+.leaflet-control td.guide {
+    padding: 3px;
     word-wrap: break-word;
-    width: 350px;
-    display: table;
+    width: 270px;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+}
+
+.leaflet-control td.measure {
+    padding: 3px;
+    word-wrap: break-word;
+    width: 60px;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
 }
