@@ -28,7 +28,16 @@ div#route_inst {
   color: #ccc;
 }
 
-div#route_inst table td.distance {
+div#route_inst table td.distance{
   width: 60px;
   text-align: right;
 }
+
+.leaflet-control {
+    word-wrap: break-word;
+    width: 300px;
+    display: table;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+}
+
