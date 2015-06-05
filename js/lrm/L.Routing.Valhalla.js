@@ -359,7 +359,7 @@ if (typeof module !== undefined) module.exports = polyline;
           hint;
       var transitM = options.transitmode || this._transitmode;
       var dateStr;
-       for (var i = 0; i < waypoints.length; i++) {
+      for (var i = 0; i < waypoints.length; i++) {
          locationKey = this._locationKey(waypoints[i].latLng).split(',');
          var loc = {
            lat: parseFloat(locationKey[0]),
@@ -425,6 +425,9 @@ if (typeof module !== undefined) module.exports = polyline;
       return result;
     },
 
+    _changeURL: function(transitM,startLat,startLng,destLat,destLng){
+      window.location.hash = transitM + '/' + startLat + '/' + startLng + '/' + destLat + '/' + destLng;
+    },
 
     _drivingDirectionType: function(d) {
       switch (parseInt(d, 10)) {
