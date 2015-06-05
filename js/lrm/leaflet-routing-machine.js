@@ -937,6 +937,10 @@ if (typeof module !== undefined) module.exports = polyline;
 			altDiv.appendChild(this._createItineraryContainer(alt));
 			return altDiv;
 		},
+		
+		  _removeAlternative: function(el) {
+		      L.DomUtil.removeClass(el.firstChild, 'leaflet-routing-alt');
+		  },
 
 		_clearAlts: function() {
 			var el = this._altContainer;
@@ -2134,8 +2138,8 @@ if (typeof module !== undefined) module.exports = polyline;
 				return;
 			}
 
-			this._removeMarkers();
-
+			this._removeMarkers(); //added for point & click capability when using with valhalla.js
+			
 			for (i = 0; i < this._waypoints.length; i++) {
 				if (this._waypoints[i].latLng) {
 					m = this.options.createMarker(i, this._waypoints[i], this._waypoints.length);
@@ -2150,7 +2154,8 @@ if (typeof module !== undefined) module.exports = polyline;
 				}
 				this._markers.push(m);
 			}
-			this._removeMarkers();
+			this._removeMarkers();  //added for point & click capability when using with valhalla.js
+			//this._removeAlternative();
 		},
 
 		_fireChanged: function() {

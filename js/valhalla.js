@@ -176,6 +176,10 @@ var getEndIcon = function(icon){
 	  summaryTemplate:'<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>'
 	}).addTo(map);
 	  
+	//TODO: Want to load this as initial load of page.  Then allow for P&C routing
+	//rr.setWaypoints([L.Routing.waypoint(L.latLng(40.713,-74.005)),L.Routing.waypoint( L.latLng(40.749,-73.97))]);
+	
+	
   var driveBtn = document.getElementById("drive_btn");
   var bikeBtn = document.getElementById("bike_btn");
   var walkBtn = document.getElementById("walk_btn");
