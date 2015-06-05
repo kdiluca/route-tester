@@ -937,10 +937,6 @@ if (typeof module !== undefined) module.exports = polyline;
 			altDiv.appendChild(this._createItineraryContainer(alt));
 			return altDiv;
 		},
-		
-		  _removeAlternative: function(el) {
-		      L.DomUtil.removeClass(el.firstChild, 'leaflet-routing-alt');
-		  },
 
 		_clearAlts: function() {
 			var el = this._altContainer;
@@ -2155,7 +2151,6 @@ if (typeof module !== undefined) module.exports = polyline;
 				this._markers.push(m);
 			}
 			this._removeMarkers();  //added for point & click capability when using with valhalla.js
-			//this._removeAlternative();
 		},
 
 		_fireChanged: function() {
