@@ -96,7 +96,7 @@ var getEndIcon = function(icon){
 	  
 	  var reset = function() {
 	    $('svg').html('');
-	    $('leaflet-routing-container').remove();
+	    $('.leaflet-routing-container').remove();
 	    $scope.$emit( 'resetRouteInstruction' );
 	    remove_markers();
 	    locations = 0;
