@@ -32,48 +32,40 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var Locations = [];
   var mode = 'car';
 
-var icon = L.icon({
-    iconUrl: 'js/images/ic_pin_active.png',
-    shadowUrl: 'js/images/marker-shadow.png',
+  var icon = L.icon({
+	    iconUrl: 'resource/dot.png',
 
-    iconSize:     [38, 35], // size of the icon
-    shadowSize:   [50, 64], // size of the shadow
-    iconAnchor:   [22, 34], // point of the icon which will correspond to marker's location
-    shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-	});
+	    iconSize:     [38, 35], // size of the icon
+	    shadowSize:   [50, 64], // size of the shadow
+	    iconAnchor:   [22, 34], // point of the icon which will correspond to marker's location
+	    shadowAnchor: [4, 62],  // the same for the shadow
+	    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
+		});
 
-var mode_icons = {
-  'car' : 'js/images/drive.png',
-  'foot': 'js/images/walk.png',
-  'bicycle': 'js/images/bike.png'
-};
+	var mode_icons = {
+	  'car' : 'js/images/drive.png',
+	  'foot': 'js/images/walk.png',
+	  'bicycle': 'js/images/bike.png'
+	};
 
-var getStartIcon = function(icon){
-  return L.icon({
-    iconUrl: 'js/images/ic_pin_active_start.png',
-    shadowUrl: 'js/images/marker-shadow.png',
+	var getStartIcon = function(icon){
+	  return L.icon({
+	    iconUrl: 'resource/startmarker@2x.png',
 
-    iconSize:     [38, 35], // size of the icon
-    shadowSize:   [50, 64], // size of the shadow
-    iconAnchor:   [22, 34], // point of the icon which will correspond to marker's location
-    shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-  });
-};
+	    iconSize:     [44, 56], // size of the icon
+	    iconAnchor: [22, 50]
 
-var getEndIcon = function(icon){
-  return L.icon({
-    iconUrl: 'js/images/ic_pin_active_end.png',
-    shadowUrl: 'js/images/marker-shadow.png',
+	  });
+	};
 
-    iconSize:     [38, 35], // size of the icon
-    shadowSize:   [50, 64], // size of the shadow
-    iconAnchor:   [22, 34], // point of the icon which will correspond to marker's location
-    shadowAnchor: [4, 62],  // the same for the shadow
-    popupAnchor:  [-3, -76] // point from which the popup should open relative to the iconAnchor
-  });
-};
+	var getEndIcon = function(icon){
+	  return L.icon({
+	    iconUrl: 'resource/destmarker@2x.png',
+	    iconSize:   [44, 56], // size of the icon
+	    iconAnchor: [22, 50]
+	  });
+	};
+
 
 
 	L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
@@ -173,8 +165,10 @@ var getEndIcon = function(icon){
 	  transitmode: valhalla_mode,
 	  routeWhileDragging: false,
 	  router: L.Routing.valhalla('valhalla-T_YY31g','auto'),
-	  summaryTemplate:'<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>'
-	}).addTo(map);
+	  summaryTemplate:'<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
+	    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
+		}).addTo(map);
+		  
 	  
 	//TODO: Want to load this as initial load of page.  Then allow for P&C routing
 	//rr.setWaypoints([L.Routing.waypoint(L.latLng(40.713,-74.005)),L.Routing.waypoint( L.latLng(40.749,-73.97))]);

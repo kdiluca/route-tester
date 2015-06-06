@@ -1114,9 +1114,9 @@ if (typeof module !== undefined) module.exports = polyline;
 
 		options: {
 			styles: [
-				{color: 'black', opacity: 0.15, weight: 9},
-				{color: 'blue', opacity: 0.8, weight: 7},
-				{color: 'orange', opacity: 1, weight: 3}
+			    {color: 'black', opacity: 0.15, weight: 8},
+			    {color: 'white', opacity: 0.9, weight: 4},
+				{color: '#25A5FA', opacity: 1, weight: 6}
 			],
 			missingRouteStyles: [
 				{color: 'black', opacity: 0.15, weight: 7},
@@ -1127,7 +1127,6 @@ if (typeof module !== undefined) module.exports = polyline;
 			extendToWaypoints: true,
 			missingRouteTolerance: 10
 		},
-
 		initialize: function(route, options) {
 			L.setOptions(this, options);
 			L.LayerGroup.prototype.initialize.call(this, options);
