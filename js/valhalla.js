@@ -166,12 +166,32 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    valhalla_mode = mode_mapping[mode];
 
 	var rr = L.Routing.control({
-		waypoints: waypoints,
-		geocoder: null,
+	  waypoints: waypoints,
+	  geocoder: null,
 	  transitmode: valhalla_mode,
 	  routeWhileDragging: false,
 	  router: L.Routing.valhalla('valhalla-t_16n1c','auto'),
 	  summaryTemplate:'<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
+	  createMarker: function(i,wp,n){
+      var iconV;
+        if(i ==0){
+          iconV = L.icon({
+          iconUrl: 'resource/dot.png',
+          iconSize:[24,24]
+        });
+        }else{
+          iconV = L.icon({
+          iconUrl: 'resource/dot.png',
+          iconSize:[24,24]
+        })
+        }
+        var options = {
+          draggable: true,
+          icon: iconV
+        }
+        return L.marker(wp.latLng,options);
+	  },
+	  formatter: new L.Routing.Valhalla.Formatter(),
 	    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
 		}).addTo(map);
 	
@@ -205,7 +225,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       hour = (changeHour <= 24 && changeHour >= 0) ? changeHour : date.getHours();
       changeMin = changeDt.substring(3,5);
       minute = (changeMin < 60  && changeMin >= 0) ? changeMin : date.getMinutes();
-      	inputDateTime = changeDt.substring(6, changeDt.length);
+      inputDateTime = changeDt.substring(6, changeDt.length);
       changeMonth = inputDateTime.substring(0,2);
       changeDay = inputDateTime.substring(3,5);
       year = (changeMonth < date.getMonth() + 1) ? date.getFullYear() + 1 : date.getFullYear();
