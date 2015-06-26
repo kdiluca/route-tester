@@ -197,7 +197,7 @@ if (typeof module !== undefined) module.exports = polyline;
 
   L.Routing.Valhalla = L.Class.extend({
     options: {
-      serviceUrl: 'http://valhalla.dev.mapzen.com/',
+      serviceUrl: (typeof serviceUrl != "undefined" || serviceUrl != null) ? serviceUrl : server.dev,
       timeout: 30 * 1000,
       transitmode: 'auto'
     },
@@ -408,6 +408,13 @@ if (typeof module !== undefined) module.exports = polyline;
          street: streetName
        });
 
+       //reset service url & access token if environment has changed
+       (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.dev;
+       (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.dev;
+
+       console.log(this.options.serviceUrl + 'route?json=' +
+              params + '&api_key=' + this._accessToken);
+       
       return this.options.serviceUrl + 'route?json=' +
               params + '&api_key=' + this._accessToken;
     },
@@ -459,44 +466,6 @@ if (typeof module !== undefined) module.exports = polyline;
       }
 
       return result;
-    },
-
-    _changeURL: function(transitM,startLat,startLng,destLat,destLng){
-      window.location.hash = transitM + '/' + startLat + '/' + startLng + '/' + destLat + '/' + destLng;
-    },
-
-    _drivingDirectionType: function(d) {
-      switch (parseInt(d, 10)) {
-      case 1:
-        return 'Straight';
-      case 2:
-        return 'SlightRight';
-      case 3:
-        return 'Right';
-      case 4:
-        return 'SharpRight';
-      case 5:
-        return 'TurnAround';
-      case 6:
-        return 'SharpLeft';
-      case 7:
-        return 'Left';
-      case 8:
-        return 'SlightLeft';
-      case 9:
-        return 'WaypointReached';
-      case 10:
-        // TODO: "Head on"
-        // https://github.com/DennisOSRM/Project-OSRM/blob/master/DataStructures/TurnInstructions.h#L48
-        return 'Straight';
-      case 11:
-      case 12:
-        return 'Roundabout';
-      case 15:
-        return 'DestinationReached';
-      default:
-        return null;
-      }
     },
 
     _clampIndices: function(indices, coords) {

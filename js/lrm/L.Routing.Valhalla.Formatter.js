@@ -95,28 +95,47 @@
     },
 
     getIconName: function(instr, i) {
+      // you can find all Valhalla's direction types at https://github.com/valhalla/odin/blob/master/proto/tripdirections.proto
       switch (instr.type) {
-      case 'Straight':
+      //case 'Straight':
+      case 8:
+      case 17:
         return (i === 0 ? 'depart' : 'continue');
-      case 'SlightRight':
+      case 9:
+      //case 'SlightRight':
         return 'bear-right';
-      case 'Right':
+      //case 'Right':
+      case 2:
+      case 5:
+      case 18:
+      case 20:
+      case 23:
         return 'turn-right';
-      case 'SharpRight':
+      //case 'SharpRight':
+      case 11:
         return 'sharp-right';
-      case 'TurnAround':
+      case 12:
+      case 13:
         return 'u-turn';
-      case 'SharpLeft':
+      //case 'SharpLeft':
+      case 14:
         return 'sharp-left';
-      case 'Left':
+      case 3:
+      case 6:
+      case 15:
+      case 19:
+      case 21:
+      case 24:
         return 'turn-left';
-      case 'SlightLeft':
+      //case 'SlightLeft':
+      case 16:
         return 'bear-left';
       case 'WaypointReached':
         return 'via';
-      case 'Roundabout':
+      case 26:
+      case 27:
         return 'enter-roundabout';
-      case 'DestinationReached':
+      case 4://'DestinationReached':
         return 'arrive';
       }
     },
