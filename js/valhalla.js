@@ -120,6 +120,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  var reset = function() {
 	    $('svg').html('');
 	    $('.leaflet-routing-container').remove();
+	    $('.leaflet-marker-icon.leaflet-marker-draggable').remove();
 	    $scope.$emit( 'resetRouteInstruction' );
 	    remove_markers();
 	    locations = 0;
