@@ -88,6 +88,10 @@ function corslite(url, callback, cors) {
     x.send(null);
     sent = true;
 
+    if (x.status != 200){
+        console.log("Status Code: " + x.status + "," + x.responseText);
+        alert("Status Code: " + x.status + ", " + x.responseText);
+      }
     return x;
 }
 
