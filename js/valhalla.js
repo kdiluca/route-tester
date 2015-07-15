@@ -54,18 +54,17 @@ function selectFiles(evt) {
       var output = "";
       var index;
       for (index = 1; index < lines.length; index++) {
-    	  var opNew = document.createElement('option');
-          var RE = new RegExp("{\".*}}", "g");
-          var results = RE.exec(lines[index]);
+    	  var newOption = document.createElement('option');
+          var pattern = new RegExp("{\".*}}", "g");
+          var results = pattern.exec(lines[index]);
           lines[index] = results[0];
-          opNew.text = lines[index];
-          opNew.value = index;
+          newOption.text = lines[index];
+          newOption.value = index;
           var select = document.getElementById('selector');
           try {
-            select.add(opNew, null);
+            select.add(newOption, null);
           } catch (ex) {
-            //for IE
-            select.add(opNew);
+            select.add(newOption);
           }
         }
     }
@@ -340,13 +339,12 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   
   document.querySelector('.select').addEventListener('click',
 		  function(evt) {
-	     //change to if selected, run route
 		 //   if (evt.target.tagName.toLowerCase() == 'button') {
 		      var select = document.getElementById('selector');
 		      var i;
 		      for (i = 0; i < select.length; i++) {
 		        if (select.options[i].selected) {
-		          alert(select.options[i].text);
+		         //TODO: Run route selected
 		        }
 		      }
 		 //   }
