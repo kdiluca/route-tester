@@ -41,8 +41,6 @@ inputElement.addEventListener("change", selectFiles, false);
 
 function selectFiles(evt) {
   var files = evt.target.files;
-  var output = [];
-  // for (var i = 0; i < files.length; i++) {
   if (!files.length) {
     alert('Please select a file!');
     return;
@@ -50,24 +48,29 @@ function selectFiles(evt) {
   var file = files[0];
   var reader = new FileReader();
   var delimiter = "-j";
-  var extension = "--config ../conf/valhalla.json"
   reader.onloadend = function(evt) {
     if (evt.target.readyState == FileReader.DONE) {
       var lines = evt.target.result.split(delimiter);
       var output = "";
       var index;
-      for (index = 0; index < lines.length; index++) {
-        output += lines[index] + '<br/>';
-      }
-  	  window.open("","_blank","width=200,height=200,resizeable=yes,scrollbars=yes");
-  	  window.document.write(document.getElementById('route_list').textContent = output);
-  	  window.document.close();
+      for (index = 1; index < lines.length; index++) {
+    	  var opNew = document.createElement('option');
+          var RE = new RegExp("{\".*}}", "g");
+          var results = RE.exec(lines[index]);
+          lines[index] = results[0];
+          opNew.text = lines[index];
+          opNew.value = index;
+          var select = document.getElementById('selector');
+          try {
+            select.add(opNew, null);
+          } catch (ex) {
+            //for IE
+            select.add(opNew);
+          }
+        }
     }
   };
-  // Read in the text file.
   reader.readAsText(file);
-  //reader.readAsText(files[i]);
-  //}
 }
 
 app.run(function($rootScope) {
@@ -334,6 +337,20 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     });
     document.getElementById('inputFile').addEventListener('change', selectFiles, false);
   });
+  
+  document.querySelector('.select').addEventListener('click',
+		  function(evt) {
+	     //change to if selected, run route
+		 //   if (evt.target.tagName.toLowerCase() == 'button') {
+		      var select = document.getElementById('selector');
+		      var i;
+		      for (i = 0; i < select.length; i++) {
+		        if (select.options[i].selected) {
+		          alert(select.options[i].text);
+		        }
+		      }
+		 //   }
+		  }, false);
   
   });
 })
