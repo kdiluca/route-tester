@@ -36,6 +36,40 @@ function parseIsoDateTime(dtStr) {
 }	
 var dateStr = parseIsoDateTime(isoDateTime.toString());
 
+var inputElement = document.getElementById("inputFile");
+inputElement.addEventListener("change", selectFiles, false);
+
+function selectFiles(evt) {
+  var files = evt.target.files;
+  var output = [];
+  // for (var i = 0; i < files.length; i++) {
+  if (!files.length) {
+    alert('Please select a file!');
+    return;
+  }
+  var file = files[0];
+  var reader = new FileReader();
+  var delimiter = "-j";
+  var extension = "--config ../conf/valhalla.json"
+  reader.onloadend = function(evt) {
+    if (evt.target.readyState == FileReader.DONE) {
+      var lines = evt.target.result.split(delimiter);
+      var output = "";
+      var index;
+      for (index = 0; index < lines.length; index++) {
+        output += lines[index] + '<br/>';
+      }
+  	  window.open("","_blank","width=200,height=200,resizeable=yes,scrollbars=yes");
+  	  window.document.write(document.getElementById('route_list').textContent = output);
+  	  window.document.close();
+    }
+  };
+  // Read in the text file.
+  reader.readAsText(file);
+  //reader.readAsText(files[i]);
+  //}
+}
+
 app.run(function($rootScope) {
 	  var hash_loc = hash_params ? hash_params : {'center': {'lat': 40.7486, 'lng': -73.9690}, 'zoom': 13};
 	  $rootScope.geobase = {
@@ -291,6 +325,14 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   $("#datepicker").on("click", function() {
 	datetimeUpdate(this.value);
+  });
+  
+  $(function () {
+    $("#button1").click(function (evt) {
+    	evt.preventDefault();
+        $('#file').trigger('click');
+    });
+    document.getElementById('inputFile').addEventListener('change', selectFiles, false);
   });
   
   });
