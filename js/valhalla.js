@@ -62,8 +62,8 @@ function selectFiles(evt) {
 		          var pattern = new RegExp("{\".*}}", "g");
 		          var results = pattern.exec(unescape(lines[index]));
 		          lines[index] = results[0];
-		          newOption.text = lines[index];
-		          newOption.value = index;
+		          newOption.value = lines[index];
+		          newOption.text = index;
 		          //reset selector options
 		          select = document.getElementById('selector');
 		          try {
@@ -272,7 +272,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 			        if (select.options[i].selected) {
 				    	Locations = [];
 					    reset();
-			        	var json = JSON.parse(select.options[i].innerHTML);
+			        	var json = JSON.parse(select.options[i].value);
 			        	var mode = json.costing;
 			        	var options = json.directions_options;
 			        	
