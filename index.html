@@ -34,6 +34,8 @@
         .transparent_btn:hover{
             background-color:#ccc;
         }
+
+        
     </style>
 </head>
 <body>
@@ -59,7 +61,10 @@
             <button id="walk_btn" class = "transparent_btn" type="button">Walk Me!</button>
             <button id="multi_btn" class = "transparent_btn" type="button">Transport Me!</button>
             <span style="color:white" class="descriptions">Select a new date and/or time, then click in the text box to trigger the new transit route.</span><br>
-            <input type="text" id="datepicker" size="25"><a href="javascript:NewCal('datepicker','ddmmmyyyy',true,24)"><img src="resource/cal.gif" width="20" height="20" border="0" alt="Pick a date & time"></a><br>
+            <input type="text" id="datepicker" size="25"><a href="javascript:NewCal('datepicker','ddmmmyyyy',true,24)"><img src="resource/cal.gif" width="20" height="20" border="0" alt="Pick a date & time"></a>
+            <br><br>
+            <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:white"/>
+            <select id="selector" class="select"></select>
           </div>
           <div id="route_inst" ng-bind-html="renderHtml(route_instructions)">
           </div>
