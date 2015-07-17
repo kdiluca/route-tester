@@ -56,24 +56,39 @@ function selectFiles(evt) {
 	      var output = "";
 	      var index;
 		  var select = document.getElementById('selector').options.length = 0;
-	      for (index = 0; index < lines.length; index++) {
-	    	  //increment to 1 if a test file (split on -j)
-	    	  if (lines[0]=="")
-	    		  index++;
-	    	  var newOption = document.createElement('option');
-	          var pattern = new RegExp("{\".*}", "g");
-	          var results = pattern.exec(unescape(lines[index]));
-	          lines[index] = results[0];
-	          newOption.text = lines[index];
-	          newOption.value = index;
-	          //reset selector options
-	          select = document.getElementById('selector');
-	          try {
-	            select.add(newOption, null);
-	          } catch (ex) {
-	            select.add(newOption);
-	          }
-	        }
+		  if (lines[0]=="") {
+		      for (index = 1; index < lines.length; index++) {
+		    	  var newOption = document.createElement('option');
+		          var pattern = new RegExp("{\".*}}", "g");
+		          var results = pattern.exec(unescape(lines[index]));
+		          lines[index] = results[0];
+		          newOption.text = lines[index];
+		          newOption.value = index;
+		          //reset selector options
+		          select = document.getElementById('selector');
+		          try {
+		            select.add(newOption, null);
+		          } catch (ex) {
+		            select.add(newOption);
+		          }
+		        }
+		  } else { //loads files without -j and config/json in formatting
+			  for (index = 0; index < lines.length; index++) {
+		    	  var newOption = document.createElement('option');
+		          var pattern = new RegExp("{\".*}", "g");
+		          var results = pattern.exec(unescape(lines[index]));
+		          lines[index] = results[0];
+		          newOption.text = lines[index];
+		          newOption.value = index;
+		          //reset selector options
+		          select = document.getElementById('selector');
+		          try {
+		            select.add(newOption, null);
+		          } catch (ex) {
+		            select.add(newOption);
+		          }
+		        }
+		  }
 	    }
 	  };
 	  reader.readAsText(file);
