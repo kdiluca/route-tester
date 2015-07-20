@@ -259,7 +259,7 @@ if (typeof module !== undefined) module.exports = polyline;
 	                status: err.status,
 	                message: err.responseText
 	            });
-	            alert("Travel Mode: "+ this._transitmode + ", status code: " + status + ", " + message);
+	            alert("Travel Mode: "+ this._transitmode + ", status code: " + err.status + ", " + err.responseText);
 	          }
 	        }
 	      }, this), true);
