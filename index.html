@@ -65,6 +65,7 @@
             <br><br>
             <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:white"/>
             <select id="selector" class="select"></select>
+            <input type="hidden" name="state" id="state" value="closed" />
           </div>
           <div id="route_inst" ng-bind-html="renderHtml(route_instructions)">
           </div>
