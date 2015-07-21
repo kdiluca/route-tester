@@ -23,7 +23,7 @@ function handleChange(evt) {
       var tmp = sel.options[i].text;
       sel.options[i].text += " " + sel.options[i].value;
       sel.options[i].value = tmp;
-    } else {
+    } else if (state.value == "true") {
       var RE = new RegExp("{\".*}}", "g");
       var results = RE.exec(sel.options[i].text);
       sel.options[i].text = sel.options[i].value;
