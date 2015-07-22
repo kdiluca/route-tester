@@ -34,6 +34,24 @@ function handleChange(evt) {
 }*/
 
 
+function handleChange(evt) {
+  var sel = document.getElementById('selector');
+  var state = document.getElementById('state');
+  for (var i = 0; i < sel.options.length; i++) {
+    if (state.value == "false") {
+      var tmp = sel.options[i].text;
+      sel.options[i].text += " " + sel.options[i].value;
+      sel.options[i].value = tmp;
+    } else if (state.value == "true") {
+      var RE = new RegExp("{\".*}}", "g");
+      var results = RE.exec(sel.options[i].text);
+      sel.options[i].text = sel.options[i].value;
+      sel.options[i].value = results[0];
+    }
+  }
+  state.value = (state.value == "false") ? "true" : "false";
+}
+
 function getEnvToken(){
   switch (envServer) {
   case "localhost":
@@ -72,7 +90,6 @@ function selectFiles(evt) {
 	  reader.onloadend = function(evt) {
 	    if (evt.target.readyState == FileReader.DONE) {
 	      var lines = evt.target.result.split(delimiter);
-	      var output = "";
 	      var index;
 		  var select = document.getElementById('selector').options.length = 0;
 		  if (lines[0]=="") {
@@ -402,55 +419,10 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 			  formatter: new L.Routing.Valhalla.Formatter(),
 			    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
 				}).addTo(map);
-			
-
-		  function datetimeUpdate(datetime) {
-	        var changeDt = datetime;
-	        var inputDate, splitDate, year, month, day, time, hour, minute; 
-	        if(changeDt != null){
-	   	      if (changeDt.length >= 11) {
-	   	    	inputDate = changeDt.split(" ");
-	   	    	splitDate = inputDate[0].split("-");
-	     	    day = splitDate[0];
-	     	    if (day < 10) {
-	      	      day = '0' + day;
-	      	    } 
-	     	    month = GetMonthIndex(splitDate[1])+1;
-	     	   if (month < 10) {
-	     		  month = '0' + month;
-	       	    } 
-	     	    year = splitDate[2];
-	     	  
-	    	  time = inputDate[1].split(":");
-	     	  hour = time[0];
-	     	  minute = time[1];
-	   	      
-	   	      dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
-	   	      } else {
-	   		    dateStr = parseIsoDateTime(isoDateTime.toString());
-	   	      }
-	   	      multiBtn.click();	
-	        }
-		  };
-	
-		  $(document).on('mode-alert', function(e, m) {
-		    mode = m;
-		    reset();
-		    Locations = [];
-		  });
-	
-		  $(document).on('route:time_distance', function(e, td){
-		    var instructions = $('.leaflet-routing-container.leaflet-control').html();
-		    $scope.$emit( 'setRouteInstruction', instructions);
-		  });
-	
-		  $("#datepicker").on("click", function() {
-	 	    datetimeUpdate(this.value);
-	      });
 	     }
 	   }
 	 }, false); 
-
+				
 	  map.on('click', function(e) {
 	    var geo = {
 	      'lat': e.latlng.lat,
