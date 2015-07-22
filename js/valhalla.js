@@ -14,6 +14,25 @@ function selectEnv(){
 	  getEnvToken();
 	});
 }
+/*
+function handleChange(evt) {
+  var sel = document.getElementById('selector');
+  var state = document.getElementById('state');
+  for (var i = 0; i < sel.options.length; i++) {
+    if (state.value == "false") {
+      var tmp = sel.options[i].text;
+      sel.options[i].text += " " + sel.options[i].value;
+      sel.options[i].value = tmp;
+    } else if (state.value == "true") {
+      var RE = new RegExp("{\".*}}", "g");
+      var results = RE.exec(sel.options[i].text);
+      sel.options[i].text = sel.options[i].value;
+      sel.options[i].value = results[0];
+    }
+  }
+  state.value = (state.value == "false") ? "true" : "false";
+}*/
+
 
 function getEnvToken(){
   switch (envServer) {
@@ -162,8 +181,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  });
 	};
 
-	//TODO:  Switch out maps based on travel mode
-	L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
+	//Defaults to open mapquest tiles for now
+	L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
 	    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
 	    maxZoom: 18
 	}).addTo(map);
@@ -188,6 +207,25 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    $scope.$emit( 'resetRouteInstruction' );
 	    remove_markers();
 	    locations = 0;
+	  };
+	  
+	  var switch_tiles = function(mode) {
+	    switch (mode) {
+		  case "auto":
+		  case "bicycle":
+		  case "pedestrian":
+		    L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
+			    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+			    maxZoom: 18
+			}).addTo(map);
+			break;
+		  case "multimodal":
+		    L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
+			  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+			  maxZoom: 18
+			}).addTo(map);
+		    break;
+	    }
 	  };
 
 	  $rootScope.$on( 'map.setView', function( ev, geo, zoom ){
@@ -263,6 +301,10 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  
 	  document.querySelector(".select").addEventListener('click', function(evt) {
 	 //   if (e.target.tagName.toLowerCase() == 'button') {
+		/*handleChange(evt);
+ 		if (document.getElementById('state').value == "true") {
+ 		  return;
+ 		}*/
 	    var select = document.getElementById('selector');
 	    var i;
 	    for (i = 0; i < select.length; i++) {
@@ -361,32 +403,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 			    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
 				}).addTo(map);
 			
-		    var driveBtn = document.getElementById("drive_btn");
-		    var bikeBtn = document.getElementById("bike_btn");
-		    var walkBtn = document.getElementById("walk_btn");
-		    var multiBtn = document.getElementById("multi_btn");
-		    var datetime = document.getElementById("datetimepicker");
-		  
-		    driveBtn.addEventListener('click', function (e) {
-			  getEnvToken();
-		      rr.route({transitmode: 'auto'});
-		    });
-	
-		    bikeBtn.addEventListener('click', function (e) {
-			  getEnvToken();
-		      rr.route({transitmode: 'bicycle'});
-		    });
-	
-		    walkBtn.addEventListener('click', function (e) {
-			  getEnvToken();
-		      rr.route({transitmode: 'pedestrian'});
-		    }); 
-	
-		    multiBtn.addEventListener('click', function (e) {
-			  getEnvToken();
-		      rr.route({transitmode: 'multimodal', date_time: dateStr});
-		    });
-	
+
 		  function datetimeUpdate(datetime) {
 	        var changeDt = datetime;
 	        var inputDate, splitDate, year, month, day, time, hour, minute; 
@@ -506,21 +523,25 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   
   driveBtn.addEventListener('click', function (e) {
 	getEnvToken();
+	switch_tiles('auto');
     rr.route({transitmode: 'auto'});
   });
 
   bikeBtn.addEventListener('click', function (e) {
 	getEnvToken();
+	switch_tiles('bicycle');
     rr.route({transitmode: 'bicycle'});
   });
 
   walkBtn.addEventListener('click', function (e) {
 	getEnvToken();
+	switch_tiles('pedestrian');
     rr.route({transitmode: 'pedestrian'});
   }); 
 
   multiBtn.addEventListener('click', function (e) {
 	getEnvToken();
+	switch_tiles('multimodal');
     rr.route({transitmode: 'multimodal', date_time: dateStr});
   });
 
