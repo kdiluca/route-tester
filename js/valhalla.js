@@ -176,10 +176,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	var getStartIcon = function(icon){
 	  return L.icon({
 	    iconUrl: 'resource/startmarker@2x.png',
-
 	    iconSize:     [44, 56], // size of the icon
 	    iconAnchor: [22, 50]
-
 	  });
 	};
 
@@ -239,9 +237,11 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
 	    if (locations == 0) {
 	      var marker = new L.marker(geo, {icon: getStartIcon(m || 'car')});
+	      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
 	    }
 	    else {
 	      var marker = new L.marker(geo, {icon: getEndIcon(m || 'car')});
+	      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
 	    }
 	    map.addLayer(marker);
 	    markers.push(marker);
@@ -278,9 +278,11 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
 		    if (locations == 0) {
 		      var marker = new L.marker(geo, {icon: getFileDestIcon(m || 'car')});
+		      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
 		    }
 		    else {
 		      var marker = new L.marker(geo, {icon: getFileDestIcon(m || 'car')});
+		      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
 		    }
 		    map.addLayer(marker);
 		    markers.push(marker);
@@ -468,7 +470,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           draggable: true,
           icon: iconV
         }
-        return L.marker(wp.latLng,options);
+        var dot = L.marker(wp.latLng,options);
+        return dot.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
 	  },
 	  formatter: new L.Routing.Valhalla.Formatter(),
 	    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
