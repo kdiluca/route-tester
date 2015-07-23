@@ -133,15 +133,27 @@ app.run(function($rootScope) {
 });
 
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
-	  
-  $scope.route_instructions = '';
-  
+
+  var roadmap = L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'}),
+      cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'}),
+      transitmap = L.tileLayer(' http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'});
+
+  var baseMaps = {
+	    "RoadMap": roadmap,
+	    "CycleMap": cyclemap,
+	    "TransitMap": transitmap
+	};
+ 
   var map = L.map('map', {
       zoom: $rootScope.geobase.zoom,
       zoomControl: false,
+      layers: [roadmap],
       center: [$rootScope.geobase.lat, $rootScope.geobase.lon]
   });
 
+  L.control.layers(baseMaps, null).addTo(map);
+	
+  $scope.route_instructions = '';
   var Locations = [];
   var mode = 'car';
 
@@ -198,12 +210,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  });
 	};
 
-	//Defaults to open mapquest tiles for now
-	L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
-	    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
-	    maxZoom: 18
-	}).addTo(map);
-
 	// Set up the hash
 	  var hash = new L.Hash(map);
 	  var markers = [];
@@ -224,30 +230,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    $scope.$emit( 'resetRouteInstruction' );
 	    remove_markers();
 	    locations = 0;
-	  };
-	  
-	  var switch_tiles = function(mode) {
-	    switch (mode) {
-		  case "auto":
-		  case "pedestrian":
-		    L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
-			    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
-			    maxZoom: 18
-			}).addTo(map);
-			break;
-		  case "bicycle":
-			  L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
-				    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
-				    maxZoom: 18
-				}).addTo(map);
-				break;
-		  case "multimodal":
-		    L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
-			  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
-			  maxZoom: 18
-			}).addTo(map);
-		    break;
-	    }
 	  };
 
 	  $rootScope.$on( 'map.setView', function( ev, geo, zoom ){
@@ -500,25 +482,21 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   
   driveBtn.addEventListener('click', function (e) {
 	getEnvToken();
-	switch_tiles('auto');
     rr.route({transitmode: 'auto'});
   });
 
   bikeBtn.addEventListener('click', function (e) {
 	getEnvToken();
-	switch_tiles('bicycle');
     rr.route({transitmode: 'bicycle'});
   });
 
   walkBtn.addEventListener('click', function (e) {
 	getEnvToken();
-	switch_tiles('pedestrian');
     rr.route({transitmode: 'pedestrian'});
   }); 
 
   multiBtn.addEventListener('click', function (e) {
 	getEnvToken();
-	switch_tiles('multimodal');
     rr.route({transitmode: 'multimodal', date_time: dateStr});
   });
 
