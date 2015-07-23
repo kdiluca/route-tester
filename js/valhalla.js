@@ -229,13 +229,18 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  var switch_tiles = function(mode) {
 	    switch (mode) {
 		  case "auto":
-		  case "bicycle":
 		  case "pedestrian":
 		    L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
 			    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
 			    maxZoom: 18
 			}).addTo(map);
 			break;
+		  case "bicycle":
+			  L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+				    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
+				    maxZoom: 18
+				}).addTo(map);
+				break;
 		  case "multimodal":
 		    L.tileLayer('http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
 			  attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>',
