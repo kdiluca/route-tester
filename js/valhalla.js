@@ -399,7 +399,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 		          draggable: true,
 		          icon: iconV
 		        }
-		        return L.marker(wp.latLng,options);
+		        var poi = L.marker(wp.latLng,options);
+		        return poi.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + wp.latLng.lat + "/" + wp.latLng.lng + "&layers=Q target=_blank>Edit POI here<a/>");
 			  },
 			  formatter: new L.Routing.Valhalla.Formatter(),
 			    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
