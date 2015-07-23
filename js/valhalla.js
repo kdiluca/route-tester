@@ -237,15 +237,14 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
 	    if (locations == 0) {
 	      var marker = new L.marker(geo, {icon: getStartIcon(m || 'car')});
-	      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
+	      marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon + "&layers=Q target=_blank>Edit POI here<a/>");
 	    }
 	    else {
 	      var marker = new L.marker(geo, {icon: getEndIcon(m || 'car')});
-	      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
+	      marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon + "&layers=Q target=_blank>Edit POI here<a/>");
 	    }
 	    map.addLayer(marker);
 	    markers.push(marker);
-	    //marker.openPopup();
 	  });
 	  
 	  $rootScope.$on( 'map.dropOriginMarker', function( ev, geo, m){
@@ -258,7 +257,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    }
 	    map.addLayer(marker);
 	    markers.push(marker);
-	    //marker.openPopup();
 	  });
 	  
 	  $rootScope.$on( 'map.dropViaMarker', function( ev, geo, m){
@@ -271,22 +269,20 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    }
 	    map.addLayer(marker);
 	    markers.push(marker);
-	    //marker.openPopup();
 	  });
 	  
 	  $rootScope.$on( 'map.dropDestMarker', function( ev, geo, m){
 
 		    if (locations == 0) {
 		      var marker = new L.marker(geo, {icon: getFileDestIcon(m || 'car')});
-		      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
+		      marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon + "&layers=Q target=_blank>Edit POI here<a/>");
 		    }
 		    else {
 		      var marker = new L.marker(geo, {icon: getFileDestIcon(m || 'car')});
-		      marker.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
+		      marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon + "&layers=Q target=_blank>Edit POI here<a/>");
 		    }
 		    map.addLayer(marker);
 		    markers.push(marker);
-		    //marker.openPopup();
 		  });
 		  
 	  $scope.renderHtml = function(html_code){
@@ -471,7 +467,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           icon: iconV
         }
         var dot = L.marker(wp.latLng,options);
-        return dot.bindPopup("<a href = http://www.openstreetmap.org/#map="+$rootScope.geobase.zoom+"/"+$rootScope.geobase.lat+"/"+$rootScope.geobase.lon+"&layers=Q}>Edit POI here<a/>");
+        return dot.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon + "&layers=Q target=_blank>Edit POI here<a/>");
 	  },
 	  formatter: new L.Routing.Valhalla.Formatter(),
 	    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
