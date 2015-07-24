@@ -44,7 +44,8 @@
         <div class="col-md-2">
           <div id="instructions">
             <h1>Valhalla Routing</h1>
-            <h4>Point & click on the map to select a start & end point. Defaults to auto.</h4>
+            <h4>Point & click on the map to select a start & end point. Defaults to auto. Route test files may be uploaded as well.  They are 
+            located in our Thor repo under scripts. </h4>
             <h4>Change route to use other methods of travel (car, bike, walk, or transit) from one of the mode buttons below.</h4>
             <h4>NOTE: Transit defaults to 12:15 on current date.</h4>
             <hr>
@@ -64,8 +65,7 @@
             <input type="text" id="datepicker" size="25"><a href="javascript:NewCal('datepicker','ddmmmyyyy',true,24)"><img src="resource/cal.gif" width="20" height="20" border="0" alt="Pick a date & time"></a>
             <br><br>
             <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:white"/>
-            <select id="selector" class="select"></select>
-            <!--input type="hidden" name="state" id="state" value="false" /-->
+            <select id="selector" class="select" style="width:50px; position:absolute;"></select>
           </div>
           <div id="route_inst" ng-bind-html="renderHtml(route_instructions)">
           </div>

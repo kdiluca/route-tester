@@ -14,42 +14,13 @@ function selectEnv(){
 	  getEnvToken();
 	});
 }
-/*
-function handleChange(evt) {
-  var sel = document.getElementById('selector');
-  var state = document.getElementById('state');
-  for (var i = 0; i < sel.options.length; i++) {
-    if (state.value == "false") {
-      var tmp = sel.options[i].text;
-      sel.options[i].text += " " + sel.options[i].value;
-      sel.options[i].value = tmp;
-    } else if (state.value == "true") {
-      var RE = new RegExp("{\".*}}", "g");
-      var results = RE.exec(sel.options[i].text);
-      sel.options[i].text = sel.options[i].value;
-      sel.options[i].value = results[0];
-    }
-  }
-  state.value = (state.value == "false") ? "true" : "false";
-}*/
-
 
 function handleChange(evt) {
   var sel = document.getElementById('selector');
-  var state = document.getElementById('state');
   for (var i = 0; i < sel.options.length; i++) {
-    if (state.value == "false") {
-      var tmp = sel.options[i].text;
-      sel.options[i].text += " " + sel.options[i].value;
-      sel.options[i].value = tmp;
-    } else if (state.value == "true") {
-      var RE = new RegExp("{\".*}}", "g");
-      var results = RE.exec(sel.options[i].text);
-      sel.options[i].text = sel.options[i].value;
-      sel.options[i].value = results[0];
-    }
+    var results = sel.options[i].text + "  " + sel.options[i].value;
+    sel.options[i].innerHTML = results;
   }
-  state.value = (state.value == "false") ? "true" : "false";
 }
 
 function getEnvToken(){
@@ -302,11 +273,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	  });
 	  
 	  document.querySelector(".select").addEventListener('click', function(evt) {
-	 //   if (e.target.tagName.toLowerCase() == 'button') {
-		/*handleChange(evt);
- 		if (document.getElementById('state').value == "true") {
- 		  return;
- 		}*/
+		handleChange(evt);
 	    var select = document.getElementById('selector');
 	    var i;
 	    for (i = 0; i < select.length; i++) {
@@ -362,11 +329,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
      		  waypoints.push(L.latLng(geo.dlat, geo.dlon));
 			 // locations++;
 	        }
-
-			// $rootScope.$emit( 'map.dropOriginMarker', [geo.olat, geo.olon], mode);
-			// $rootScope.$emit( 'map.dropDestMarker', [geo.dlat, geo.dlon], mode);
-
-           // }
 			valhalla_mode = mode_mapping[mode];
 	
 			var rr = L.Routing.control({
