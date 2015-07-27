@@ -200,6 +200,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    remove_markers();
 	    locations = 0;
 	  };
+	  
+	  var resetFileLoader = function() {
+	    $('svg').html('');
+	    $('.leaflet-routing-container').remove();
+	    $('.leaflet-marker-icon.leaflet-marker-draggable').remove();
+	    $scope.$emit( 'resetRouteInstruction' );
+	  };
 
 	  $rootScope.$on( 'map.setView', function( ev, geo, zoom ){
 	    map.setView( geo, zoom || 8 );
@@ -281,7 +288,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 		    Locations = [];
 		    reset();
 	        var json = JSON.parse(select.options[i].value);
-	        var mode = json.costing;
 	        var options = json.directions_options;
 	        var via_array = new Array();
 	        	
@@ -329,14 +335,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
      		  waypoints.push(L.latLng(geo.dlat, geo.dlon));
 			 // locations++;
 	        }
-			valhalla_mode = mode_mapping[mode];
 	
 			var rr = L.Routing.control({
 			  waypoints: waypoints,
 			  geocoder: null,
-			  transitmode: valhalla_mode,
+			  transitmode: json.costing,
 			  routeWhileDragging: false,
-			  router: L.Routing.valhalla(envToken,'auto'),
+			  router: L.Routing.valhalla(envToken,json.costing),
 			  summaryTemplate:'<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
 			  
 			createMarker: function(i,wp,n){
@@ -372,6 +377,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	 }, false); 
 				
 	  map.on('click', function(e) {
+		if (typeof e.latlng != "undefined")
+			resetFileLoader();
 	    var geo = {
 	      'lat': e.latlng.lat,
 	      'lon': e.latlng.lng
