@@ -956,7 +956,6 @@ if (typeof module !== undefined) module.exports = polyline;
           step,
           distance,
           text,
-          maneuvernum,
           icon;
 
       container.appendChild(steps);
