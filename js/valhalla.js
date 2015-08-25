@@ -104,7 +104,7 @@ app.run(function($rootScope) {
 
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var roadmap = L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'}),
-      cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'}),
+      cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {attribution: 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'}),
       transitmap = L.tileLayer(' http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'});
 
   var baseMaps = {
@@ -123,6 +123,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   L.control.layers(baseMaps, null).addTo(map);
 	
   $scope.route_instructions = '';
+
   var Locations = [];
   var mode = 'car';
 
@@ -170,6 +171,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       iconSize:[24,24]
     });
   };
+
 
   var getFileDestIcon = function(icon){
     return L.icon({
@@ -438,81 +440,134 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 	    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
 		}).addTo(map);
 	
-    var driveBtn = document.getElementById("drive_btn");
-    var bikeBtn = document.getElementById("bike_btn");
-    var walkBtn = document.getElementById("walk_btn");
-    var multiBtn = document.getElementById("multi_btn");
-    var datetime = document.getElementById("datetimepicker");
+  var driveBtn = document.getElementById("drive_btn");
+  var bikeBtn = document.getElementById("bike_btn");
+  var walkBtn = document.getElementById("walk_btn");
+  var multiBtn = document.getElementById("multi_btn");
+  var elevationBtn = document.getElementById("elevation_btn");
+  var routeresponse;
   
-    driveBtn.addEventListener('click', function (e) {
-   	  getEnvToken();
-      rr.route({transitmode: 'auto'});
-    });
+  driveBtn.addEventListener('click', function (e) {
+	getEnvToken();
+    rr.route({transitmode: 'auto'});
+  });
 
-    bikeBtn.addEventListener('click', function (e) {
-	  getEnvToken();
-      rr.route({transitmode: 'bicycle'});
-    });
+  bikeBtn.addEventListener('click', function (e) {
+	getEnvToken();
+	var bikeoptions = setBikeOptions();
+    rr.route({transitmode: 'bicycle', costing_options: bikeoptions});
+  });
 
-    walkBtn.addEventListener('click', function (e) {
-	  getEnvToken();
-      rr.route({transitmode: 'pedestrian'});
-    }); 
+  walkBtn.addEventListener('click', function (e) {
+	getEnvToken();
+    rr.route({transitmode: 'pedestrian'});
+  }); 
 
-    multiBtn.addEventListener('click', function (e) {
-	  getEnvToken();
-      rr.route({transitmode: 'multimodal', date_time: dateStr});
-    });
+  multiBtn.addEventListener('click', function (e) {
+	getEnvToken();
+    rr.route({transitmode: 'multimodal', date_time: dateStr});
+  });
+  
+  elevationBtn.addEventListener('click', function (e) {
+	getEnvToken();
+    var elev = L.elevation(envToken, rr._routes[0].rrshape);
+    elev.profile(elev._rrshape);
+    document.getElementById('graph').style.display="block";
+  });
 
-    function datetimeUpdate(datetime) {
+  /*
+  function openWin(id) {
+    var divText = document.getElementById(id).innerHTML;
+    myWindow=window.open('','','height: 100; width:200;');
+    var doc = myWindow.document;
+    doc.open();
+    doc.write(divText);
+    doc.close();
+  }*/
+
+  function datetimeUpdate(datetime) {
       var changeDt = datetime;
       var inputDate, splitDate, year, month, day, time, hour, minute; 
        if(changeDt != null){
    	     if (changeDt.length >= 11) {
-   	       inputDate = changeDt.split(" ");
-   	       splitDate = inputDate[0].split("-");
-     	   day = splitDate[0];
-     	   if (day < 10) {
-      	     day = '0' + day;
-      	   } 
-     	   month = GetMonthIndex(splitDate[1])+1;
+   	    	inputDate = changeDt.split(" ");
+   	    	splitDate = inputDate[0].split("-");
+     	    day = splitDate[0];
+     	    if (day < 10) {
+      	      day = '0' + day;
+      	    }
+     	    month = GetMonthIndex(splitDate[1])+1;
      	   if (month < 10) {
-     	     month = '0' + month;
-       	   } 
-     	   year = splitDate[2];
-     	   time = inputDate[1].split(":");
-     	   hour = time[0];
-     	   minute = time[1];
+     		  month = '0' + month;
+       	    } 
+     	    year = splitDate[2];
+     	  
+    	  time = inputDate[1].split(":");
+     	  hour = time[0];
+     	  minute = time[1];
    	      
-   	       dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
-   	     } else {
-   		   dateStr = parseIsoDateTime(isoDateTime.toString());
-   	     }
-   	     multiBtn.click();	
-      }
-    };
+   	      dateStr = year + "-" + month + "-" + day + "T" + hour + ":" + minute;
+   	    } else {
+   		    dateStr = parseIsoDateTime(isoDateTime.toString());
+   	    }
+   	    multiBtn.click();	
+       }
+  };
 
-	  $(document).on('mode-alert', function(e, m) {
-	    mode = m;
-	    reset();
-	    Locations = [];
-	  });
-	
-	  $(document).on('route:time_distance', function(e, td){
-	    var instructions = $('.leaflet-routing-container.leaflet-control').html();
-	    $scope.$emit( 'setRouteInstruction', instructions);
-	  });
-	
-	  $("#datepicker").on("click", function() {
-		datetimeUpdate(this.value);
-	  });
-	  
-	  $(function () {
-	    $("#button1").click(function (evt) {
-	      evt.preventDefault();
-	      $('#file').trigger('click');
-	    });
-	    document.getElementById('inputFile').addEventListener('change', selectFiles, false);
-	 });
+  function setBikeOptions () {
+	var btype = document.getElementsByName("btype");
+	var bicycle_type = "Road";
+	  for (var i=0;i<btype.length;i++){
+	    if ( btype[i].checked ) {
+	    	bicycle_type = btype[i].value;
+	    }
+	  }
+	var use_roads = document.getElementById("use_roads").value;
+	var cycling_speed = document.getElementById("cycle_speed").value;
+	var hilliness_factor = document.getElementById("hill_factor").value;
+		
+	bikeoptions = {"bicycle":{
+	  bicycle_type: bicycle_type,
+	  use_roads: use_roads,
+	  cycling_speed: cycling_speed,
+	  hilliness_factor: hilliness_factor
+	}}
+	return bikeoptions;
+  };
+
+  $(document).on('mode-alert', function(e, m) {
+    mode = m;
+    reset();
+    Locations = [];
+  });
+
+  $(document).on('route:time_distance', function(e, td){
+    var instructions = $('.leaflet-routing-container.leaflet-control').html();
+    $scope.$emit( 'setRouteInstruction', instructions);
+  });
+
+  $("#datepicker").on("click", function() {
+	datetimeUpdate(this.value);
+  });
+  
+  $(function () {
+    $("#button1").click(function (evt) {
+      evt.preventDefault();
+      $('#file').trigger('click');
+    });
+    document.getElementById('inputFile').addEventListener('change', selectFiles, false);
+  });
+});
+
+  $("#showbtn").on("click", function() {
+	document.getElementById('options').style.display="block";
+  });
+
+  $("#hidebtn").on("click", function() {
+	  document.getElementById('options').style.display="none";
+  });
+
+  $("#hidechart").on("click", function() {
+	  document.getElementById('graph').style.display="none";
   });
 })
