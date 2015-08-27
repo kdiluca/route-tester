@@ -119,6 +119,7 @@
     }
     
     .leaflet-routing-alt ul.verbal_alert, ul.verbal_pre, ul.verbal_post {
+      color: #2E64FE;
       font-style: italic;
       font-size: 12px;
       margin: 5px;

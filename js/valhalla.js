@@ -172,7 +172,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     });
   };
 
-
   var getFileDestIcon = function(icon){
     return L.icon({
       iconUrl: 'resource/destmarker@2x.png'
