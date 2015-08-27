@@ -118,20 +118,7 @@
       min-width:60px;
     }
     
-    .leaflet-routing-alt ul.verbal_alert {
-      font-style: italic;
-      color: red;
-      font-size: 12px;
-      margin: 5px;
-    }
-    
-    .leaflet-routing-alt ul.verbal_pre {
-      font-style: italic;
-      font-size: 12px;
-      margin: 5px;
-    }
-    
-    .leaflet-routing-alt ul.verbal_post {
+    .leaflet-routing-alt ul.verbal_alert, ul.verbal_pre, ul.verbal_post {
       font-style: italic;
       font-size: 12px;
       margin: 5px;
