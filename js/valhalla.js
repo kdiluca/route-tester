@@ -435,6 +435,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         var dot = L.marker(wp.latLng,options);
         return dot.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon + "&layers=Q target=_blank>Edit POI here<a/>");
 	  },
+	  
 	  formatter: new L.Routing.Valhalla.Formatter(),
 	    pointMarkerStyle: {radius: 6,color: '#25A5FA',fillColor: '#5E6472',opacity: 1,fillOpacity: 1}
 		}).addTo(map);
@@ -469,7 +470,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   
   elevationBtn.addEventListener('click', function (e) {
 	getEnvToken();
-    var elev = L.elevation(envToken, rr._routes[0].rrshape);
+	var elev = (typeof rr._routes[0] != "undefined") ? L.elevation(envToken, rr._routes[0].rrshape) : 0;
+	elev.resetChart();
     elev.profile(elev._rrshape);
     document.getElementById('graph').style.display="block";
   });
