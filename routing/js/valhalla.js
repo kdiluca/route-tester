@@ -317,7 +317,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   document.querySelector(".select").addEventListener('click', function(evt) {
     handleChange(evt);
-  //  var date_time;
     var select = document.getElementById('selector');
     var i;
     for (i = 0; i < select.length; i++) {
@@ -325,11 +324,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         Locations = [];
         reset();
         var json = JSON.parse(select.options[i].value);
-       // var costing_options = json.costing_options;
-      //  if (json.costing == 'multimodal') 
-       //   data_time = json.locations[0].date_time;
-          
-      // var directions_options = json.directions_options;
         var via_array = new Array();
 
         if (json.locations.length == 2) {
