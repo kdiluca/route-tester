@@ -155,7 +155,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     iconSize : [ 38, 35 ], // size of the icon
     shadowSize : [ 50, 64 ], // size of the shadow
-    iconAnchor : [ 22, 34 ], // point of the icon which will correspond to marker's location
+    iconAnchor : [ 22, 34 ], // point of the icon which will correspond to
+                              // marker's location
     shadowAnchor : [ 4, 62 ], // the same for the shadow
     popupAnchor : [ -3, -76 ]
   // point from which the popup should open relative to the iconAnchor
@@ -330,32 +331,36 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           var geo = {
             'olat' : json.locations[0].lat,
             'olon' : json.locations[0].lon,
+            'otype' : json.locations[0].type,
+            'oname' : json.locations[0].name,
             'ostreet' : json.locations[0].street,
             'ocity' : json.locations[0].city,
             'ostate' : json.locations[0].state,
-            'otype' : json.locations[0].type,
             'dlat' : json.locations[1].lat,
             'dlon' : json.locations[1].lon,
+            'dtype' : json.locations[1].type,
+            'dname' : json.locations[1].name,
             'dstreet' : json.locations[1].street,
             'dcity' : json.locations[1].city,
-            'dstate' : json.locations[1].state,
-            'dtype' : json.locations[1].type
+            'dstate' : json.locations[1].state
           }
           // json.locations++;
           var waypoints = [];
           waypoints.push({
             latLng : L.latLng(geo.olat, geo.olon),
+            type : geo.otype,
+            name : geo.oname,
             street : geo.ostreet,
             city : geo.ocity,
-            state : geo.ostate,
-            type : geo.otype
+            state : geo.ostate
           });
           waypoints.push({
             latLng : L.latLng(geo.dlat, geo.dlon),
+            type : geo.dtype,
+            name : geo.dname,
             street : geo.dstreet,
             city : geo.dcity,
-            state : geo.dstate,
-            type : geo.dtype
+            state : geo.dstate
           });
 
         } else if (json.locations.length > 2) {
@@ -363,26 +368,29 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             var via = {
               'vlat' : json.locations[k].lat,
               'vlon' : json.locations[k].lon,
+              'vtype' : json.locations[k].type,
+              'vname' : json.locations[k].name,
               'vstreet' : json.locations[k].street,
               'vcity' : json.locations[k].city,
-              'vstate' : json.locations[k].state,
-              'vtype' : json.locations[k].type
+              'vstate' : json.locations[k].state
             }
             via_array.push(via);
           }
           var geo = {
             'olat' : json.locations[0].lat,
             'olon' : json.locations[0].lon,
+            'otype' : json.locations[0].type,
+            'oname' : json.locations[0].name,
             'ostreet' : json.locations[0].street,
             'ocity' : json.locations[0].city,
             'ostate' : json.locations[0].state,
-            'otype' : json.locations[0].type,
             'dlat' : json.locations[json.locations.length - 1].lat,
             'dlon' : json.locations[json.locations.length - 1].lon,
+            'dtype' : json.locations[json.locations.length - 1].type,
+            'dname' : json.locations[json.locations.length -1].name,
             'dstreet' : json.locations[json.locations.length - 1].street,
             'dcity' : json.locations[json.locations.length - 1].city,
-            'dstate' : json.locations[json.locations.length - 1].state,
-            'dtype' : json.locations[json.locations.length - 1].type
+            'dstate' : json.locations[json.locations.length - 1].state
           }
 
           var waypoints = [];

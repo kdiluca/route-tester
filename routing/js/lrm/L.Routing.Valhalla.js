@@ -377,6 +377,7 @@ if (typeof module !== undefined) module.exports = polyline;
               lat: parseFloat(locationKey[0]),
               lon: parseFloat(locationKey[1]),
               type: "break",
+              name: waypoints[i].name,
               street: waypoints[i].street,
               city: waypoints[i].city,
               state: waypoints[i].state
@@ -386,6 +387,7 @@ if (typeof module !== undefined) module.exports = polyline;
               lat: parseFloat(locationKey[0]),
               lon: parseFloat(locationKey[1]),
               type: "through",
+              name: waypoints[i].name,
               street: waypoints[i].street,
               city: waypoints[i].city,
               state: waypoints[i].state
