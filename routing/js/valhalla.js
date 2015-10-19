@@ -126,6 +126,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
   }), cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }), elevationmap = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+    attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), transitmap = L.tileLayer(' http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
     attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
   });
@@ -133,13 +135,14 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var baseMaps = {
     "RoadMap" : roadmap,
     "CycleMap" : cyclemap,
+    "ElevationMap" : elevationmap,
     "TransitMap" : transitmap
   };
 
   var map = L.map('map', {
     zoom : $rootScope.geobase.zoom,
     zoomControl : false,
-    layers : [ roadmap ],
+    layers : [ transitmap ],
     center : [ $rootScope.geobase.lat, $rootScope.geobase.lon ]
   });
 
@@ -332,6 +335,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             'olat' : json.locations[0].lat,
             'olon' : json.locations[0].lon,
             'otype' : json.locations[0].type,
+            'odate': json.locations[0].date_time,
             'oname' : json.locations[0].name,
             'ostreet' : json.locations[0].street,
             'ocity' : json.locations[0].city,
@@ -349,6 +353,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           waypoints.push({
             latLng : L.latLng(geo.olat, geo.olon),
             type : geo.otype,
+            date_time: geo.odate,
             name : geo.oname,
             street : geo.ostreet,
             city : geo.ocity,
@@ -380,6 +385,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             'olat' : json.locations[0].lat,
             'olon' : json.locations[0].lon,
             'otype' : json.locations[0].type,
+            'odate' : json.locations[0].date_time,
             'oname' : json.locations[0].name,
             'ostreet' : json.locations[0].street,
             'ocity' : json.locations[0].city,

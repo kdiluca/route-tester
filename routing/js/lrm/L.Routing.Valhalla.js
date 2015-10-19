@@ -364,10 +364,11 @@ if (typeof module !== undefined) module.exports = polyline;
             locationKey,
             hint;
         var transitM = options.transitmode || this._transitmode;
+        var streetName = options.street;
         this._transitmode = transitM;
-        var date_time = this._date_time;
-        var costing_options = this._costing_options;
-        var directions_options = this._directions_options;
+        var date_time = this.date_time;
+        var costing_options = this.costing_options;
+        var directions_options = this.directions_options;
 
         for (var i = 0; i < waypoints.length; i++) {
           var loc;
@@ -382,6 +383,7 @@ if (typeof module !== undefined) module.exports = polyline;
               city: waypoints[i].city,
               state: waypoints[i].state
             }
+            if (i === 0 && transitM === "multimodal") loc.date_time = (typeof options.date_time != 'undefined' ? options.date_time : waypoints[0].date_time);
           }else{
             loc = {
               lat: parseFloat(locationKey[0]),
@@ -393,7 +395,6 @@ if (typeof module !== undefined) module.exports = polyline;
               state: waypoints[i].state
             }
           }
-  	    if (i === 0 && transitM === "multimodal") loc.date_time = date_time;
           locs.push(loc);
         }
 
@@ -423,8 +424,8 @@ if (typeof module !== undefined) module.exports = polyline;
         var lat = location.lat;
         var lng = location.lng;
 
-        var nameLat = Math.floor(location.lat * 1000)/1000;
-        var nameLng = Math.floor(location.lng * 1000)/1000;
+        var nameLat = Math.floor(lat * 1000)/1000;
+        var nameLng = Math.floor(lng * 1000)/1000;
 
         return nameLat + ' , ' + nameLng;
 
