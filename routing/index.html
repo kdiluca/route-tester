@@ -51,8 +51,7 @@
           <div id="instructions">
             <h3><b>Routing<br>Backend Test Utility</b></h3>
             <h6>Point & click on the map to select a start & end point. Defaults to car.</h6>
-            <h6>Change route to use other methods of travel (car, bike, walk, or transit) from one of the mode buttons below.</h6>
-            <h6>NOTE: Transit defaults to 12:15 on current date.</h6>
+            <h6>Change route to use other methods of travel (auto, bicycle, pedestrian, or multimodal) from one of the mode buttons below.</h6>
             <hr>
             <span style="color:black" class="descriptions">Select an environment:</span><br>
 			<select id = "env_dropdown" onchange="selectEnv()">
@@ -69,12 +68,17 @@
 				</form>
 			</div>
             <br>
+            <div id="doptions" name="doptions" style="display:none">
+			  <form id="auto" name="auto" ><span style="color:black">
+				<h5><b>Auto Options:</b></h5><p>
+			  </form>
+		    </div>
             <button id="drive_btn" class = "transparent_btn" type="button">Drive</button>
-            <div id="options" name="options" style="display:none">
+            <div id="boptions" name="boptions" style="display:none">
 			  <form id="bike" name="bike" ><span style="color:black">
-				<h2><b>Bike Options:</b></h2><br>
+				<h5><b>Bicycle Options:</b></h5><p>
 				  road: <input type="radio" name="btype" value="Road" checked/>
-				  cross: <input style="color:black" type="radio" name="btype" value="Cross" />
+				  cross: <input type="radio" name="btype" value="Cross" />
                   hybrid: <input type="radio" name="btype" value="Hybrid" />
                   mountain: <input type="radio" name="btype" value="Mountain"/>
                   <br>
@@ -82,30 +86,45 @@
                   cycling speed (between 5 and 60kph): <input type="textbox" id="cycle_speed" value="25.0" class="biketextbox"/><br>
                   use hills (0-1): <input type="textbox" id="use_hills" value="0.5" class="biketextbox"/>
                   </span>
-                  <br>
 			  </form>
 		    </div>
 		    <button id="bike_btn" class = "transparent_btn" type="button">Bike</button>
+	        <div id="woptions" name="woptions" style="display:none">
+		      <form id="walk" name="walk" ><span style="color:black">
+			    <h5><b>Pedestrian Options:</b></h5><p>
+		      </form>
+	        </div>
             <button id="walk_btn" class = "transparent_btn" type="button">Walk</button>
+            <div id="toptions" name="toptions" style="display:none">
+			  <form id="transit" name="transit" ><span style="color:black">
+				<h5><b>Multimodal Options:</b></h5><p>
+				  Current: <input type="radio" name="ttype" value="1" checked/>
+				  Depart: <input type="radio" name="ttype" value="2"/>
+				  Arrive: <input type="radio" name="ttype" value="3"/>
+				  <br>
+                  <span style="color:black" class="descriptions"><b>Select a new date and/or time, then click in the text box to trigger the new transit route.</b></span><br>
+                  <input type="text" id="datepicker" size="25"><a href="javascript:NewCal('datepicker','ddmmmyyyy',true,24)"><img src="resource/cal.gif" width="20" height="20" border="0" alt="Pick a date & time"></a><br>
+			  </form>
+		    </div>
             <button id="multi_btn" class = "transparent_btn" type="button">Transit</button>
-			<br>
-            <span style="color:black" class="descriptions">Select a new date and/or time, then click in the text box to trigger the new transit route.</span><br>
-            <input type="text" id="datepicker" size="25"><a href="javascript:NewCal('datepicker','ddmmmyyyy',true,24)"><img src="resource/cal.gif" width="20" height="20" border="0" alt="Pick a date & time"></a>
-            <br><br>
-            <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:black"/>
-            <select id="selector" class="select" style="width:50px; position:absolute;"></select><br><br>
-            <span style="color:black" class="load_desc">The test file sample <b>demo_routes.txt</b> can be loaded from the scripts directory of the Thor repo.</span>
           </div>
-          <br>
+          <div class = "col-md-15" >
+      	    <div id="graph" style= "display:none; height:200px; width: 100%; position: bottom; float:center;"></div>
+          </div>
           <button id="elevation_btn" class = "transparent_btn" type="button">Get Elevation</button>
           <button id="hidechart" name="hidebtn" type="button">Hide Chart</button>
-
+          <br><br>
+          <div><button id="clear_btn" class = "transparent_btn" type="button">Clear Routes</button></div>
+          <br>
+           <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:black"/>
+           <select id="selector" class="select" style="width:50px; position:absolute;"></select><br>
+           <span style="color:black" class="load_desc">The test file sample <b>demo_routes.txt</b> can be loaded from the scripts directory of the Thor repo.</span>
+          <br><br>
+          
           <div id="route_inst" ng-bind-html="renderHtml(route_instructions)"></div>
         </div>
-        <div id="graph" style= "display:none; height:200px; width: 50%; float:center;"></div>
-	
         <div id="mapwrapper" class="col-md-10">
-          <div id="map"></div>
+        <div id="map"></div>
         </div>
       </div>
     </div>
@@ -117,6 +136,7 @@
     <script src="js/lrm/L.Routing.Valhalla.js"></script>
     <script src="js/lrm/L.Routing.Valhalla.Formatter.js"></script>
     <script src="js/elevation/L.Elevation.js"></script>
+    <script src="js/locate/L.Locate.js"></script>
     
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->
     <script type="text/javascript">

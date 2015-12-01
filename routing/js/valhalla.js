@@ -50,10 +50,11 @@ function getEnvToken() {
   }
 }
 
-// sets ISO date time to 12:15 of current date on initial transit run
+// use to set ISO date time to 12:15 of current date for initial transit run
 function parseIsoDateTime(dtStr) {
-  var dt = dtStr.split("T");
-  return dtStr.replace(dt[1], "12:15:00");
+  //var dt = dtStr.split("T");
+  return dtStr.split("T");
+ // return dtStr.replace(dt[1], "12:15:00");
 }
 var dateStr = parseIsoDateTime(isoDateTime.toString());
 
@@ -111,19 +112,22 @@ app.run(function($rootScope) {
     'zoom' : hash_loc.zoom,
     'lat' : hash_loc.center.lat,
     'lon' : hash_loc.center.lng
-  }
+  };
   $(document).on('new-location', function(e) {
     $rootScope.geobase = {
       'zoom' : e.zoom,
       'lat' : e.lat,
       'lon' : e.lon
     };
-  })
+  });
 });
 
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
-  var roadmap = L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
+  /*var roadmap = L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
     attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
+  }),*/
+  var roadmap = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
   }), cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), elevationmap = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
@@ -154,12 +158,12 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var mode = 'car';
 
   var icon = L.icon({
-    iconUrl : 'resource/dot.png',
+    iconUrl : 'resource/via_dot.png',
 
     iconSize : [ 38, 35 ], // size of the icon
     shadowSize : [ 50, 64 ], // size of the shadow
     iconAnchor : [ 22, 34 ], // point of the icon which will correspond to
-                              // marker's location
+    // marker's location
     shadowAnchor : [ 4, 62 ], // the same for the shadow
     popupAnchor : [ -3, -76 ]
   // point from which the popup should open relative to the iconAnchor
@@ -171,20 +175,43 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     'bicycle' : 'js/images/bike.png'
   };
 
-  var getStartIcon = function(icon) {
+  var getOriginIcon = function(icon) {
     return L.icon({
       iconUrl : 'resource/startmarker@2x.png',
       iconSize : [ 44, 56 ], // size of the icon
-      iconAnchor : [ 22, 50 ]
+      iconAnchor : [ 22, 42 ]
     });
   };
 
-  var getEndIcon = function(icon) {
+  var getViaIcon = function(icon) {
+    return L.icon({
+      iconUrl : 'resource/via_dot.png',
+      iconSize : [ 30, 30 ]
+    });
+  };
+
+  var getDestinationIcon = function(icon) {
     return L.icon({
       iconUrl : 'resource/destmarker@2x.png',
       iconSize : [ 44, 56 ], // size of the icon
-      iconAnchor : [ 22, 50 ]
+      iconAnchor : [ 22, 42 ]
     });
+  };
+
+ // allow hash links
+  var hash = new L.Hash(map);
+  var markers = [];
+
+  var locateMarkers = [];
+  var remove_markers = function() {
+    for (var i = 0; i < markers.length; i++) {
+      map.removeLayer(markers[i]);
+    }
+    markers = [];
+    locateMarkers.forEach(function (element, index, array) {
+      map.removeLayer(element);
+    });
+    locateMarkers = [];
   };
 
   var getFileOriginIcon = function(icon) {
@@ -220,9 +247,10 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var locations = 0;
 
   var reset = function() {
-    $('svg').html('');
-    $('.leaflet-routing-container').remove();
-    $('.leaflet-marker-icon.leaflet-marker-draggable').remove();
+    if (rr) {
+      rr.removeFrom(map);
+      rr = null;
+    }
     $scope.$emit('resetRouteInstruction');
     remove_markers();
     locations = 0;
@@ -242,13 +270,31 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getStartIcon(m || 'car')
+        icon : getOriginIcon(m || 'car')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getEndIcon(m || 'car')
+        icon : getDestinationIcon(m || 'car')
+      });
+      marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
+          + "&layers=Q target=_blank>Edit POI here<a/>");
+    }
+    map.addLayer(marker);
+    markers.push(marker);
+  });
+  $rootScope.$on('map.dropMultiLocsMarker', function(ev, geo, m) {
+
+    if (locations == 0) {
+      var marker = new L.marker(geo, {
+        icon : getOriginIcon(m || 'car')
+      });
+      marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
+          + "&layers=Q target=_blank>Edit POI here<a/>");
+    } else {
+      var marker = new L.marker(geo, {
+        icon : getViaIcon(m || 'car')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -303,6 +349,43 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     markers.push(marker);
   });
 
+  // locate edge snap markers
+  var locateEdgeMarkers = function (locate_result) {
+    // clear it
+    locateMarkers.forEach(function (element, index, array) {
+      map.removeLayer(element);
+    });
+    locateMarkers = [];
+
+    //mark from node
+    if(locate_result.node != null) {
+      var marker = L.circle( [locate_result.node.lat,locate_result.node.lon], 2, { color: '#444', opacity: 1, fill: true, fillColor: '#eee', fillOpacity: 1 });
+      map.addLayer(marker);
+      var popup = L.popup({maxHeight : 200});
+      popup.setContent("<pre id='json'>" + JSON.stringify(locate_result, null, 2) + "</pre>");
+      marker.bindPopup(popup).openPopup();
+      locateMarkers.push(marker);
+    }//mark all the results for that spot
+    else if(locate_result.edges != null) {
+      locate_result.edges.forEach(function (element, index, array) {
+        var marker = L.circle( [element.correlated_lat, element.correlated_lon], 2, { color: '#444', opacity: 1, fill: true, fillColor: '#eee', fillOpacity: 1 });
+        map.addLayer(marker);
+        var popup = L.popup({maxHeight : 200});
+        popup.setContent("<pre id='json'>" + JSON.stringify(element, null, 2) + "</pre>");
+        marker.bindPopup(popup).openPopup();
+        locateMarkers.push(marker);
+      });
+    }//no data probably
+    else {
+      var marker = L.circle( [locate_result.input_lat,locate_result.input_lon], 2, { color: '#444', opacity: 1, fill: true, fillColor: '#eee', fillOpacity: 1 });
+      map.addLayer(marker);
+      var popup = L.popup({maxHeight : 200});
+      popup.setContent("<pre id='json'>" + JSON.stringify(locate_result, null, 2) + "</pre>");
+      marker.bindPopup(popup).openPopup();
+      locateMarkers.push(marker);
+    }
+  };
+
   $scope.renderHtml = function(html_code) {
     return $sce.trustAsHtml(html_code);
   };
@@ -320,6 +403,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   });
 
   document.querySelector(".select").addEventListener('click', function(evt) {
+    resetFileLoader();
     handleChange(evt);
     var select = document.getElementById('selector');
     var i;
@@ -335,7 +419,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             'olat' : json.locations[0].lat,
             'olon' : json.locations[0].lon,
             'otype' : json.locations[0].type,
-            'odate': json.locations[0].date_time,
             'oname' : json.locations[0].name,
             'ostreet' : json.locations[0].street,
             'ocity' : json.locations[0].city,
@@ -353,7 +436,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           waypoints.push({
             latLng : L.latLng(geo.olat, geo.olon),
             type : geo.otype,
-            date_time: geo.odate,
             name : geo.oname,
             street : geo.ostreet,
             city : geo.ocity,
@@ -385,7 +467,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             'olat' : json.locations[0].lat,
             'olon' : json.locations[0].lon,
             'otype' : json.locations[0].type,
-            'odate' : json.locations[0].date_time,
             'oname' : json.locations[0].name,
             'ostreet' : json.locations[0].street,
             'ocity' : json.locations[0].city,
@@ -405,7 +486,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             waypoints.push(L.latLng(via_array.vlat, via_array.vlon));
           });
           waypoints.push(L.latLng(geo.dlat, geo.dlon));
-          // json.locations++;
+
         }
 
         var rr = L.Routing.control({
@@ -413,7 +494,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           geocoder : null,
           transitmode : json.costing,
           routeWhileDragging : false,
-          router : L.Routing.valhalla(envToken, json.costing, json.locations[0].date_time, json.costing_options, json.directions_options, options),
+          router : L.Routing.valhalla(envToken, json.costing, json),
           summaryTemplate : '<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
 
           createMarker : function(i, wp, n) {
@@ -463,6 +544,49 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       'lon' : e.latlng.lng
     };
 
+  var eventObj = window.event ? event : e.originalEvent;
+    //way to test multi-locations
+    if(eventObj.ctrlKey) {
+      if (locations == 0) {
+        Locations.push({
+          lat : geo.lat,
+          lon : geo.lon
+        });
+        $rootScope.$emit('map.dropMultiLocsMarker', [ geo.lat, geo.lon ], mode);
+        locations++;
+        return;
+      } else {
+        Locations.push({
+          lat : geo.lat,
+          lon : geo.lon
+        });
+        $rootScope.$emit('map.dropMultiLocsMarker', [ geo.lat, geo.lon ], mode);
+        locations++;
+        return;
+      }
+    } else if (!eventObj.shiftKey) {
+      if (locations == 0) {
+        Locations.push({
+          lat : geo.lat,
+          lon : geo.lon
+        });
+        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
+        locations++;
+        return;
+      } else if (locations > 1) {
+        Locations = [];
+        reset();
+
+        Locations.push({
+          lat : geo.lat,
+          lon : geo.lon
+        });
+        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
+        locations++;
+        return;
+      }
+    }
+/*
     if (locations == 0) {
       Locations.push({
         lat : geo.lat,
@@ -475,14 +599,15 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       Locations = [];
       reset();
 
-      Locations.push({
-        lat : geo.lat,
-        lon : geo.lon
-      })
-      $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
-      locations++;
-      return;
-    }
+        Locations.push({
+          lat : geo.lat,
+          lon : geo.lon
+        });
+        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
+        locations++;
+        return;
+      }
+    }*/
 
     $scope.$on('setRouteInstruction', function(ev, instructions) {
       $scope.$apply(function() {
@@ -506,13 +631,17 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
     locations++;
 
-    valhalla_mode = mode_mapping[mode];
+    var valhalla_mode = mode_mapping[mode];
 
-    var rr = L.Routing.control(
-        {
-          waypoints : waypoints,
+    rr = createRouting({waypoints: waypoints, transitmode: valhalla_mode});
+   // update(true, waypoints, valhalla_mode);
+  });
+
+    var rr;
+
+    var createRouting = function(options, createMarkers) {
+        var defaultOptions = {
           geocoder : null,
-          transitmode : valhalla_mode,
           routeWhileDragging : false,
           router : L.Routing.valhalla(envToken, 'auto'),
           summaryTemplate : '<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
@@ -521,24 +650,33 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             var iconV;
             if (i == 0) {
               iconV = L.icon({
-                iconUrl : 'resource/dot.png',
-                iconSize : [ 24, 24 ]
+                iconUrl : 'resource/via_dot.png',
+                iconSize : [ 30, 30 ]
               });
             } else {
               iconV = L.icon({
-                iconUrl : 'resource/dot.png',
-                iconSize : [ 24, 24 ]
-              })
+                iconUrl : 'resource/via_dot.png',
+                iconSize : [ 30, 30 ]
+              });
             }
+
+            if (createMarkers) {
+                if (i == 0) {
+                    iconV = getOriginIcon();
+                } else if (i == n -1) {
+                    iconV = getDestinationIcon();
+                }
+            }
+
             var options = {
               draggable : true,
               icon : iconV
-            }
+            };
             var dot = L.marker(wp.latLng, options);
+            markers.push(dot);
             return dot.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
                 + "&layers=Q target=_blank>Edit POI here<a/>");
           },
-
           formatter : new L.Routing.Valhalla.Formatter(),
           pointMarkerStyle : {
             radius : 6,
@@ -547,16 +685,26 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             opacity : 1,
             fillOpacity : 1
           }
-        }).addTo(map);
+        };
+
+        options = options || {};
+        for (var k in options) {
+            defaultOptions[k] = options[k];
+        }
+
+        return L.Routing.control(defaultOptions).addTo(map);
+    };
 
     var driveBtn = document.getElementById("drive_btn");
     var bikeBtn = document.getElementById("bike_btn");
     var walkBtn = document.getElementById("walk_btn");
     var multiBtn = document.getElementById("multi_btn");
     var elevationBtn = document.getElementById("elevation_btn");
+    var clearBtn = document.getElementById("clear_btn");
     var routeresponse;
 
     driveBtn.addEventListener('click', function(e) {
+      if (!rr) return;
       getEnvToken();
       rr.route({
         transitmode : 'auto'
@@ -564,6 +712,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     });
 
     bikeBtn.addEventListener('click', function(e) {
+      if (!rr) return;
       getEnvToken();
       var bikeoptions = setBikeOptions();
       rr.route({
@@ -573,6 +722,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     });
 
     walkBtn.addEventListener('click', function(e) {
+      if (!rr) return;
       getEnvToken();
       rr.route({
         transitmode : 'pedestrian'
@@ -580,19 +730,32 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     });
 
     multiBtn.addEventListener('click', function(e) {
+      if (!rr) return;
       getEnvToken();
+      var transitoptions = setTransitOptions(dateStr);
       rr.route({
         transitmode : 'multimodal',
-        date_time : dateStr
+        transit_options : transitoptions
       });
     });
 
     elevationBtn.addEventListener('click', function(e) {
+      if (!rr) return;
       selectEnv();
       var elev = (typeof rr._routes[0] != "undefined") ? L.elevation(elevToken, rr._routes[0].rrshape) : 0;
       elev.resetChart();
       elev.profile(elev._rrshape);
       document.getElementById('graph').style.display = "block";
+    });
+
+    clearBtn.addEventListener('click', function(e) {
+      Locations = [];
+      var elev = (rr && typeof rr._routes[0] != "undefined") ? L.elevation(elevToken, rr._routes[0].rrshape) : 0;
+      reset();
+      resetFileLoader();
+      elev.resetChart();
+      document.getElementById('permalink').innerHTML = "";
+      window.location.hash = "";
     });
 
     function setBikeOptions() {
@@ -607,17 +770,33 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       var cycling_speed = document.getElementById("cycle_speed").value;
       var use_hills = document.getElementById("use_hills").value;
 
-      bikeoptions = {
+      var bikeoptions = {
         "bicycle" : {
           bicycle_type : bicycle_type,
           use_roads : use_roads,
           cycling_speed : cycling_speed,
           use_hills : use_hills
         }
-      }
+      };
       return bikeoptions;
     }
-    ;
+    
+    function setTransitOptions(dateStr) {
+      var ttype = document.getElementsByName("ttype");
+      for (var i = 0; i < ttype.length; i++) {
+        if (ttype[i].checked) {
+          dt_type = ttype[i].value;
+        }
+      }
+      //if user selects current, then we reset time to current date time
+      if (dt_type == 1)
+        dateStr = parseIsoDateTime(this.date.toISOString().toString());
+      var transitoptions = {
+        type : parseInt(dt_type),
+        value : dateStr
+      };
+      return transitoptions;
+    }
 
     /*
      * function openWin(id) { var divText =
@@ -654,8 +833,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         multiBtn.click();
       }
     }
-    ;
-
+ 
     $(document).on('mode-alert', function(e, m) {
       mode = m;
       reset();
@@ -670,17 +848,34 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $("#datepicker").on("click", function() {
       datetimeUpdate(this.value);
     });
+
+
+  // ask the service for information about this location
+  map.on("contextmenu", function(e) {
+    var ll = {
+      lat : e.latlng.lat,
+      lon : e.latlng.lng
+    };
+    getEnvToken();
+    var locate = L.locate(envToken);
+    locate.locate(ll, locateEdgeMarkers);
   });
 
   $("#showbtn").on("click", function() {
-    document.getElementById('options').style.display = "block";
+    document.getElementById('doptions').style.display = "block";
+    document.getElementById('boptions').style.display = "block";
+    document.getElementById('woptions').style.display = "block";
+    document.getElementById('toptions').style.display = "block";
   });
 
   $("#hidebtn").on("click", function() {
-    document.getElementById('options').style.display = "none";
+    document.getElementById('doptions').style.display = "none";
+    document.getElementById('boptions').style.display = "none";
+    document.getElementById('woptions').style.display = "none";
+    document.getElementById('toptions').style.display = "none";
   });
 
   $("#hidechart").on("click", function() {
     document.getElementById('graph').style.display = "none";
   });
-})
+});

@@ -193,6 +193,7 @@ if (typeof module !== undefined) module.exports = polyline;
   var L = (typeof window !== "undefined" ? window.L : typeof global !== "undefined" ? global.L : null);
   var corslite = require('corslite');
   var polyline = require('polyline');
+  
   L.Routing = L.Routing || {};
 
   L.Routing.Valhalla = L.Class.extend({
@@ -202,13 +203,13 @@ if (typeof module !== undefined) module.exports = polyline;
       transitmode: 'auto'
     },
 
-    initialize: function(accessToken, transitmode, date_time, costing_options, directions_options, options) {
+    initialize: function(accessToken, transitmode, options) {
       L.Util.setOptions(this, options);
       this._accessToken = accessToken;
       this._transitmode = transitmode;
-      this._date_time = date_time;
-      this._costing_options = costing_options;
-      this._directions_options = directions_options;
+     // this._costing_options = options.costing_options;
+     // this._directions_options = options.directions_options;
+     // this._transit_options = options.transit_options;
       this._hints = {
         locations: {}
       };
@@ -225,8 +226,6 @@ if (typeof module !== undefined) module.exports = polyline;
         i;
 
       options = options || {};
-      //waypoints = options.waypoints || waypoints;
-      console.log(waypoints);
       url = this.buildRouteUrl(waypoints, options);
 
       timer = setTimeout(function() {
@@ -366,9 +365,9 @@ if (typeof module !== undefined) module.exports = polyline;
         var transitM = options.transitmode || this._transitmode;
         var streetName = options.street;
         this._transitmode = transitM;
-        var date_time = this.date_time;
-        var costing_options = this.costing_options;
-        var directions_options = this.directions_options;
+        var costing_options = options.costing_options;
+        var transit_options = this.options.date_time;
+        var directions_options = this.options.directions_options;
 
         for (var i = 0; i < waypoints.length; i++) {
           var loc;
@@ -383,7 +382,6 @@ if (typeof module !== undefined) module.exports = polyline;
               city: waypoints[i].city,
               state: waypoints[i].state
             }
-            if (i === 0 && transitM === "multimodal") loc.date_time = (typeof options.date_time != 'undefined' ? options.date_time : waypoints[0].date_time);
           }else{
             loc = {
               lat: parseFloat(locationKey[0]),
@@ -397,13 +395,24 @@ if (typeof module !== undefined) module.exports = polyline;
           }
           locs.push(loc);
         }
-
-         var params = JSON.stringify({
-           locations: locs,
-           costing: transitM,
-           costing_options: costing_options,
-           directions_options: directions_options
-         });
+        if (transitM === "multimodal") {
+          var params = JSON.stringify({
+            locations: locs,
+            street: streetName,
+            costing: transitM,
+            costing_options: costing_options,
+            //directions_options: directions_options,
+            date_time: transit_options
+          });
+        } else {
+          var params = JSON.stringify({
+             locations: locs,
+             street: streetName,
+             costing: transitM,
+             costing_options: costing_options
+           //  directions_options: directions_options
+           });
+        }
 
          //reset service url & access token if environment has changed
          (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.dev;
@@ -513,8 +522,8 @@ if (typeof module !== undefined) module.exports = polyline;
     }
   });
 
-  L.Routing.valhalla = function(accessToken, transitmode, date_time, costing_options, direction_options, options) {
-    return new L.Routing.Valhalla(accessToken, transitmode, date_time, costing_options, direction_options, options);
+  L.Routing.valhalla = function(accessToken, transitmode, options) {
+    return new L.Routing.Valhalla(accessToken, transitmode, options);
   };
 
   module.exports = L.Routing.Valhalla;
