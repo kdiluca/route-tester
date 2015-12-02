@@ -410,7 +410,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     for (i = 0; i < select.length; i++) {
       if (select.options[i].selected) {
         Locations = [];
-        reset();
         var json = JSON.parse(select.options[i].value);
         var via_array = new Array();
 
@@ -537,8 +536,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   }, false);
 
   map.on('click', function(e) {
-    if (typeof e.latlng != "undefined")
-      resetFileLoader();
     var geo = {
       'lat' : e.latlng.lat,
       'lon' : e.latlng.lng
@@ -586,28 +583,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         return;
       }
     }
-/*
-    if (locations == 0) {
-      Locations.push({
-        lat : geo.lat,
-        lon : geo.lon
-      })
-      $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
-      locations++;
-      return;
-    } else if (locations > 1) {
-      Locations = [];
-      reset();
-
-        Locations.push({
-          lat : geo.lat,
-          lon : geo.lon
-        });
-        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
-        locations++;
-        return;
-      }
-    }*/
 
     $scope.$on('setRouteInstruction', function(ev, instructions) {
       $scope.$apply(function() {
@@ -782,7 +757,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     }
     
     function setTransitOptions(dateStr) {
-      var ttype = document.getElementsByName("ttype");
+      var ttype = document.getElementsByName("dttype");
       for (var i = 0; i < ttype.length; i++) {
         if (ttype[i].checked) {
           dt_type = ttype[i].value;
@@ -866,6 +841,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('boptions').style.display = "block";
     document.getElementById('woptions').style.display = "block";
     document.getElementById('toptions').style.display = "block";
+    document.getElementById('dtoptions').style.display = "block";
   });
 
   $("#hidebtn").on("click", function() {
@@ -873,6 +849,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('boptions').style.display = "none";
     document.getElementById('woptions').style.display = "none";
     document.getElementById('toptions').style.display = "none";
+    document.getElementById('dtoptions').style.display = "none";
   });
 
   $("#hidechart").on("click", function() {
