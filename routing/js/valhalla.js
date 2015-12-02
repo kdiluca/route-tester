@@ -681,8 +681,10 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     driveBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
+      var dtoptions = setDateTime(dateStr);
       rr.route({
-        transitmode : 'auto'
+        transitmode : 'auto',
+        date_time : dtoptions
       });
     });
 
@@ -690,27 +692,31 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       if (!rr) return;
       getEnvToken();
       var bikeoptions = setBikeOptions();
+      var dtoptions = setDateTime(dateStr);
       rr.route({
         transitmode : 'bicycle',
-        costing_options : bikeoptions
+        costing_options : bikeoptions,
+        date_time : dtoptions
       });
     });
 
     walkBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
+      var dtoptions = setDateTime(dateStr);
       rr.route({
-        transitmode : 'pedestrian'
+        transitmode : 'pedestrian',
+        date_time : dtoptions
       });
     });
 
     multiBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      var transitoptions = setTransitOptions(dateStr);
+      var dtoptions = setDateTime(dateStr);
       rr.route({
         transitmode : 'multimodal',
-        transit_options : transitoptions
+        date_time : dtoptions
       });
     });
 
@@ -729,7 +735,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       reset();
       resetFileLoader();
       elev.resetChart();
-      document.getElementById('permalink').innerHTML = "";
+    //  document.getElementById('permalink').innerHTML = "";
       window.location.hash = "";
     });
 
@@ -756,21 +762,21 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       return bikeoptions;
     }
     
-    function setTransitOptions(dateStr) {
-      var ttype = document.getElementsByName("dttype");
-      for (var i = 0; i < ttype.length; i++) {
-        if (ttype[i].checked) {
-          dt_type = ttype[i].value;
+    function setDateTime(dateStr) {
+      var dttype = document.getElementsByName("dttype");
+      for (var i = 0; i < dttype.length; i++) {
+        if (dttype[i].checked) {
+          dt_type = dttype[i].value;
         }
       }
       //if user selects current, then we reset time to current date time
       if (dt_type == 1)
         dateStr = parseIsoDateTime(this.date.toISOString().toString());
-      var transitoptions = {
+      var datetimeoptions = {
         type : parseInt(dt_type),
         value : dateStr
       };
-      return transitoptions;
+      return datetimeoptions;
     }
 
     /*
@@ -805,7 +811,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         } else {
           dateStr = parseIsoDateTime(isoDateTime.toString());
         }
-        multiBtn.click();
+       // multiBtn.click();
       }
     }
  

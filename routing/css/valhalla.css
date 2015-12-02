@@ -13,6 +13,13 @@ body {
   margin:0;*/
 }
 
+hr {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  border: 0;
+  border-top: 1px solid #BE3939;
+}
+
 .modes {
   width:20px;
   height:20px;

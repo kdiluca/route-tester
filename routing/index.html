@@ -59,7 +59,7 @@
 				  <option id=development selected="selected" value="http://valhalla.dev.mapzen.com/">development</option>
 				  <option id=production value="http://valhalla.mapzen.com/">production</option>
 				</select>
-		    <br>
+		    <br><br>
 		    <div>
 		    <span style="color:black" class="descriptions">Routing Options: </span><br>
 				<form>
@@ -71,10 +71,11 @@
             <div id="doptions" name="doptions" style="display:none">
 			  <form id="auto" name="auto" ><span style="color:black">
 				<h5><b>Auto Options:</b></h5><p>
+				<i>Coming soon!</i>
 			  </form>
+		      <hr>
 		    </div>
-            <button id="drive_btn" class = "transparent_btn" type="button">Drive</button>
-            <div id="boptions" name="boptions" style="display:none">
+		    <div id="boptions" name="boptions" style="display:none">
 			  <form id="bike" name="bike" ><span style="color:black">
 				<h5><b>Bicycle Options:</b></h5><p>
 				  road: <input type="radio" name="btype" value="Road" checked/>
@@ -87,44 +88,51 @@
                   use hills (0-1): <input type="textbox" id="use_hills" value="0.5" class="biketextbox"/>
                   </span>
 			  </form>
+		      <hr>
 		    </div>
-		    <button id="bike_btn" class = "transparent_btn" type="button">Bike</button>
 	        <div id="woptions" name="woptions" style="display:none">
 		      <form id="walk" name="walk" ><span style="color:black">
 			    <h5><b>Pedestrian Options:</b></h5><p>
+			    <i>Coming soon!</i>
 		      </form>
+		      <hr>
 	        </div>
-            <button id="walk_btn" class = "transparent_btn" type="button">Walk</button>
+	        <div id="toptions" name="toptions" style="display:none">
+		      <form id="transit" name="transit" ><span style="color:black">
+			    <h5><b>Transit Options:</b></h5><p>
+			    <i>Coming soon!</i>
+		      </form>
+	        <hr>
+	        </div>
             <div id="dtoptions" name="dtoptions" style="display:none">
 			  <form id="datetime" name="datetime" ><span style="color:black">
 				<h5><b>Date & Time Options:</b></h5><p>
 				  Current: <input type="radio" name="dttype" value="1" checked/>
 				  Depart: <input type="radio" name="dttype" value="2"/>
 				  Arrive: <input type="radio" name="dttype" value="3"/>
-				  <br>
-                  <span style="color:black" class="descriptions"><b>Select a new date and/or time, then click in the text box to trigger the new transit route.</b></span><br>
+				  <br><p>
+                  <span style="color:black" class="descriptions"><b>Select a new date and/or time, then click in the text box to trigger the date/time and click any travel mode.</b></span><br>
                   <input type="text" id="datepicker" size="25"><a href="javascript:NewCal('datepicker','ddmmmyyyy',true,24)"><img src="resource/cal.gif" width="20" height="20" border="0" alt="Pick a date & time"></a><br>
 			  </form>
 		    </div>
-            <div id="toptions" name="toptions" style="display:none">
-		      <form id="transit" name="transit" ><span style="color:black">
-			    <h5><b>Transit Options:</b></h5><p>
-		      </form>
-	        </div>
+		    <br>
+	        <button id="drive_btn" class = "transparent_btn" type="button">Drive</button>
+            <button id="bike_btn" class = "transparent_btn" type="button">Bike</button>
+            <button id="walk_btn" class = "transparent_btn" type="button">Walk</button>
             <button id="multi_btn" class = "transparent_btn" type="button">Transit</button>
 		  </div>
+		  <br>
+           <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:black"/>
+           <select id="selector" class="select" style="width:50px; position:absolute;"></select><br>
+           <span style="color:black" class="load_desc">The test file sample <b>demo_routes.txt</b> can be loaded from the scripts directory of the Thor repo.</span>
+          <br><br>
+          <div><button id="clear_btn" class = "transparent_btn" type="button">Clear Routes</button></div>
+          <br>
           <div class = "col-md-15" >
       	    <div id="graph" style= "display:none; height:200px; width: 100%; position: bottom; float:center;"></div>
           </div><br>
           <button id="elevation_btn" class = "transparent_btn" type="button">Get Elevation</button>
           <button id="hidechart" name="hidebtn" type="button">Hide Chart</button>
-          <br><br>
-          <div><button id="clear_btn" class = "transparent_btn" type="button">Clear Routes</button></div>
-          <br>
-           <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:black"/>
-           <select id="selector" class="select" style="width:50px; position:absolute;"></select><br>
-           <span style="color:black" class="load_desc">The test file sample <b>demo_routes.txt</b> can be loaded from the scripts directory of the Thor repo.</span>
-          <br><br>
           
           <div id="route_inst" ng-bind-html="renderHtml(route_instructions)"></div>
         </div>
