@@ -257,6 +257,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   };
 
   var resetFileLoader = function() {
+   // remove_markers();
     $('svg').html('');
     $('.leaflet-routing-container').remove();
     $('.leaflet-marker-icon.leaflet-marker-draggable').remove();
