@@ -366,7 +366,7 @@ if (typeof module !== undefined) module.exports = polyline;
         var streetName = options.street;
         this._transitmode = transitM;
         var costing_options = options.costing_options;
-        var transit_options = (typeof this.options.date_time != 'undefined') ? this.options.date_time :  options.transit_options;
+        var transit_options = this.options.date_time;
         var directions_options = this.options.directions_options;
 
         for (var i = 0; i < waypoints.length; i++) {

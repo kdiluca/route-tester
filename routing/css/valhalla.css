@@ -58,15 +58,9 @@ div#route_inst table td.distance{
 
 }
 
-##hidechart {
+#drive_btn, #bike_btn, #walk_btn, #multi_btn, #elevation_btn, #hidechart {
   min-width: 40px;
   text-align: center;
-}
-
-#drive_btn, #bike_btn, #walk_btn, #multi_btn, #elevation_btn {
-  border-color: #A4A4A4;
-  background-color: #A4A4A4;
-  color: #fff;
 }
 
 #clearbtn {
