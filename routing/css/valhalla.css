@@ -30,7 +30,7 @@ hr {
 }
 
 div#route_inst {
-  height: 50vh;
+  height: auto;
   overflow: auto;
   color: #ccc;
 }
