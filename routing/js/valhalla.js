@@ -598,7 +598,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     } else if (locations > 1) {
       Locations = [];
       reset();
-
         Locations.push({
           lat : geo.lat,
           lon : geo.lon
@@ -782,7 +781,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     }
     
     function setTransitOptions(dateStr) {
-      var ttype = document.getElementsByName("ttype");
+      var ttype = document.getElementsByName("dttype");
       for (var i = 0; i < ttype.length; i++) {
         if (ttype[i].checked) {
           dt_type = ttype[i].value;
@@ -866,6 +865,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('boptions').style.display = "block";
     document.getElementById('woptions').style.display = "block";
     document.getElementById('toptions').style.display = "block";
+    document.getElementById('dtoptions').style.display = "block";
   });
 
   $("#hidebtn").on("click", function() {
@@ -873,6 +873,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('boptions').style.display = "none";
     document.getElementById('woptions').style.display = "none";
     document.getElementById('toptions').style.display = "none";
+    document.getElementById('dtoptions').style.display = "none";
   });
 
   $("#hidechart").on("click", function() {
