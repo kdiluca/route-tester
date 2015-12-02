@@ -30,7 +30,6 @@
         body{
             width: 100%;
             height: 100%;
-            overflow: hidden;
         }
         #mapwrapper{
             padding:0;
@@ -42,12 +41,18 @@
         .transparent_btn:hover{
             background-color:#ccc;
         }
+        .info {
+          display: inline-block;
+          height: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
+        }
     </style>
 </head>
 <body>
 	<div class="container-fluid" data-ng-controller="RouteController">
-      <div class="row">
-        <div class="col-md-2">
+      
+        <div class="col-md-2 info">
           <div id="instructions">
             <h3><b>Routing<br>Backend Test Utility</b></h3>
             <h6>Point & click on the map to select a start & end point. Defaults to car.</h6>
@@ -139,7 +144,7 @@
         <div id="mapwrapper" class="col-md-10">
         <div id="map"></div>
         </div>
-      </div>
+      
     </div>
     
     <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
