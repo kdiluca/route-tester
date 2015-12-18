@@ -118,6 +118,12 @@
       min-width:60px;
     }
     
+    .leaflet-routing-alt td.text {
+      border: 0;
+      border-top: 1px solid #A4A4A4;
+      border-bottom: 1px solid #A4A4A4;
+    }
+    
     .leaflet-routing-alt ul.verbal_alert, ul.verbal_depart, ul.verbal_arrive, ul.verbal_pre, ul.verbal_post {
       color: #2E64FE;
       font-style: italic;
