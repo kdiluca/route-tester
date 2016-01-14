@@ -501,6 +501,22 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           waypoints.push(L.latLng(geo.dlat, geo.dlon));
 
         }
+        if (json.costing == 'auto') {
+          if (json.costing_options)
+            options = json.costing_options.auto;
+        } else if (json.costing == 'bicycle') {
+          if (json.costing_options)
+            options = json.costing_options.bicycle;
+        } else if (json.costing == 'pedestrian') {
+          if (json.costing_options)
+            options = json.costing_options.pedestrian;
+        } else if (json.costing == 'multimodal') {
+          if (json.costing_options)
+            options = json.costing_options.transit;
+        } else if (json.costing == 'truck') {
+          if (json.costing_options)
+            options = json.costing_options.truck;
+        }
 
         var rr = L.Routing.control({
           waypoints : waypoints,
