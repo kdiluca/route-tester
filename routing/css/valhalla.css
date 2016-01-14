@@ -56,13 +56,12 @@ div#route_inst table td.distance{
     white-space: -moz-pre-wrap;
 }
 
-.biketextbox {
-  width: 15%;
+.biketextbox, .transittextbox, .trucktextbox {
+  width: 18%;
   box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   color: black;
-
 }
 
 ##hidechart {
@@ -70,7 +69,7 @@ div#route_inst table td.distance{
   text-align: center;
 }
 
-#drive_btn, #bike_btn, #walk_btn, #multi_btn, #elevation_btn {
+#drive_btn, #bike_btn, #walk_btn, #multi_btn, #truck_btn, #elevation_btn {
   border-color: #A4A4A4;
   background-color: #A4A4A4;
   color: #fff;
@@ -86,6 +85,23 @@ div#route_inst table td.distance{
   background-color: #d4645c;
   color: #fff;
 }
+
+#routeResponse {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.reset {
+  border-color: #d4645c;
+  background-color: #d4645c;
+  color: #fff;
+  float: left;
+  padding: 10px 26px;
+  border: 1px solid #68c175;
+  text-transform: uppercase;
+}
+
+
 
 #flot-tooltip {
   font-size: 12px;
