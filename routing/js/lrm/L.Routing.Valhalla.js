@@ -198,7 +198,7 @@ if (typeof module !== undefined) module.exports = polyline;
 
   L.Routing.Valhalla = L.Class.extend({
     options: {
-      serviceUrl: (typeof serviceUrl != "undefined" || serviceUrl != null) ? serviceUrl : server.dev,
+      serviceUrl: (typeof serviceUrl != "undefined" || serviceUrl != null) ? serviceUrl : server.prod,
       timeout: 30 * 1000,
       transitmode: 'auto'
     },
@@ -362,7 +362,7 @@ if (typeof module !== undefined) module.exports = polyline;
         var transitM = options.transitmode || this._transitmode;
         var streetName = options.street;
         this._transitmode = transitM;
-        var costing_options = options.costing_options;
+        var costing_options = (typeof this.options.costing_options != 'undefined') ? this.options.costing_options :  options.costing_options;
         var date_time = (typeof this.options.date_time != 'undefined') ? this.options.date_time :  options.date_time;
         var directions_options = this.options.directions_options;
 
@@ -402,11 +402,14 @@ if (typeof module !== undefined) module.exports = polyline;
           });
         
          //reset service url & access token if environment has changed
-         (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.dev;
-         (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.dev;
+         (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.prod;
+         (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.prod;
 
          console.log(this.options.serviceUrl + 'route?json=' +
                 params + '&api_key=' + this._accessToken);
+         
+       /*  document.getElementById('routeResponse').innerHTML =
+           "<a href='" + this.options.serviceUrl + 'route?json=' + params + '&api_key=' + this._accessToken + "' target='_blank'>JSON Route Response Link</a>";*/
          
         return this.options.serviceUrl + 'route?json=' +
                 params + '&api_key=' + this._accessToken;

@@ -1,21 +1,24 @@
 var app = angular.module('routing', []);
 var hash_params = L.Hash.parseHash(location.hash);
 var mode_mapping = {
-  'foot' : 'pedestrian',
-  'car' : 'auto',
+  'foot'    : 'pedestrian',
+  'car'     : 'auto',
   'bicycle' : 'bicycle',
-  'transit' : 'multimodal'
+  'transit' : 'multimodal',
+  'truck'   : 'truck'  
 };
 var date = new Date();
 var isoDateTime = date.toISOString(); // "2015-06-12T15:28:46.493Z"
 var serviceUrl;
-var envToken;
-var elevToken;
-var envServer;
-var elevServiceUrl;
+var envToken = accessToken.prod;
+var elevToken = elevAccessToken.prod;
+var envServer = server.prod;
+var elevServiceUrl = elevationServer.prod;
+var environmentExists = false; 
 
 function selectEnv() {
   $("option:selected").each(function() {
+    environmentExists = true; 
     envServer = $(this).text();
     serviceUrl = document.getElementById(envServer).value;
     getEnvToken();
@@ -50,11 +53,14 @@ function getEnvToken() {
   }
 }
 
-// use to set ISO date time to 12:15 of current date for initial transit run
+//format needs to be YYYY-MM-DDTHH:MM
 function parseIsoDateTime(dtStr) {
-  //var dt = dtStr.split("T");
-  return dtStr.split("T");
- // return dtStr.replace(dt[1], "12:15:00");
+  var dt = dtStr.split(".");
+  var datestr = "";
+  //YYYY-MM-DDTHH:MM:SS
+  str = dt[0].split(":");
+  datestr = str[0] + ":" + str[1];
+  return datestr;
 }
 var dateStr = parseIsoDateTime(isoDateTime.toString());
 
@@ -123,11 +129,11 @@ app.run(function($rootScope) {
 });
 
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
-  /*var roadmap = L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
-    attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
-  }),*/
   var roadmap = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
+  }), tangramZinc = Tangram.leafletLayer({
+    scene: 'https://raw.githubusercontent.com/tangrams/zinc-style-no-labels/gh-pages/zinc-style-no-labels.yaml',
+    attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
   }), cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), elevationmap = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
@@ -138,6 +144,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   var baseMaps = {
     "RoadMap" : roadmap,
+    "TangramZinc" : tangramZinc,
     "CycleMap" : cyclemap,
     "ElevationMap" : elevationmap,
     "TransitMap" : transitmap
@@ -145,11 +152,17 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   var map = L.map('map', {
     zoom : $rootScope.geobase.zoom,
-    zoomControl : false,
+    zoomControl : true,
     layers : [ transitmap ],
     center : [ $rootScope.geobase.lat, $rootScope.geobase.lon ]
   });
+  
+  // Add geocoding plugin
+  var options = {
+    layers: 'coarse'
+  };
 
+  L.control.geocoder('search-8LtGSDw', options).addTo(map);
   L.control.layers(baseMaps, null).addTo(map);
 
   $scope.route_instructions = '';
@@ -488,6 +501,22 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           waypoints.push(L.latLng(geo.dlat, geo.dlon));
 
         }
+        if (json.costing == 'auto') {
+          if (json.costing_options)
+            options = json.costing_options.auto;
+        } else if (json.costing == 'bicycle') {
+          if (json.costing_options)
+            options = json.costing_options.bicycle;
+        } else if (json.costing == 'pedestrian') {
+          if (json.costing_options)
+            options = json.costing_options.pedestrian;
+        } else if (json.costing == 'multimodal') {
+          if (json.costing_options)
+            options = json.costing_options.transit;
+        } else if (json.costing == 'truck') {
+          if (json.costing_options)
+            options = json.costing_options.truck;
+        }
 
         var rr = L.Routing.control({
           waypoints : waypoints,
@@ -675,69 +704,139 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     var bikeBtn = document.getElementById("bike_btn");
     var walkBtn = document.getElementById("walk_btn");
     var multiBtn = document.getElementById("multi_btn");
+    var truckBtn = document.getElementById("truck_btn");
     var elevationBtn = document.getElementById("elevation_btn");
-    var clearBtn = document.getElementById("clear_btn");
     var routeresponse;
 
     driveBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      var dtoptions = setDateTime(dateStr);
-      rr.route({
-        transitmode : 'auto',
-        date_time : dtoptions
-      });
+      
+      var calendarInput = document.getElementById("datepicker").value;
+      if (calendarInput != "") {
+        dateStr = datetimeUpdate(calendarInput);
+        var dtoptions = setDateTime(dateStr);
+        rr.route({
+          transitmode : 'auto',
+          date_time : dtoptions
+        });
+      } else {
+        rr.route({
+          transitmode : 'auto'
+        });
+      }
     });
 
     bikeBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      var bikeoptions = setBikeOptions();
-      var dtoptions = setDateTime(dateStr);
-      rr.route({
-        transitmode : 'bicycle',
-        costing_options : bikeoptions,
-        date_time : dtoptions
-      });
+            
+      if (document.getElementById('bikeoptions').style.display == "block") {
+        var bikeoptions = setBikeOptions();
+        var calendarInput = document.getElementById("datepicker").value;
+        if (calendarInput != "") {
+          dateStr = datetimeUpdate(calendarInput);
+          var dtoptions = setDateTime(dateStr);
+          rr.route({
+            transitmode : 'bicycle',
+            costing_options : bikeoptions,
+            date_time : dtoptions
+          });
+        } else {
+          rr.route({
+            transitmode : 'bicycle',
+            costing_options : bikeoptions
+          });
+        }
+      } else {
+        rr.route({
+          transitmode : 'bicycle'
+        });
+      }  
     });
 
     walkBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      var dtoptions = setDateTime(dateStr);
-      rr.route({
-        transitmode : 'pedestrian',
-        date_time : dtoptions
-      });
+
+      var calendarInput = document.getElementById("datepicker").value;
+      if (calendarInput != "") {
+        dateStr = datetimeUpdate(calendarInput);
+        var dtoptions = setDateTime(dateStr); 
+        rr.route({
+          transitmode : 'pedestrian',
+          date_time : dtoptions
+        });
+      } else {
+        rr.route({
+          transitmode : 'pedestrian'
+        });
+      }
     });
 
     multiBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      var dtoptions = setDateTime(dateStr);
-      rr.route({
-        transitmode : 'multimodal',
-        date_time : dtoptions
-      });
+      
+      var calInput = document.getElementById("datepicker").value;
+      var dtoptions = "";
+      if (calInput != "undefined") {
+        dateStr = datetimeUpdate(calInput);
+        dtoptions = setDateTime(dateStr);    
+      }
+      if (document.getElementById('transitoptions').style.display == "block") {
+        var transitoptions = setTransitOptions();
+        rr.route({
+          transitmode : 'multimodal',
+          costing_options : transitoptions,
+          date_time : dtoptions
+        });
+      } else {
+        rr.route({
+          transitmode : 'multimodal',
+          date_time : dtoptions
+        });
+      }
     });
-
+    
+    truckBtn.addEventListener('click', function(e) {
+      if (!rr) return;
+      getEnvToken();
+      
+      if (document.getElementById('truckoptions').style.display == "block") {
+        var truckoptions = setTruckOptions();
+        var calendarInput = document.getElementById("datepicker").value;
+        if (calendarInput != "") {
+          dateStr = datetimeUpdate(calendarInput);
+          var dtoptions = setDateTime(dateStr);
+          rr.route({
+            transitmode : 'truck',
+            costing_options : truckoptions,
+            date_time : dtoptions
+          });
+        } else {
+          rr.route({
+            transitmode : 'truck',
+            costing_options : truckoptions,
+          });
+        }
+      } else {
+        rr.route({
+          transitmode : 'truck'
+        });
+      }  
+    });
+    
     elevationBtn.addEventListener('click', function(e) {
       if (!rr) return;
-      selectEnv();
+      if (environmentExists) 
+        selectEnv();
+      else getEnvToken();
+      
       var elev = (typeof rr._routes[0] != "undefined") ? L.elevation(elevToken, rr._routes[0].rrshape) : 0;
       elev.resetChart();
       elev.profile(elev._rrshape);
       document.getElementById('graph').style.display = "block";
-    });
-
-    clearBtn.addEventListener('click', function(e) {
-      Locations = [];
-      var elev = (rr && typeof rr._routes[0] != "undefined") ? L.elevation(elevToken, rr._routes[0].rrshape) : 0;
-      reset();
-      resetFileLoader();
-      elev.resetChart();
-    //  document.getElementById('permalink').innerHTML = "";
-      window.location.hash = "";
     });
 
     function setBikeOptions() {
@@ -763,6 +862,47 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       return bikeoptions;
     }
     
+    function setTransitOptions() {
+      var use_bus = document.getElementById("use_bus").value;
+      var use_rail = document.getElementById("use_rail").value;
+      var use_transfers = document.getElementById("use_transfers").value;
+
+      var transitoptions = {
+        "transit" : {
+          use_bus : use_bus,
+          use_rail : use_rail,
+          use_transfers : use_transfers
+        }
+      };
+      return transitoptions;
+    }
+    
+    
+    function setTruckOptions() {
+      var height = document.getElementById("height").value;
+      var width = document.getElementById("width").value;
+      var length = document.getElementById("length").value;
+      var weight = document.getElementById("weight").value;
+      var axle_load = document.getElementById("axle_load").value;
+      var isHazmat = false;
+      
+      if(document.getElementById("isHazmat").checked == true)
+        isHazmat = true;
+       else isHazmat = false;
+
+      var truckoptions = {
+        "truck" : {
+          height : height,
+          width : width,
+          length : length,
+          weight : weight,
+          axle_load : axle_load,
+          hazmat : isHazmat
+        }
+      };
+      return truckoptions;
+    }
+    
     function setDateTime(dateStr) {
       var dttype = document.getElementsByName("dttype");
       for (var i = 0; i < dttype.length; i++) {
@@ -771,11 +911,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         }
       }
       //if user selects current, then we reset time to current date time
-      if (dt_type == 1)
+      if (dt_type == 0)
         dateStr = parseIsoDateTime(this.date.toISOString().toString());
+      else
+        dateStr = parseIsoDateTime(dateStr);
       var datetimeoptions = {
         type : parseInt(dt_type),
-        value : dateStr
+        value : dateStr.toString()
       };
       return datetimeoptions;
     }
@@ -812,8 +954,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         } else {
           dateStr = parseIsoDateTime(isoDateTime.toString());
         }
-       // multiBtn.click();
       }
+      return dateStr;
     }
  
     $(document).on('mode-alert', function(e, m) {
@@ -827,11 +969,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       $scope.$emit('setRouteInstruction', instructions);
     });
 
-    $("#datepicker").on("click", function() {
-      datetimeUpdate(this.value);
-    });
-
-
   // ask the service for information about this location
   map.on("contextmenu", function(e) {
     var ll = {
@@ -842,20 +979,48 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     var locate = L.locate(envToken);
     locate.locate(ll, locateEdgeMarkers);
   });
+  
+  $scope.clearAll = function(e) {
+    if (rr) {
+      rr.removeFrom(map);
+      rr = null;
+    }
+    $scope.$emit('resetRouteInstruction');
+    $scope.appView = 'control'
+    locations = 0;
+    remove_markers();
+    if (typeof elev != "undefined")
+      elev.resetChart();
+    $('#graph').empty();
+    $("[name=btype]").filter("[value='Road']").prop("checked",true);
+    $('input#use_roads').val("0.5");
+    $('input#cycle_speed').val("25.0");
+    $('input#use_hills').val("0.5");
+    //reset datetime calendar and type
+    this.datetime=[];
+    dateStr="";
+    $("[name=dttype]").filter("[value='0']").prop("checked",true);
+    $('input#datepicker').val("");
+    Locations = [];
+    document.getElementById('permalink').innerHTML = "";
+    window.location.hash = "";
+  }
 
   $("#showbtn").on("click", function() {
-    document.getElementById('doptions').style.display = "block";
-    document.getElementById('boptions').style.display = "block";
-    document.getElementById('woptions').style.display = "block";
-    document.getElementById('toptions').style.display = "block";
+    document.getElementById('driveoptions').style.display = "block";
+    document.getElementById('bikeoptions').style.display = "block";
+    document.getElementById('walkoptions').style.display = "block";
+    document.getElementById('transitoptions').style.display = "block";
+    document.getElementById('truckoptions').style.display = "block";
     document.getElementById('dtoptions').style.display = "block";
   });
 
   $("#hidebtn").on("click", function() {
-    document.getElementById('doptions').style.display = "none";
-    document.getElementById('boptions').style.display = "none";
-    document.getElementById('woptions').style.display = "none";
-    document.getElementById('toptions').style.display = "none";
+    document.getElementById('driveoptions').style.display = "none";
+    document.getElementById('bikeoptions').style.display = "none";
+    document.getElementById('walkoptions').style.display = "none";
+    document.getElementById('transitoptions').style.display = "none";
+    document.getElementById('truckoptions').style.display = "none";
     document.getElementById('dtoptions').style.display = "none";
   });
 
