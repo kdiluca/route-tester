@@ -10,7 +10,7 @@ var mode_mapping = {
 var date = new Date();
 var isoDateTime = date.toISOString(); // "2015-06-12T15:28:46.493Z"
 var serviceUrl;
-var envToken = accessToken.prod;
+var envToken = accessToken.dev;
 var elevToken = elevAccessToken.prod;
 var envServer = server.prod;
 var elevServiceUrl = elevationServer.prod;
@@ -76,6 +76,7 @@ function selectFiles(evt) {
       return;
     }
     var file = files[0];
+   // var lastUpdate = file.lastModified;
     var reader = new FileReader();
     var delimiter = "-j";
     reader.onloadend = function(evt) {
@@ -910,15 +911,20 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           dt_type = dttype[i].value;
         }
       }
-      //if user selects current, then we reset time to current date time
-      if (dt_type == 0)
+      //if user selects current, then only send type = 0
+      if (dt_type == 0) {
         dateStr = parseIsoDateTime(this.date.toISOString().toString());
-      else
+        var datetimeoptions = {
+          type : parseInt(dt_type),
+        };
+      }
+      else {
         dateStr = parseIsoDateTime(dateStr);
-      var datetimeoptions = {
-        type : parseInt(dt_type),
-        value : dateStr.toString()
-      };
+        var datetimeoptions = {
+          type : parseInt(dt_type),
+          value : dateStr.toString()
+        };
+      }
       return datetimeoptions;
     }
 

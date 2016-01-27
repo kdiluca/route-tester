@@ -198,7 +198,7 @@ if (typeof module !== undefined) module.exports = polyline;
 
   L.Routing.Valhalla = L.Class.extend({
     options: {
-      serviceUrl: (typeof serviceUrl != "undefined" || serviceUrl != null) ? serviceUrl : server.prod,
+      serviceUrl: (typeof serviceUrl != "undefined" || serviceUrl != null) ? serviceUrl : server.dev,
       timeout: 30 * 1000,
       transitmode: 'auto'
     },
@@ -402,8 +402,8 @@ if (typeof module !== undefined) module.exports = polyline;
           });
         
          //reset service url & access token if environment has changed
-         (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.prod;
-         (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.prod;
+         (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.dev;
+         (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.dev;
 
          console.log(this.options.serviceUrl + 'route?json=' +
                 params + '&api_key=' + this._accessToken);
