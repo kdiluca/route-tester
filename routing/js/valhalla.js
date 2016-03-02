@@ -133,7 +133,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var roadmap = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
   }),tangramCinnabar = Tangram.leafletLayer({
-    scene: 'https://github.com/tangrams/cinnabar-style-more-labels/blob/gh-pages/cinnabar-style-more-labels.yaml',
+    scene: 'https://github.com/tangrams/cinnabar-style/blob/gh-pages/cinnabar-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
   }),/* tangramCrossHatch = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
