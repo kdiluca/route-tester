@@ -132,6 +132,9 @@ app.run(function($rootScope) {
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var roadmap = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
+  }), tangramCrossHatch = Tangram.leafletLayer({
+    scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
+    attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
   }), tangramZinc = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/zinc-style-no-labels/gh-pages/zinc-style-no-labels.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
@@ -145,6 +148,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   var baseMaps = {
     "RoadMap" : roadmap,
+    "tangramCrossHatch" : tangramCrossHatch,
     "TangramZinc" : tangramZinc,
     "CycleMap" : cyclemap,
     "ElevationMap" : elevationmap,
