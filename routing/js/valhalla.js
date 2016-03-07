@@ -177,7 +177,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $scope.route_instructions = '';
 
   var Locations = [];
-  var mode = 'car';
+  var mode = 'transit';
 
   var icon = L.icon({
     iconUrl : 'resource/via_dot.png',
@@ -293,13 +293,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getOriginIcon(m || 'car')
+        icon : getOriginIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getDestinationIcon(m || 'car')
+        icon : getDestinationIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -311,13 +311,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getOriginIcon(m || 'car')
+        icon : getOriginIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getViaIcon(m || 'car')
+        icon : getViaIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -329,11 +329,11 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $rootScope.$on('map.dropOriginMarker', function(ev, geo, m) {
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getFileOriginIcon(m || 'car')
+        icon : getFileOriginIcon(m || 'transit')
       });
     } else {
       var marker = new L.marker(geo, {
-        icon : getFileOriginIcon(m || 'car')
+        icon : getFileOriginIcon(m || 'transit')
       });
     }
     map.addLayer(marker);
@@ -343,11 +343,11 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $rootScope.$on('map.dropViaMarker', function(ev, geo, m) {
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getFileViaIcon(m || 'car')
+        icon : getFileViaIcon(m || 'transit')
       });
     } else {
       var marker = new L.marker(geo, {
-        icon : getFileViaIcon(m || 'car')
+        icon : getFileViaIcon(m || 'transit')
       });
     }
     map.addLayer(marker);
@@ -357,13 +357,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $rootScope.$on('map.dropDestMarker', function(ev, geo, m) {
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getFileDestIcon(m || 'car')
+        icon : getFileDestIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getFileDestIcon(m || 'car')
+        icon : getFileDestIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -657,7 +657,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         var defaultOptions = {
           geocoder : null,
           routeWhileDragging : false,
-          router : L.Routing.valhalla(envToken, 'auto'),
+          router : L.Routing.valhalla(envToken, 'multimodal'),
           summaryTemplate : '<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
 
           createMarker : function(i, wp, n) {
