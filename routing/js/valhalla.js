@@ -10,7 +10,7 @@ var mode_mapping = {
 var date = new Date();
 var isoDateTime = date.toISOString(); // "2015-06-12T15:28:46.493Z"
 var serviceUrl;
-var envToken = accessToken.dev;
+var envToken = accessToken.prod;
 var elevToken = elevAccessToken.prod;
 var envServer = server.prod;
 var elevServiceUrl = elevationServer.prod;
@@ -162,7 +162,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var map = L.map('map', {
     zoom : $rootScope.geobase.zoom,
     zoomControl : true,
-    layers : [ tangramCinnabar ],
+    layers : [ roadmap ],
     center : [ $rootScope.geobase.lat, $rootScope.geobase.lon ]
   });
   
