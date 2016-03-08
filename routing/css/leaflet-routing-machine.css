@@ -201,11 +201,11 @@
       margin: 5px;
       font-weight: bold;
     }
-
+    
     .leaflet-routing-alt::-webkit-scrollbar {
       width: 8px;
     }
-
+    
     .leaflet-routing-alt::-webkit-scrollbar-track {
       border-radius: 2px;
       background-color: #eee;
