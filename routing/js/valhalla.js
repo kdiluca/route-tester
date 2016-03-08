@@ -166,6 +166,24 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     center : [ $rootScope.geobase.lat, $rootScope.geobase.lon ]
   });
   
+  //mobile narrative display logic
+  var mobileRouteEL = document.createElement('div');
+    mobileRouteEL.className = 'mobile-route';
+    mobileRouteEL.classList.add('show-route');
+  mobileRouteEL.addEventListener('click', function (e) {
+    var routingContainer = document.getElementsByClassName('leaflet-routing-container')[0];
+    if(routingContainer.classList.contains('left-align')){
+      routingContainer.classList.remove('left-align');
+      mobileRouteEL.classList.add('show-route');
+      mobileRouteEL.classList.remove('hide-route');
+    }else{
+      routingContainer.classList.add('left-align');
+      mobileRouteEL.classList.remove('show-route');
+      mobileRouteEL.classList.add('hide-route');
+    }
+  });
+  document.querySelector('.leaflet-top.leaflet-right').appendChild(mobileRouteEL);
+  
   // Add geocoding plugin
   var options = {
     layers: 'coarse'
