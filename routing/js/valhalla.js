@@ -171,6 +171,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     mobileRouteEL.className = 'mobile-route';
     mobileRouteEL.classList.add('show-route');
     mobileRouteEL.addEventListener('click', function (e) {
+      e.stopPropagation();
       var routingContainer = document.getElementsByClassName('leaflet-routing-container')[0];
       if(routingContainer.classList.contains('left-align')){
         routingContainer.classList.remove('left-align');
@@ -181,7 +182,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         mobileRouteEL.classList.remove('show-route');
         mobileRouteEL.classList.add('hide-route');
       }
-    });
+    }, true);
   document.querySelector('.leaflet-top.leaflet-right').appendChild(mobileRouteEL);
   
   // Add geocoding plugin
