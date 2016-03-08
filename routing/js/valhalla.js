@@ -1035,7 +1035,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $("[name=dttype]").filter("[value='0']").prop("checked",true);
     $('input#datepicker').val("");
     Locations = [];
-    document.getElementById('permalink').innerHTML = "";
+    //document.getElementById('permalink').innerHTML = "";
     window.location.hash = "";
   }
 
