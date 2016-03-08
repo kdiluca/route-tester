@@ -291,6 +291,7 @@
        background-position: center;
        cursor:pointer;
        z-index:1030;
+       pointer-events: auto;
      }
     .show-route{ background-image: url("../resource/show.png");}
     .hide-route{ background-image: url("../resource/hide.png");}
