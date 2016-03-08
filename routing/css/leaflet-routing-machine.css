@@ -294,7 +294,7 @@
 	  cursor:pointer;
 	  z-index:1030;
 	}
-    .show-route{ background-image: url("/resource/show.png");}
-    .hide-route{ background-image: url("/resource/hide.png");}
+    .show-route{ background-image: url("../resource/show.png");}
+    .hide-route{ background-image: url("../resource/hide.png");}
 
     }
