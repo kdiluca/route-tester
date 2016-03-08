@@ -4,13 +4,63 @@
       max-width: 500px;
       background-color: rgba(255,255,255,0.8);
       font-family: "Open Sans";
-      transition: all 0.8s ease;
+      padding-top: 4px;
+      transition: all 0.2s ease;
     }
 
     .leaflet-control-container .leaflet-routing-container-hide {
       width: 32px;
       height: 32px;
     }
+
+    .leaflet-routing-container h2 {
+	    font-size: 14px;
+	}
+
+	.leaflet-routing-container h3 {
+	    font-size: 12px;
+	    font-weight: normal;
+	}
+
+    .leaflet-routing-collapse-btn {
+	    position: absolute;
+	    top: 0;
+	    right: 6px;
+	    font-size: 24px;
+	    color: #ccc;
+	    font-weight: bold;
+	}
+
+	.leaflet-routing-collapse-btn:after {
+	    content: '\00d7';
+	}
+
+	.leaflet-routing-container-hide .leaflet-routing-collapse-btn {
+	    position: relative;
+	    left: 4px;
+	    top: 4px;
+	    display: block;
+	    width: 26px;
+	    height: 23px;
+	    background-image: url('routing-icon.png');
+	}
+
+	.leaflet-routing-container-hide .leaflet-routing-collapse-btn:after {
+	    content: none;
+	}
+
+	.leaflet-top .leaflet-routing-container.leaflet-routing-container-hide {
+	    margin-top: 10px !important;
+	}
+	.leaflet-right .leaflet-routing-container.leaflet-routing-container-hide {
+	    margin-right: 10px !important;
+	}
+	.leaflet-bottom .leaflet-routing-container.leaflet-routing-container-hide {
+	    margin-bottom: 10px !important;
+	}
+	.leaflet-left .leaflet-routing-container.leaflet-routing-container-hide {
+	    margin-left: 10px !important;
+	}
 
     .leaflet-routing-container .start {
       font-size: 18px;
