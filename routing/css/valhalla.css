@@ -44,7 +44,7 @@ div#route_inst table td.distance{
 .leaflet-control td.guide {
     padding: 3px;
     word-wrap: break-word;
-    //width: 270px;
+    width: 270px;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
 }
