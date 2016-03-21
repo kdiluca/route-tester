@@ -287,8 +287,8 @@ if (typeof module !== undefined) module.exports = polyline;
        //if valhalla changes to array of objects
         var insts = [];
         var coordinates = [];
-        var bShapeIndex = 0;
-        var eShapeIndex = 0;
+        var index = 0;
+        var eIndex = 0;
         var transitStyle = [];
 
         for(var i = 0; i<response.trip.legs.length;  i++){
@@ -301,26 +301,26 @@ if (typeof module !== undefined) module.exports = polyline;
           for(var j =0; j < response.trip.legs[i].maneuvers.length; j++){
             var res = response.trip.legs[i].maneuvers[j];
             res.distance = response.trip.legs[i].maneuvers[j]["length"];
-            res.beginIndex = bShapeIndex + response.trip.legs[i].maneuvers[j]["begin_shape_index"];
-            res.endIndex = eShapeIndex + response.trip.legs[i].maneuvers[j]["end_shape_index"];
+            res.index = index + response.trip.legs[i].maneuvers[j]["begin_shape_index"];
+            res.eIndex = eIndex + response.trip.legs[i].maneuvers[j]["end_shape_index"];
             res.maneuvernum = j+1;
             insts.push(res);
             //lets get store the important transit pieces in an array
             if (res.transit_route) {
               var transit=[];
-              transit.transitBeginIndex = res.beginIndex;
-              transit.transitEndIndex = res.endIndex;
+              transit.transitIndex = res.index;
+              transit.transitEIndex = res.eIndex;
               transit.transitColor = res.transit_route.color;
               transitStyle.push(transit);
             }
           }
-          bShapeIndex += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["begin_shape_index"];
-          eShapeIndex += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["end_shape_index"];
+          index += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["begin_shape_index"];
+          eIndex += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["end_shape_index"];
           //convert color decimal to hex then add color style to only transit shape points
-          for (var index = 0; index < transitStyle.length; index++) {
-            var hexColor = (transitStyle[index].transitColor).toString(16);
-            for (var bt = transitStyle[index].transitBeginIndex; bt <  transitStyle[index].transitEndIndex+1; bt++){
-              coordinates[bt].splice(2,0,this._updateTransitStyle(hexColor));
+          for (var ts = 0; ts < transitStyle.length; ts++) {
+            var hexColor = (transitStyle[ts].transitColor).toString(16);
+            for (var t = transitStyle[ts].transitIndex; t <  transitStyle[ts].transitEIndex+1; t++){
+              coordinates[t].splice(2,0,this._updateTransitStyle(hexColor));
             }
           }
         }

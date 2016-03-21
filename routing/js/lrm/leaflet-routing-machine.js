@@ -1277,15 +1277,14 @@ if (typeof module !== undefined) module.exports = polyline;
           set = arrayChunk.slice(chunkStart, chunkEnd+2);
           var polyline = new L.polyline(set, color);
           this.addLayer(polyline);
-
+          if (mouselistener) {
+            polyline.on('mousedown', this._onLineTouched, this);
+          }
           //continue until chunking and styling is complete
           arrayChunk = arrayChunk.slice(chunkEnd+1, arrayChunk.length);
           //reset index
           i=0;
 
-        }
-        if (mouselistener) {
-          polyline.on('mousedown', this._onLineTouched, this);
         }
     },
 
