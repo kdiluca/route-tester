@@ -1137,7 +1137,7 @@ if (typeof module !== undefined) module.exports = polyline;
 			styles: [
 			    {color: 'black', opacity: 0.15, weight: 8},
 			    {color: 'white', opacity: 0.9, weight: 4},
-			    {color: '#25A5FA', opacity: .7, weight: 6, dashArray: '8,9'}
+			    {color: '#25A5FA', opacity: .7, weight: 6}
 			],
 			missingRouteStyles: [
 			    {color: 'black', opacity: 0.15, weight: 7},
@@ -1253,6 +1253,10 @@ if (typeof module !== undefined) module.exports = polyline;
             }
             //just use default style
             color = styles[2];
+            //dashed for walking mode in transit routes
+            if (this._route.transitmode=='multimodal')
+              color.dashArray = '8,9';
+            else color.dashArray = '0,0';
           }
           //if the first coord is transit(style is stored with coords)
           else {
