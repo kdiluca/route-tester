@@ -353,7 +353,7 @@ if (typeof module !== undefined) module.exports = polyline;
         //temporary hack
         if (lineColor==0) //this is not converting to black so need to manually set it
           lineColor='000000';
-        if (lineColor=='933c' || lineColor=='a65c') //this is not converting to white so need to manually set it
+        if (lineColor=='933c' || lineColor=='a65c' || lineColor=='99cc') //this is not converting to white so need to manually set it
           lineColor='FFFFFF'
 
         var transitColor = new L.Routing.Control ({
