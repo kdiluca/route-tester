@@ -724,7 +724,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         for (var k in options) {
             defaultOptions[k] = options[k];
         }
-
         return L.Routing.control(defaultOptions).addTo(map);
     };
 

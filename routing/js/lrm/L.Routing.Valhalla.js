@@ -287,7 +287,10 @@ if (typeof module !== undefined) module.exports = polyline;
        //if valhalla changes to array of objects
         var insts = [];
         var coordinates = [];
-        var shapeIndex =  0;
+        var bShapeIndex = 0;
+        var eShapeIndex = 0;
+        var transitStyle = [];
+
         for(var i = 0; i<response.trip.legs.length;  i++){
           var coord = polyline.decode(response.trip.legs[i].shape, 6);
 
@@ -298,15 +301,30 @@ if (typeof module !== undefined) module.exports = polyline;
           for(var j =0; j < response.trip.legs[i].maneuvers.length; j++){
             var res = response.trip.legs[i].maneuvers[j];
             res.distance = response.trip.legs[i].maneuvers[j]["length"];
-            res.index = shapeIndex + response.trip.legs[i].maneuvers[j]["begin_shape_index"];
+            res.beginIndex = bShapeIndex + response.trip.legs[i].maneuvers[j]["begin_shape_index"];
+            res.endIndex = eShapeIndex + response.trip.legs[i].maneuvers[j]["end_shape_index"];
             res.maneuvernum = j+1;
             insts.push(res);
+            //lets get store the important transit pieces in an array
+            if (res.transit_route) {
+              var transit=[];
+              transit.transitBeginIndex = res.beginIndex;
+              transit.transitEndIndex = res.endIndex;
+              transit.transitColor = res.transit_route.color;
+              transitStyle.push(transit);
+            }
           }
-
-          shapeIndex += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["begin_shape_index"];
+          bShapeIndex += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["begin_shape_index"];
+          eShapeIndex += response.trip.legs[i].maneuvers[response.trip.legs[i].maneuvers.length-1]["end_shape_index"];
+          //convert color decimal to hex then add color style to only transit shape points
+          for (var index = 0; index < transitStyle.length; index++) {
+            var hexColor = (transitStyle[index].transitColor).toString(16);
+            for (var bt = transitStyle[index].transitBeginIndex; bt <  transitStyle[index].transitEndIndex+1; bt++){
+              coordinates[bt].splice(2,0,this._updateTransitStyle(hexColor));
+            }
+          }
         }
         actualWaypoints = this._toWaypoints(inputWaypoints, response.trip.locations);
-
 
         alts = [{
           ////gotta change
@@ -331,6 +349,21 @@ if (typeof module !== undefined) module.exports = polyline;
         callback.call(context, null, alts);
       },
 
+      _updateTransitStyle: function(lineColor) {
+        if (lineColor==0) //this is not converting to black so need to manually set it
+          lineColor='000000';
+        if (lineColor=='933c') //this is not converting to white so need to manually set it
+          lineColor='FFFFFF'
+        var transitColor = new L.Routing.Control ({
+           lineOptions: {
+             styles: [
+                {color: '#'+lineColor, opacity: 1, weight: 6}
+              ]
+           }
+         })
+        return transitColor.options.lineOptions;
+     },
+          
       _saveHintData: function(hintData, waypoints) {
         var loc;
         this._hints = {

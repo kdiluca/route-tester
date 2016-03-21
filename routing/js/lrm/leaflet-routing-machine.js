@@ -1137,12 +1137,12 @@ if (typeof module !== undefined) module.exports = polyline;
 			styles: [
 			    {color: 'black', opacity: 0.15, weight: 8},
 			    {color: 'white', opacity: 0.9, weight: 4},
-				{color: '#25A5FA', opacity: 1, weight: 6}
+			    {color: '#25A5FA', opacity: .7, weight: 6}
 			],
 			missingRouteStyles: [
-				{color: 'black', opacity: 0.15, weight: 7},
-				{color: 'white', opacity: 0.6, weight: 4},
-				{color: 'gray', opacity: 0.8, weight: 2, dashArray: '7,12'}
+			    {color: 'black', opacity: 0.15, weight: 7},
+			    {color: 'white', opacity: 0.6, weight: 4},
+			    {color: 'gray', opacity: 0.8, weight: 2, dashArray: '7,12'}
 			],
 			addWaypoints: true,
 			extendToWaypoints: true,
@@ -1162,7 +1162,8 @@ if (typeof module !== undefined) module.exports = polyline;
       this._addSegment(
         route.coordinates,
         this.options.styles,
-        this.options.addWaypoints);
+        this.options.addWaypoints
+        );
     },
 
     addTo: function(map) {
@@ -1214,13 +1215,13 @@ if (typeof module !== undefined) module.exports = polyline;
         routeCoord = L.latLng(this._route.coordinates[wpIndices[i]]);
         if (wpLatLng.distanceTo(routeCoord) >
           this.options.missingRouteTolerance) {
-          this._addSegment([wpLatLng, routeCoord],
+          this._addSegmentNoTransit([wpLatLng, routeCoord],
             this.options.missingRouteStyles);
         }
       }
     },
 
-    _addSegment: function(coords, styles, mouselistener) {
+    _addSegmentNoTransit: function(coords, styles, mouselistener) {
       var i,
         pl;
 
@@ -1231,6 +1232,52 @@ if (typeof module !== undefined) module.exports = polyline;
           pl.on('mousedown', this._onLineTouched, this);
         }
       }
+    },
+    //didnt rename because I believe this gets called from leaflet.js automatically so doing array chunking logic here
+    _addSegment: function(coords, styles, mouselistener) {
+      var i,j,
+        pl;
+
+      //need to split array where colors are located
+      var chunkStart, chunkEnd, color, set;
+      var arrayChunk = coords;
+
+      //if the first coord is not transit(no style stored with coords)
+        for (var i = 0; i < arrayChunk.length; i++){
+          if (!arrayChunk[0][2]){
+            for (var i = 0; arrayChunk[i].length < 3; i++){
+              chunkStart = 0;
+              chunkEnd = i;
+              if (i == arrayChunk.length-1)
+                break;
+            }
+            //just use default style
+            color = styles[2];
+          }
+          //if the first coord is transit(style is stored with coords)
+          else {
+            for (var i = 0; arrayChunk[i].length==3; i++){
+              chunkStart = 0;
+              chunkEnd = i;
+              color = arrayChunk[i][2].styles[0];
+              if (i == arrayChunk.length-1)
+                break;
+            }
+          }
+          //remove the chunk that is ready with styling and create polyline layer
+          set = arrayChunk.slice(chunkStart, chunkEnd+2);
+          var polyline = new L.polyline(set, color);
+          this.addLayer(polyline);
+
+          //continue until chunking and styling is complete
+          arrayChunk = arrayChunk.slice(chunkEnd+1, arrayChunk.length);
+          //reset index
+          i=0;
+
+        }
+        if (mouselistener) {
+          polyline.on('mousedown', this._onLineTouched, this);
+        }
     },
 
     _findNearestWpBefore: function(i) {
