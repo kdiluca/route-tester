@@ -350,14 +350,16 @@ if (typeof module !== undefined) module.exports = polyline;
       },
 
       _updateTransitStyle: function(lineColor) {
+        //temporary hack
         if (lineColor==0) //this is not converting to black so need to manually set it
           lineColor='000000';
         if (lineColor=='933c' || lineColor=='a65c') //this is not converting to white so need to manually set it
           lineColor='FFFFFF'
+
         var transitColor = new L.Routing.Control ({
            lineOptions: {
              styles: [
-                {color: '#'+lineColor, opacity: 1, weight: 6}
+                {color: '#'+lineColor.toUpperCase(), opacity: 1, weight: 6, dashArray: '8,9'}
               ]
            }
          })

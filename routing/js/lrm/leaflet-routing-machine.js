@@ -1256,10 +1256,15 @@ if (typeof module !== undefined) module.exports = polyline;
           }
           //if the first coord is transit(style is stored with coords)
           else {
-            for (var i = 0; arrayChunk[i].length==3; i++){
+            for (var i = 0; arrayChunk[i].length>=3; i++){
               chunkStart = 0;
               chunkEnd = i;
-              color = arrayChunk[i][2].styles[0];
+              if (arrayChunk[i].length>3){
+                //this happens when there is a back-to-back transfer (2 colors on same index) so we need to separate chunk here
+                color = arrayChunk[i][3].styles[0];
+                break;
+              }
+              else color = arrayChunk[i][2].styles[0];
               if (i == arrayChunk.length-1)
                 break;
             }
