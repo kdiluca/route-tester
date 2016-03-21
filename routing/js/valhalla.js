@@ -132,16 +132,16 @@ app.run(function($rootScope) {
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var roadmap = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
-  }),tangramCinnabar = Tangram.leafletLayer({
+  }),/*tangramCinnabar = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/cinnabar-style-more-labels/gh-pages/cinnabar-style-more-labels.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
-  }),/* tangramCrossHatch = Tangram.leafletLayer({
+  }),tangramCrossHatch = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
-  }), /*tangramZinc = Tangram.leafletLayer({
+  }), */tangramZinc = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/zinc-style-no-labels/gh-pages/zinc-style-no-labels.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
-  }), */ cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+  }), cyclemap = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), elevationmap = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -151,9 +151,9 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   var baseMaps = {
     "RoadMap" : roadmap,
-    "TangramCinnabar" : tangramCinnabar,
+   // "TangramCinnabar" : tangramCinnabar,
    // "TangramCrossHatch" : tangramCrossHatch,
-   // "TangramZinc" : tangramZinc,
+    "TangramZinc" : tangramZinc,
     "CycleMap" : cyclemap,
     "ElevationMap" : elevationmap,
     "TransitMap" : transitmap
