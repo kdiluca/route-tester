@@ -1137,7 +1137,7 @@ if (typeof module !== undefined) module.exports = polyline;
 			styles: [
 			    {color: 'black', opacity: 0.15, weight: 8},
 			    {color: 'white', opacity: 0.9, weight: 4},
-			    {color: '#25A5FA', opacity: .7, weight: 6}
+			    {color: '#25A5FA', opacity: .7, weight: 6, dashArray: '8,9'}
 			],
 			missingRouteStyles: [
 			    {color: 'black', opacity: 0.15, weight: 7},

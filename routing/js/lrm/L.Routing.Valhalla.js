@@ -350,16 +350,24 @@ if (typeof module !== undefined) module.exports = polyline;
       },
 
       _updateTransitStyle: function(lineColor) {
-        //temporary hack
+        if (lineColor.length !='6'){
+          if (lineColor.length=="5")
+            lineColor="0"+lineColor;
+          else if (lineColor.length=="4")
+            lineColor="00"+lineColor;
+          else if (lineColor.length=="3")
+            lineColor="000"+lineColor;
+          else if (lineColor.length=="2")
+            lineColor="0000"+lineColor;
+          else
+            lineColor="FFFFFF";
+        }
         if (lineColor==0) //this is not converting to black so need to manually set it
           lineColor='000000';
-        if (lineColor=='933c' || lineColor=='a65c' || lineColor=='99cc') //this is not converting to white so need to manually set it
-          lineColor='FFFFFF'
-
         var transitColor = new L.Routing.Control ({
            lineOptions: {
              styles: [
-                {color: '#'+lineColor.toUpperCase(), opacity: 1, weight: 6, dashArray: '8,9'}
+                {color: '#'+lineColor.toUpperCase(), opacity: 1, weight: 6}
               ]
            }
          })
