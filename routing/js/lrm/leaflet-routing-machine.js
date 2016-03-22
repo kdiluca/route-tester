@@ -1135,14 +1135,13 @@ if (typeof module !== undefined) module.exports = polyline;
 
 		options: {
 			styles: [
-			    {color: 'black', opacity: 0.15, weight: 8},
-			    {color: 'white', opacity: 0.9, weight: 4},
-			    {color: '#25A5FA', opacity: .7, weight: 6}
+                          { color: 'white', opacity: 0.8, weight: 10 },
+                          { color: '#3455db', opacity: 1, weight: 6 }
 			],
 			missingRouteStyles: [
-			    {color: 'black', opacity: 0.15, weight: 7},
-			    {color: 'white', opacity: 0.6, weight: 4},
-			    {color: 'gray', opacity: 0.8, weight: 2, dashArray: '7,12'}
+                          {color: 'black', opacity: 0.15, weight: 7},
+                          {color: 'white', opacity: 0.6, weight: 4},
+                          {color: 'gray', opacity: 0.8, weight: 2, dashArray: '7,12'}
 			],
 			addWaypoints: true,
 			extendToWaypoints: true,
@@ -1251,12 +1250,21 @@ if (typeof module !== undefined) module.exports = polyline;
               if (i == arrayChunk.length-1)
                 break;
             }
-            //just use default style
-            color = styles[2];
-            //dashed for walking mode in transit routes
-            if (this._route.transitmode=='multimodal')
-              color.dashArray = '8,9';
-            else color.dashArray = '0,0';
+          //remove the chunk that is ready with styling and create polyline layer
+            set = arrayChunk.slice(chunkStart, chunkEnd+2);
+
+            for (i = 0; i < styles.length; i++) {
+              //dashed for walking mode in transit routes
+              if (this._route.transitmode=='multimodal')
+                styles[i].dashArray = '8,9';
+              else styles[i].dashArray = '0,0';
+
+              var polyline = new L.polyline(set, styles[i]);
+              this.addLayer(polyline);
+              if (mouselistener) {
+                polyline.on('mousedown', this._onLineTouched, this);
+              }
+            }
           }
           //if the first coord is transit(style is stored with coords)
           else {
@@ -1272,19 +1280,20 @@ if (typeof module !== undefined) module.exports = polyline;
               if (i == arrayChunk.length-1)
                 break;
             }
+            //remove the chunk that is ready with styling and create polyline layer
+            set = arrayChunk.slice(chunkStart, chunkEnd+2);
+
+            var polyline = new L.polyline(set, color);
+            this.addLayer(polyline);
+            if (mouselistener) {
+              polyline.on('mousedown', this._onLineTouched, this);
+            }
           }
-          //remove the chunk that is ready with styling and create polyline layer
-          set = arrayChunk.slice(chunkStart, chunkEnd+2);
-          var polyline = new L.polyline(set, color);
-          this.addLayer(polyline);
-          if (mouselistener) {
-            polyline.on('mousedown', this._onLineTouched, this);
-          }
+
           //continue until chunking and styling is complete
           arrayChunk = arrayChunk.slice(chunkEnd+1, arrayChunk.length);
           //reset index
           i=0;
-
         }
     },
 
