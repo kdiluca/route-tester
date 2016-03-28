@@ -1255,8 +1255,8 @@ if (typeof module !== undefined) module.exports = polyline;
 
             for (i = 0; i < styles.length; i++) {
               //dashed for walking mode in transit routes
-              if (this._route.transitmode=='multimodal')
-                styles[i].dashArray = '8,9';
+              if (this._route.transitmode=='multimodal' || this._route.transitmode=='pedestrian')
+                styles[i].dashArray = '4,10';
               else styles[i].dashArray = '0,0';
 
               var polyline = new L.polyline(set, styles[i]);

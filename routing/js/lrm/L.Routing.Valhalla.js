@@ -306,11 +306,11 @@ if (typeof module !== undefined) module.exports = polyline;
             res.maneuvernum = j+1;
             insts.push(res);
             //lets get store the important transit pieces in an array
-            if (res.transit_route) {
+            if (res.transit_info) {
               var transit=[];
               transit.transitIndex = res.index;
               transit.transitEIndex = res.eIndex;
-              transit.transitColor = res.transit_route.color;
+              transit.transitColor = res.transit_info.color;
               transitStyle.push(transit);
             }
           }
