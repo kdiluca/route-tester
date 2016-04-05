@@ -178,8 +178,9 @@
       padding-left: 10px;
       padding-right: 10px;
     }
+    
     .leaflet-routing-alt td.measure {
-      min-width:60px;
+      min-width:10px;
     }
     
     .leaflet-routing-alt td.text {

@@ -1249,11 +1249,11 @@ if (typeof module !== undefined) module.exports = polyline;
       var all_markers = [];
       var arrayChunk = coords;
       var transitLineMarker = {
-          radius: 6,
-          color: '#20345b0',
+          radius: 5,
+          color: 'white',
           fillColor: '#20345b',
-          opacity: 2,
-          fillOpacity: 2
+          opacity: 1,
+          fillOpacity: 1
         };
 
         for (var i = 0; i < arrayChunk.length; i++){
