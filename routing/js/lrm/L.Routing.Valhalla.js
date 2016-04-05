@@ -327,7 +327,8 @@ if (typeof module !== undefined) module.exports = polyline;
       actualWaypoints = this._toWaypoints(inputWaypoints, response.trip.locations);
 
       alts = [{
-        name: this._trimLocationKey(inputWaypoints[0].latLng) + " , " + this._trimLocationKey(inputWaypoints[1].latLng) ,
+        name: this._trimLocationKey(inputWaypoints[0].latLng) + " </div><div class='dest'> " + this._trimLocationKey(inputWaypoints[1].latLng) ,
+        unit: response.trip.units,
         unit: response.trip.units,
         transitmode: this._transitmode,
         coordinates: coordinates,
