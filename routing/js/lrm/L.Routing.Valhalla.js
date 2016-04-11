@@ -223,7 +223,9 @@ if (typeof module !== undefined) module.exports = polyline;
         i;
 
       options = options || {};
-      url = this.buildRouteUrl(waypoints, options);
+      if (optimized)
+        url = this.buildRouteUrl(waypoints, options, true);
+      else url = this.buildRouteUrl(waypoints, options, false);
 
       timer = setTimeout(function() {
                 timedOut = true;
@@ -254,6 +256,12 @@ if (typeof module !== undefined) module.exports = polyline;
             data = JSON.parse(resp.responseText);
             this._rrshape = data.trip.legs[0].shape;
             this._routeDone(data, wps, callback, context);
+            //TODO:  if optimized, clear poi's and re-add with correct order
+            /*if (optimized){
+              $scope.clearAll;
+              $
+            }*/
+          }
             if (document.getElementById('graph').style.display==="block") {
               $("#elevation_btn").trigger("click");
             }
@@ -373,7 +381,7 @@ if (typeof module !== undefined) module.exports = polyline;
               ]
            }
          })
-        return transitColor.options.lineOptions;
+        return transitColor;
      },
           
       _saveHintData: function(hintData, waypoints) {
@@ -400,7 +408,7 @@ if (typeof module !== undefined) module.exports = polyline;
         return wps;
       },
       ///mapzen example
-      buildRouteUrl: function(waypoints, options) {
+      buildRouteUrl: function(waypoints, options, optimized) {
         var locs = [],
             locationKey,
             hint;
@@ -414,26 +422,38 @@ if (typeof module !== undefined) module.exports = polyline;
         for (var i = 0; i < waypoints.length; i++) {
           var loc;
           locationKey = this._locationKey(waypoints[i].latLng).split(',');
-          if(i === 0 || i === waypoints.length-1){
-            loc = {
-              lat: parseFloat(locationKey[0]),
-              lon: parseFloat(locationKey[1]),
-              type: "break",
-              name: waypoints[i].name,
-              street: waypoints[i].street,
-              city: waypoints[i].city,
-              state: waypoints[i].state
+          if (!optimized) {
+            if(i === 0 || i === waypoints.length-1){
+              loc = {
+                lat: parseFloat(locationKey[0]),
+                lon: parseFloat(locationKey[1]),
+                type: "break",
+                name: waypoints[i].name,
+                street: waypoints[i].street,
+                city: waypoints[i].city,
+                state: waypoints[i].state
+              }
+            }else{
+              loc = {
+                lat: parseFloat(locationKey[0]),
+                lon: parseFloat(locationKey[1]),
+                type: "through",
+                name: waypoints[i].name,
+                street: waypoints[i].street,
+                city: waypoints[i].city,
+                state: waypoints[i].state
+              }
             }
-          }else{
+          } else {
             loc = {
-              lat: parseFloat(locationKey[0]),
-              lon: parseFloat(locationKey[1]),
-              type: "through",
-              name: waypoints[i].name,
-              street: waypoints[i].street,
-              city: waypoints[i].city,
-              state: waypoints[i].state
-            }
+                lat: parseFloat(locationKey[0]),
+                lon: parseFloat(locationKey[1]),
+                type: "break",
+                name: waypoints[i].name,
+                street: waypoints[i].street,
+                city: waypoints[i].city,
+                state: waypoints[i].state
+              }
           }
           locs.push(loc);
         }
@@ -450,13 +470,17 @@ if (typeof module !== undefined) module.exports = polyline;
          (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.prod;
          (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.prod;
 
-         console.log(this.options.serviceUrl + 'route?json=' +
+         if (optimized)
+           var action = 'optimized';
+         else action = 'route';
+        
+         console.log(this.options.serviceUrl + action + '?json=' +
                 params + '&api_key=' + this._accessToken);
          
        /*  document.getElementById('routeResponse').innerHTML =
            "<a href='" + this.options.serviceUrl + 'route?json=' + params + '&api_key=' + this._accessToken + "' target='_blank'>JSON Route Response Link</a>";*/
          
-        return this.options.serviceUrl + 'route?json=' +
+        return this.options.serviceUrl + action + '?json=' +
                 params + '&api_key=' + this._accessToken;
       },
 

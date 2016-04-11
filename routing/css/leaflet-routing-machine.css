@@ -154,16 +154,16 @@
         background-color: #eee;
         cursor: pointer;
     }
-    
+
     .leaflet-routing-alt::-webkit-scrollbar {
 	    width: 8px;
 	}
-	
+
 	.leaflet-routing-alt::-webkit-scrollbar-track {
 	    border-radius: 2px;
 	    background-color: #eee;
 	}
-	
+
 	.leaflet-routing-alt::-webkit-scrollbar-thumb {
 	    border-radius: 2px;
 	    background-color: #888;
@@ -180,7 +180,7 @@
     }
     
     .leaflet-routing-alt td.measure {
-      min-width:10px;
+      min-width:60px;
     }
     
     .leaflet-routing-alt td.text {
@@ -206,7 +206,7 @@
     .leaflet-routing-alt::-webkit-scrollbar {
       width: 8px;
     }
-    
+
     .leaflet-routing-alt::-webkit-scrollbar-track {
       border-radius: 2px;
       background-color: #eee;
