@@ -16,6 +16,15 @@ var envServer = server.prod;
 var elevServiceUrl = elevationServer.prod;
 var environmentExists = false; 
 
+//GET SVG sprites.
+httpGet('../routing/images/icons.svg', function (error, response) {
+  var svgContainerEl = document.createElement('div');
+  svgContainerEl.innerHTML = response;
+  // Append to body. This is necessary to make it available for <use> later on
+  document.body.insertBefore(svgContainerEl, document.body.firstChild);
+  return svgContainerEl.querySelectorAll('symbol');
+});
+
 function selectEnv() {
   $("option:selected").each(function() {
     environmentExists = true; 
@@ -134,13 +143,17 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
   }),/*cinnabar = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/cinnabar-style-more-labels/gh-pages/cinnabar-style-more-labels.yaml',
-    attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
+    attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
   }),crossHatch = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
-    attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>',
-  }), */zinc = Tangram.leafletLayer({
+    attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
+  }),outdoor = Tangram.leafletLayer({
+    scene: 'http://tangrams.github.io/outdoor-style.yaml',
+    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
+  }),*/
+  zinc = Tangram.leafletLayer({
     scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
-    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>',
+    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), elevation = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
@@ -153,6 +166,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     "Road" : road,
    // "Cinnabar" : cinnabar,
    // "CrossHatch" : crossHatch,
+   // "Outdoor" : outdoor,
     "Zinc" : zinc,
     "Cycle" : cycle,
     "Elevation" : elevation,
@@ -211,9 +225,9 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   });
 
   var mode_icons = {
-    'car' : 'js/images/drive.png',
-    'foot' : 'js/images/walk.png',
-    'bicycle' : 'js/images/bike.png'
+    'car' : '../images/drive.png',
+    'foot' : '../images/walk.png',
+    'bicycle' : '../images/bike.png'
   };
 
   var getOriginIcon = function(icon) {
@@ -527,32 +541,15 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             waypoints.push(L.latLng(via_array.vlat, via_array.vlon));
           });
           waypoints.push(L.latLng(geo.dlat, geo.dlon));
-
-        }
-        if (json.costing == 'auto') {
-          if (json.costing_options)
-            options = json.costing_options.auto;
-        } else if (json.costing == 'bicycle') {
-          if (json.costing_options)
-            options = json.costing_options.bicycle;
-        } else if (json.costing == 'pedestrian') {
-          if (json.costing_options)
-            options = json.costing_options.pedestrian;
-        } else if (json.costing == 'multimodal') {
-          if (json.costing_options)
-            options = json.costing_options.transit;
-        } else if (json.costing == 'truck') {
-          if (json.costing_options)
-            options = json.costing_options.truck;
         }
 
         var rr = L.Routing.control({
           waypoints : waypoints,
           geocoder : null,
-          transitmode : json.costing,
+          costing : json.costing,
           routeWhileDragging : false,
-          router : L.Routing.valhalla(envToken, json.costing, json),
-          summaryTemplate : '<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
+          router : L.Routing.mapzen(envToken, json),
+          summaryTemplate : '<div class="start">{name}</div><div class="info {costing}">{distance}, {time}</div>',
 
           createMarker : function(i, wp, n) {
             var iconV;
@@ -579,7 +576,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             var poi = L.marker(wp.latLng, options);
             return poi.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + wp.latLng.lat + "/" + wp.latLng.lng + "&layers=Q target=_blank>Edit POI here<a/>");
           },
-          formatter : new L.Routing.Valhalla.Formatter(),
+          formatter : new L.Routing.Mapzen.Formatter(),
           pointMarkerStyle : {
             radius: 6,
             color: '#20345b',
@@ -666,7 +663,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     var valhalla_mode = mode_mapping[mode];
 
-    rr = createRouting({waypoints: waypoints, transitmode: valhalla_mode});
+    rr = createRouting({waypoints: waypoints, costing: valhalla_mode});
    // update(true, waypoints, valhalla_mode);
   });
 
@@ -676,8 +673,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         var defaultOptions = {
           geocoder : null,
           routeWhileDragging : false,
-          router : L.Routing.valhalla(envToken, 'multimodal'),
-          summaryTemplate : '<div class="start">{name}</div><div class="info {transitmode}">{distance}, {time}</div>',
+          router : L.Routing.mapzen(envToken, options),
+          summaryTemplate : '<div class="start">{name}</div><div class="info {costing}">{distance}, {time}</div>',
 
           createMarker : function(i, wp, n) {
             var iconV;
@@ -710,7 +707,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             return dot.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
                 + "&layers=Q target=_blank>Edit POI here<a/>");
           },
-          formatter : new L.Routing.Valhalla.Formatter(),
+          formatter : new L.Routing.Mapzen.Formatter(),
           pointMarkerStyle : {
             radius: 6,
             color: '#20345b',
@@ -744,12 +741,12 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         dateStr = datetimeUpdate(calendarInput);
         var dtoptions = setDateTime(dateStr);
         rr.route({
-          transitmode : 'auto',
+          costing : 'auto',
           date_time : dtoptions
         });
       } else {
         rr.route({
-          transitmode : 'auto'
+          costing : 'auto'
         });
       }
     });
@@ -765,19 +762,19 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           dateStr = datetimeUpdate(calendarInput);
           var dtoptions = setDateTime(dateStr);
           rr.route({
-            transitmode : 'bicycle',
+            costing : 'bicycle',
             costing_options : bikeoptions,
             date_time : dtoptions
           });
         } else {
           rr.route({
-            transitmode : 'bicycle',
+            costing : 'bicycle',
             costing_options : bikeoptions
           });
         }
       } else {
         rr.route({
-          transitmode : 'bicycle'
+          costing : 'bicycle'
         });
       }  
     });
@@ -791,12 +788,12 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         dateStr = datetimeUpdate(calendarInput);
         var dtoptions = setDateTime(dateStr); 
         rr.route({
-          transitmode : 'pedestrian',
+          costing : 'pedestrian',
           date_time : dtoptions
         });
       } else {
         rr.route({
-          transitmode : 'pedestrian'
+          costing : 'pedestrian'
         });
       }
     });
@@ -814,13 +811,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       if (document.getElementById('transitoptions').style.display == "block") {
         var transitoptions = setTransitOptions();
         rr.route({
-          transitmode : 'multimodal',
+          costing : 'multimodal',
           costing_options : transitoptions,
           date_time : dtoptions
         });
       } else {
         rr.route({
-          transitmode : 'multimodal',
+          costing : 'multimodal',
           date_time : dtoptions
         });
       }
@@ -837,19 +834,19 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           dateStr = datetimeUpdate(calendarInput);
           var dtoptions = setDateTime(dateStr);
           rr.route({
-            transitmode : 'truck',
+            costing : 'truck',
             costing_options : truckoptions,
             date_time : dtoptions
           });
         } else {
           rr.route({
-            transitmode : 'truck',
+            costing : 'truck',
             costing_options : truckoptions,
           });
         }
       } else {
         rr.route({
-          transitmode : 'truck'
+          costing : 'truck'
         });
       }  
     });
@@ -860,7 +857,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         selectEnv();
       else getEnvToken();
       
-      var elev = (typeof rr._routes[0] != "undefined") ? L.elevation(elevToken, rr._routes[0].rrshape) : 0;
+      var elev = (typeof rr._routes[0] != "undefined") ? L.elevation(elevToken, rr._router._rrshape) : 0;
       elev.resetChart();
       elev.profile(elev._rrshape);
       document.getElementById('graph').style.display = "block";
@@ -1060,3 +1057,33 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('graph').style.display = "none";
   });
 });
+
+/**
+ * Helper AJAX / XMLHttpRequest GET
+ *
+ * @param {string} url - the url to GET
+ * @param {function} callback - callback function to execute,
+ *   passed Node.js-like err, res arguments.
+ */
+function httpGet (url, callback) {
+  var request = new XMLHttpRequest();
+  request.open('GET', url, true);
+
+  request.onload = function () {
+    if (request.status >= 200 && request.status < 400) {
+      // Success!
+      var response = request.responseText;
+      callback(null, response);
+    } else {
+      // We reached our target server, but it returned an error
+      callback('Server returned an error', null);
+    }
+  };
+
+  request.onerror = function () {
+    callback('There was a connection error', null);
+    // There was a connection error of some sort
+  };
+
+  request.send();
+};

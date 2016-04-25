@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.css" />
     <link rel="stylesheet" href="css/leaflet-routing-machine.css" />
     <link rel="stylesheet" href="css/valhalla.css" />
     <link rel="stylesheet" href="css/elevation.css" />
@@ -151,6 +151,7 @@
           <select id="selector" class="select" style="width:50px; position:absolute;"></select><br>
           <span style="color:black" class="load_desc">The test file sample <b>demo_routes.txt</b> can be loaded from the scripts directory of the Thor repo.</span>
           <br> 
+          <div id="routeResponse" style="display:inline-block;">JSON Route Response Link</div>
           <div class = "col-md-15" >
       	    <div id="graph" style= "display:none; height:200px; width: 100%; position: bottom; float:center;"></div>
           </div><br>
@@ -164,9 +165,9 @@
           ctrl key + click on map to add additional stops along your way.  Finally, press & hold on the shift
           key + click on your destination.  Clear your routes by clicking the red 'Clear Routes' button. </h6>
           -->
-        <!--div>
+        <div>
           <button  class="reset" ng-click="clearAll()"> clear all </button>
-        </div-->
+        </div>
        
         </div>
 
@@ -176,17 +177,17 @@
         
     </div>
     
-    <script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
     <script type="text/javascript" src="js/leaflet-hash.js"></script>
-    <script src="js/lrm/leaflet-routing-machine.js"></script>
-    <!-- Load geocoding plugin after Leaflet -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.4.1/leaflet-geocoder-mapzen.js"></script>
 
     <script src="js/valhalla.js"></script>
-    <script src="js/lrm/L.Routing.Valhalla.js"></script>
-    <script src="js/lrm/L.Routing.Valhalla.Formatter.js"></script>
+    <script src='dist/leaflet-routing-machine.js'></script>
+    <script src='dist/lrm-mapzen-patched.js'></script>
     <script src="js/elevation/L.Elevation.js"></script>
     <script src="js/locate/L.Locate.js"></script>
+    
+    <!-- Load geocoding plugin after Leaflet -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.4.1/leaflet-geocoder-mapzen.js"></script>
     
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->
     <script type="text/javascript">
