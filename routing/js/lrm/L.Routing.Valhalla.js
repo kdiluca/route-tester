@@ -183,6 +183,48 @@ polyline.encode = function(coordinates, precision) {
     return output;
 };
 
+dropOriginMarker = function(geo) {
+
+  var marker = new L.marker(geo, {
+      icon : getOriginIcon()
+      })
+ return marker;
+};
+
+dropDestMarker = function(geo, locCount) {
+
+  var marker = new L.marker(geo, {
+    icon : getDestinationIcon()
+  }).bindLabel((locCount).toString(), (locCount < 10) ? {
+    position: [geo.lat,geo.lon],
+    noHide: true,
+    offset: [-9,-12]
+  } : {
+    position: [geo.lat,geo.lon],
+    noHide: true,
+    offset: [-13,-12]
+    }
+  );  
+return marker;
+};
+
+var getOriginIcon = function() {
+  return new L.Icon({
+    iconUrl : '../routing/resource/startmarker@2x.png',
+    iconSize : [ 40, 50 ],
+    iconAnchor : [ 22, 42 ],
+    shadowUrl: null
+  })
+};
+
+var getDestinationIcon = function() {
+  return new L.Icon({
+    iconUrl : '../matrix/resource/matrix_pin_end.png',
+    iconSize : [ 30, 36 ],
+    shadowUrl: null
+  });
+};
+
 if (typeof module !== undefined) module.exports = polyline;
 
 },{}],3:[function(require,module,exports){
@@ -198,9 +240,7 @@ if (typeof module !== undefined) module.exports = polyline;
 
   L.Routing.Valhalla = L.Class.extend({
     options: {
-      serviceUrl: (typeof serviceUrl != "undefined" || serviceUrl != null) ? serviceUrl : server.prod,
-      timeout: 30 * 1000,
-      transitmode: 'multimodal'
+      timeout: 30 * 1000
     },
 
     initialize: function(accessToken, transitmode, options) {
@@ -223,7 +263,7 @@ if (typeof module !== undefined) module.exports = polyline;
         i;
 
       options = options || {};
-      if (optimized)
+      if (optimize)
         url = this.buildRouteUrl(waypoints, options, true);
       else url = this.buildRouteUrl(waypoints, options, false);
 
@@ -250,19 +290,35 @@ if (typeof module !== undefined) module.exports = polyline;
       corslite(url, L.bind(function(err, resp) {
         var data;
         var rrshape;
+        var markers = [];
         clearTimeout(timer);
         if (!timedOut) {
           if (!err) {
             data = JSON.parse(resp.responseText);
             this._rrshape = data.trip.legs[0].shape;
             this._routeDone(data, wps, callback, context);
-            //TODO:  if optimized, clear poi's and re-add with correct order
-            /*if (optimized){
-              $scope.clearAll;
-              $
-            }*/
+
+            if (optimize){
+              $('.leaflet-marker-icon').remove();
+              $('.leaflet-label').remove();
+              var marker=0;
+              var end = 0;
+              if (data.trip.locations[0].lat === data.trip.locations[data.trip.locations.length-1].lat )
+                end = 1;
+
+              //use -1 so we don't overwrite the label for the same origin/destination
+              for (var loc = 0; loc < data.trip.locations.length - end; loc++){
+                if (loc == 0)
+                  marker = dropOriginMarker([ data.trip.locations[loc].lat, data.trip.locations[loc].lon ]);
+                else
+                  marker = dropDestMarker([ data.trip.locations[loc].lat, data.trip.locations[loc].lon ], loc);
+
+                context._map.addLayer(marker);
+                markers.push(marker);
+              }
+            }
           }
-            if (document.getElementById('graph').style.display==="block") {
+          if (document.getElementById('graph') && document.getElementById('graph').style.display==="block") {
               $("#elevation_btn").trigger("click");
             }
           } else {
@@ -272,12 +328,10 @@ if (typeof module !== undefined) module.exports = polyline;
             });
             alert("Travel Mode: "+ this._transitmode + ", status code: " + err.status + ", " + err.response);
           }
-        }
       }, this), true);
-
       return this;
     },
-
+    
     _routeDone: function(response, inputWaypoints, callback, context) {
       var coordinates,
           alts,
@@ -408,10 +462,11 @@ if (typeof module !== undefined) module.exports = polyline;
         return wps;
       },
       ///mapzen example
-      buildRouteUrl: function(waypoints, options, optimized) {
+      buildRouteUrl: function(waypoints, options, optimize) {
         var locs = [],
             locationKey,
             hint;
+        
         var transitM = options.transitmode || this._transitmode;
         var streetName = options.street;
         this._transitmode = transitM;
@@ -422,7 +477,7 @@ if (typeof module !== undefined) module.exports = polyline;
         for (var i = 0; i < waypoints.length; i++) {
           var loc;
           locationKey = this._locationKey(waypoints[i].latLng).split(',');
-          if (!optimized) {
+          if (!optimize) {
             if(i === 0 || i === waypoints.length-1){
               loc = {
                 lat: parseFloat(locationKey[0]),
@@ -470,15 +525,15 @@ if (typeof module !== undefined) module.exports = polyline;
          (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.prod;
          (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.prod;
 
-         if (optimized)
+         if (optimize)
            var action = 'optimized';
          else action = 'route';
         
          console.log(this.options.serviceUrl + action + '?json=' +
                 params + '&api_key=' + this._accessToken);
          
-       /*  document.getElementById('routeResponse').innerHTML =
-           "<a href='" + this.options.serviceUrl + 'route?json=' + params + '&api_key=' + this._accessToken + "' target='_blank'>JSON Route Response Link</a>";*/
+         document.getElementById(action+'Response').innerHTML =
+           "<a href='" + this.options.serviceUrl + action + '?json=' + params + '&api_key=' + this._accessToken + "' target='_blank'>JSON Response Link</a>";
          
         return this.options.serviceUrl + action + '?json=' +
                 params + '&api_key=' + this._accessToken;
