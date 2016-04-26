@@ -2295,7 +2295,7 @@ if (typeof module !== undefined) module.exports = polyline;
                 timedOut = true;
                 callback.call(context || callback, {
                   status: -1,
-                  message: 'Time out.'
+                  message: 'request timed out.'
                 });
               }, this.options.timeout);
 
@@ -2544,13 +2544,21 @@ if (typeof module !== undefined) module.exports = polyline;
           loc = {
             lat: parseFloat(locationKey[0]),
             lon: parseFloat(locationKey[1]),
-            type: "break"
+            type: "break",
+            name: waypoints[i].name,
+            street: waypoints[i].street,
+            city: waypoints[i].city,
+            state: waypoints[i].state
           }
         }else{
           loc = {
             lat: parseFloat(locationKey[0]),
             lon: parseFloat(locationKey[1]),
-            type: "through"
+            type: "through",
+            name: waypoints[i].name,
+            street: waypoints[i].street,
+            city: waypoints[i].city,
+            state: waypoints[i].state
           }
         }
         locs.push(loc);
@@ -2573,8 +2581,8 @@ if (typeof module !== undefined) module.exports = polyline;
       console.log(this.options.serviceUrl + action + '?json=' +
              params + '&api_key=' + this._accessToken);
       
-      document.getElementById(action+'Response').innerHTML =
-        "<a href='" + this.options.serviceUrl + action + '?json=' + params + '&api_key=' + this._accessToken + "' target='_blank'>JSON Response Link</a>";
+     // document.getElementById(action+'Response').innerHTML =
+     //   "<a href='" + this.options.serviceUrl + action + '?json=' + params + '&api_key=' + this._accessToken + "' target='_blank'>JSON Response Link</a>";
       
      return this.options.serviceUrl + action + '?json=' +
              params + '&api_key=' + this._accessToken;

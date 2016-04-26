@@ -2625,7 +2625,7 @@ if (typeof module !== undefined) module.exports = polyline;
               state: waypoints[i].state
             }
           }
-        } else {
+        }else{
           loc = {
               lat: parseFloat(locationKey[0]),
               lon: parseFloat(locationKey[1]),

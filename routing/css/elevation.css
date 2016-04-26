@@ -3,6 +3,13 @@ html {
   height: 100%;
 }
 
+body {
+  font: 13px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+  padding: 0px;
+  margin: 0px;
+  //background-color: black;
+}
+
 .container-fluid {
   height: 100%;
 }

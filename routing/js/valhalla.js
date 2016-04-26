@@ -9,21 +9,12 @@ var mode_mapping = {
 };
 var date = new Date();
 var isoDateTime = date.toISOString(); // "2015-06-12T15:28:46.493Z"
-var serviceUrl;
+var serviceUrl = server.prod;
 var envToken = accessToken.prod;
 var elevToken = elevAccessToken.prod;
 var envServer = server.prod;
 var elevServiceUrl = elevationServer.prod;
 var environmentExists = false; 
-
-//GET SVG sprites.
-httpGet('../routing/images/icons.svg', function (error, response) {
-  var svgContainerEl = document.createElement('div');
-  svgContainerEl.innerHTML = response;
-  // Append to body. This is necessary to make it available for <use> later on
-  document.body.insertBefore(svgContainerEl, document.body.firstChild);
-  return svgContainerEl.querySelectorAll('symbol');
-});
 
 function selectEnv() {
   $("option:selected").each(function() {
@@ -147,12 +138,12 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   }),crossHatch = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
-  }),outdoor = Tangram.leafletLayer({
-    scene: 'http://tangrams.github.io/outdoor-style.yaml',
+  }),zinc = Tangram.leafletLayer({
+    scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }),*/
-  zinc = Tangram.leafletLayer({
-    scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
+  outdoor = Tangram.leafletLayer({
+    scene: 'http://tangrams.github.io/outdoor-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -166,8 +157,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     "Road" : road,
    // "Cinnabar" : cinnabar,
    // "CrossHatch" : crossHatch,
-   // "Outdoor" : outdoor,
-    "Zinc" : zinc,
+    "Outdoor" : outdoor,
+   // "Zinc" : zinc,
     "Cycle" : cycle,
     "Elevation" : elevation,
     "Transit" : transit
@@ -183,18 +174,18 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   //mobile narrative display logic
   var mobileRouteEL = document.createElement('div');
     mobileRouteEL.className = 'mobile-route';
-    mobileRouteEL.classList.add('show-route');
+    mobileRouteEL.classList.add('list-route');
     mobileRouteEL.addEventListener('click', function (e) {
       e.stopPropagation();
       var routingContainer = document.getElementsByClassName('leaflet-routing-container')[0];
       if(routingContainer.classList.contains('left-align')){
         routingContainer.classList.remove('left-align');
-        mobileRouteEL.classList.add('show-route');
-        mobileRouteEL.classList.remove('hide-route');
+        mobileRouteEL.classList.add('list-route');
+        mobileRouteEL.classList.remove('cancel-route');
       }else{
         routingContainer.classList.add('left-align');
-        mobileRouteEL.classList.remove('show-route');
-        mobileRouteEL.classList.add('hide-route');
+        mobileRouteEL.classList.remove('list-route');
+        mobileRouteEL.classList.add('cancel-route');
       }
     }, true);
   document.querySelector('.leaflet-top.leaflet-right').appendChild(mobileRouteEL);
@@ -288,14 +279,92 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     });
   };
 
-  // Set up the hash
-  var hash = new L.Hash(map);
-  var markers = [];
-  var remove_markers = function() {
-    for (i = 0; i < markers.length; i++) {
-      map.removeLayer(markers[i]);
-    }
-    markers = [];
+  var parseHash = function() {
+    var hash = window.location.hash;
+    if (hash.indexOf('#') === 0)
+      hash = hash.substr(1);
+    return hash.split('&');
+  };
+
+  var parseParams = function(pieces) {
+    var parameters = {};
+    pieces.forEach(function(e, i, a) {
+      var parts = e.split('=');
+      if (parts.length < 2)
+        parts.push('');
+      parameters[decodeURIComponent(parts[0])] = decodeURIComponent(parts[1]);
+    });
+    return parameters;
+  };
+
+  var force = false;
+  var update = function(show, locs, costing) {
+    // update the permalink hash
+    var pieces = parseHash();
+    var extra = '';
+    pieces.forEach(function(e, i, a) {
+      if (e.length && e.slice(0, 'locations='.length) != 'locations=' && e.slice(0, 'costing='.length) != 'costing=')
+        extra = extra + (extra.length ? '&' : '') + e;
+    });
+    var hash_locs = [];
+    locs.forEach(function(locs) {
+      hash_locs.push({
+        'lat' : locs.lat,
+        'lon' : locs.lng
+      })
+    });
+    var parameter = (extra.length ? '&locations=' : 'locations=') + JSON.stringify(hash_locs) + '&costing=' + JSON.stringify(costing);
+    force = show;
+    window.location.hash = '#' + extra + parameter;
+    document.getElementById('permalink').innerHTML = "<a href='http://valhalla.github.io/demos/routing/index.html" + window.location.hash + "' target='_top'>Route Permalink</a>";
+  };
+
+  var updateHashCosting = function(costing, costingOptions, dateTime) {
+    // update the permalink hash
+    var pieces = parseHash();
+    if (pieces[2].indexOf('&costing=auto'))
+      extra = '&costing=' + JSON.stringify(costing);
+
+    if (costingOptions != null)
+      extra = extra + '&costing_options' + JSON.stringify(costingOptions);
+
+    if (dateTime != null)
+      extra = extra + '&date_time=' + JSON.stringify(dateTime);
+
+    window.location.hash = '#' + pieces[0] + '&' + pieces[1] + extra;
+    document.getElementById('permalink').innerHTML = "<a href='http://valhalla.github.io/demos/routing/index.html" + window.location.hash + "' target='_top'>Route Permalink</a>";
+  };
+
+  var hashRoute = function() {
+    // something has to have changed for us to request again
+    var parameters = parseParams(parseHash());
+    if (!force && parameters.locations == JSON.stringify(locations))
+      return;
+    force = false;
+
+    // shape
+    var waypoints = [];
+    if (parameters.locations !== undefined)
+      waypoints = JSON.parse(parameters.locations);
+
+    var locs = [];
+    waypoints.forEach(function(waypoints) {
+      locs.push(L.latLng(waypoints.lat, waypoints.lon));
+    });
+
+    if (parameters.costing !== undefined)
+      var costing = JSON.parse(parameters.costing);
+
+    if (parameters.costingOptions !== undefined)
+      var costing_options = JSON.parse(parameters.costingOptions);
+
+    if (parameters.dateTime !== undefined)
+      var date_time = JSON.parse(parameters.dateTime);
+
+    rr = createRouting({waypoints: locs, transitmode: costing, costing_options: costing_options, date_time: date_time}, true);
+    locations = locs.length;
+
+    document.getElementById('permalink').innerHTML = "<a href='http://valhalla.github.io/demos/routing/index.html" + window.location.hash + "' target='_top'>Route Permalink</a>";
   };
 
   // Number of locations
@@ -590,6 +659,16 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     }
   }, false);
 
+  // if the hash changes
+  // L.DomEvent.addListener(window, "hashchange", hashRoute);
+
+  // show something to start with but only if it was requested
+  $(window).load(function(e) {
+    // rr = L.Routing.mapzen(accessToken);
+    force = true;
+    hashRoute();
+  });
+
   map.on('click', function(e) {
     var geo = {
       'lat' : e.latlng.lat,
@@ -664,7 +743,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     var valhalla_mode = mode_mapping[mode];
 
     rr = createRouting({waypoints: waypoints, costing: valhalla_mode});
-   // update(true, waypoints, valhalla_mode);
+    update(true, waypoints, valhalla_mode);
   });
 
     var rr;
@@ -735,26 +814,27 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     driveBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      
+      var costing = 'auto';
       var calendarInput = document.getElementById("datepicker").value;
       if (calendarInput != "") {
         dateStr = datetimeUpdate(calendarInput);
         var dtoptions = setDateTime(dateStr);
         rr.route({
-          costing : 'auto',
+          costing : costing,
           date_time : dtoptions
         });
       } else {
         rr.route({
-          costing : 'auto'
+          costing : costing
         });
       }
+      updateHashCosting(costing,null,dtoptions);
     });
 
     bikeBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-            
+      var costing = 'bicycle';
       if (document.getElementById('bikeoptions').style.display == "block") {
         var bikeoptions = setBikeOptions();
         var calendarInput = document.getElementById("datepicker").value;
@@ -762,46 +842,48 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           dateStr = datetimeUpdate(calendarInput);
           var dtoptions = setDateTime(dateStr);
           rr.route({
-            costing : 'bicycle',
+            costing : costing,
             costing_options : bikeoptions,
             date_time : dtoptions
           });
         } else {
           rr.route({
-            costing : 'bicycle',
+            costing : costing,
             costing_options : bikeoptions
           });
         }
       } else {
         rr.route({
-          costing : 'bicycle'
+          costing : costing,
         });
-      }  
+      }
+      updateHashCosting(costing,bikeoptions,dtoptions);
     });
 
     walkBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-
+      var costing = 'pedestrian';
       var calendarInput = document.getElementById("datepicker").value;
       if (calendarInput != "") {
         dateStr = datetimeUpdate(calendarInput);
         var dtoptions = setDateTime(dateStr); 
         rr.route({
-          costing : 'pedestrian',
+          costing : costing,
           date_time : dtoptions
         });
       } else {
         rr.route({
-          costing : 'pedestrian'
+          costing : costing
         });
       }
+      updateHashCosting(costing,null,dtoptions);
     });
 
     multiBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      
+      var costing = 'multimodal';
       var calInput = document.getElementById("datepicker").value;
       var dtoptions = "";
       if (calInput != "undefined") {
@@ -811,16 +893,17 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       if (document.getElementById('transitoptions').style.display == "block") {
         var transitoptions = setTransitOptions();
         rr.route({
-          costing : 'multimodal',
+          costing : costing,
           costing_options : transitoptions,
           date_time : dtoptions
         });
       } else {
         rr.route({
-          costing : 'multimodal',
+          costing : costing,
           date_time : dtoptions
         });
       }
+      updateHashCosting(costing,null,dtoptions);
     });
     
     truckBtn.addEventListener('click', function(e) {
@@ -986,7 +1069,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       }
       return dateStr;
     }
- 
+
     $(document).on('mode-alert', function(e, m) {
       mode = m;
       reset();
@@ -1010,14 +1093,16 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   });
   
   $scope.clearAll = function(e) {
-    if (rr) {
-      rr.removeFrom(map);
-      rr = null;
-    }
-    $scope.$emit('resetRouteInstruction');
+
+    $('.leaflet-marker-icon').remove();
+    $('.leaflet-label').remove();
+    $('.leaflet-marker-shadow').remove();
+    $('svg').html('');
+    $('.leaflet-routing-container').remove();
+
     $scope.appView = 'control'
     locations = 0;
-    remove_markers();
+
     if (typeof elev != "undefined")
       elev.resetChart();
     $('#graph').empty();
@@ -1031,7 +1116,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $("[name=dttype]").filter("[value='0']").prop("checked",true);
     $('input#datepicker').val("");
     Locations = [];
-    //document.getElementById('permalink').innerHTML = "";
+    document.getElementById('permalink').innerHTML = "";
     window.location.hash = "";
   }
 
