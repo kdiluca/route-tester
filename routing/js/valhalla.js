@@ -138,14 +138,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   }),crossHatch = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
-  }),zinc = Tangram.leafletLayer({
+  }),*/zinc = Tangram.leafletLayer({
     scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }),*/
-  outdoor = Tangram.leafletLayer({
+  }),/* outdoor = Tangram.leafletLayer({
     scene: 'http://tangrams.github.io/outdoor-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+  }), */cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), elevation = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -157,8 +156,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     "Road" : road,
    // "Cinnabar" : cinnabar,
    // "CrossHatch" : crossHatch,
-    "Outdoor" : outdoor,
-   // "Zinc" : zinc,
+   // "Outdoor" : outdoor,
+    "Zinc" : zinc,
     "Cycle" : cycle,
     "Elevation" : elevation,
     "Transit" : transit
