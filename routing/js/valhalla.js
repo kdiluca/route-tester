@@ -182,6 +182,10 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         mobileRouteEL.classList.add('list-route');
         mobileRouteEL.classList.remove('cancel-route');
       }else{
+        //if is small hack to load the narrative on the initial mobile load
+        if (document.getElementsByClassName('leaflet-routing-container')[0].innerText == ""){
+          window.location.reload();
+        }
         routingContainer.classList.add('left-align');
         mobileRouteEL.classList.remove('list-route');
         mobileRouteEL.classList.add('cancel-route');
