@@ -143,7 +143,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }),*/ outdoor = Tangram.leafletLayer({
     //scene: 'https://cdn.rawgit.com/tangrams/outdoor-style/gh-pages/outdoor-style.yaml',
-    scene: '../routing/outdoor-style.yaml',
+    scene: 'https://raw.githubusercontent.com/kdiluca/route-tester/gh-pages/routing/out-doors.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
