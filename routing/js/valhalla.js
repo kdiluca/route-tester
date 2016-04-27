@@ -138,13 +138,14 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   }),crossHatch = Tangram.leafletLayer({
     scene: 'https://raw.githubusercontent.com/tangrams/tangram-sandbox/gh-pages/styles/crosshatch.yaml',
     attribution: '<a href="https://mapzen.com/tangram" target="_blank">Tangram</a> | <a href="http://www.openstreetmap.org/about" target="_blank">&copy; OSM contributors | <a href="https://mapzen.com/" target="_blank">Mapzen</a>'
-  }),*/zinc = Tangram.leafletLayer({
+  }),zinc = Tangram.leafletLayer({
     scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }),/* outdoor = Tangram.leafletLayer({
-    scene: 'http://tangrams.github.io/outdoor-style.yaml',
+  }),*/ outdoor = Tangram.leafletLayer({
+    //scene: 'https://cdn.rawgit.com/tangrams/outdoor-style/gh-pages/outdoor-style.yaml',
+    scene: '../routing/outdoor-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }), */cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+  }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
   }), elevation = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
@@ -156,8 +157,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     "Road" : road,
    // "Cinnabar" : cinnabar,
    // "CrossHatch" : crossHatch,
-   // "Outdoor" : outdoor,
-    "Zinc" : zinc,
+    "Outdoor" : outdoor,
+   // "Zinc" : zinc,
     "Cycle" : cycle,
     "Elevation" : elevation,
     "Transit" : transit
@@ -364,7 +365,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     if (parameters.dateTime !== undefined)
       var date_time = JSON.parse(parameters.dateTime);
 
-    rr = createRouting({waypoints: locs, transitmode: costing, costing_options: costing_options, date_time: date_time}, true);
+    rr = createRouting({waypoints: locs, costing: costing, costing_options: costing_options, date_time: date_time}, true);
     locations = locs.length;
 
     document.getElementById('permalink').innerHTML = "<a href='http://valhalla.github.io/demos/routing/index.html" + window.location.hash + "' target='_top'>Route Permalink</a>";
@@ -381,6 +382,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $scope.$emit('resetRouteInstruction');
     remove_markers();
     locations = 0;
+    document.getElementById('permalink').innerHTML = "";
   };
 
   var resetFileLoader = function() {
@@ -667,7 +669,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   // show something to start with but only if it was requested
   $(window).load(function(e) {
-    // rr = L.Routing.mapzen(accessToken);
+    rr = L.Routing.mapzen(accessToken);
     force = true;
     hashRoute();
   });
@@ -906,7 +908,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           date_time : dtoptions
         });
       }
-      updateHashCosting(costing,null,dtoptions);
+      updateHashCosting(costing,transitoptions,dtoptions);
     });
     
     truckBtn.addEventListener('click', function(e) {
@@ -934,7 +936,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         rr.route({
           costing : 'truck'
         });
-      }  
+      }
+      updateHashCosting(costing,truckoptions,dtoptions);
     });
     
     elevationBtn.addEventListener('click', function(e) {
@@ -1102,7 +1105,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $('.leaflet-marker-shadow').remove();
     $('svg').html('');
     $('.leaflet-routing-container').remove();
-
+    document.getElementById('permalink').innerHTML = "";
+    window.location.hash = "";
     $scope.appView = 'control'
     locations = 0;
 
@@ -1119,8 +1123,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $("[name=dttype]").filter("[value='0']").prop("checked",true);
     $('input#datepicker').val("");
     Locations = [];
-    document.getElementById('permalink').innerHTML = "";
-    window.location.hash = "";
   }
 
   $("#showbtn").on("click", function() {

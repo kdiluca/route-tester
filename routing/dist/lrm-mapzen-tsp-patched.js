@@ -2393,7 +2393,7 @@ if (typeof module !== undefined) module.exports = polyline;
             status: -1,
             message: 'HTTP request failed: ' + err.response
           });
-          alert("Travel Mode: "+ this._transitmode + ", status code: " + err.status + ", " + err.response);
+          alert("Travel Mode: "+ routeOptions.costing + ", status code: " + err.status + ", " + err.response);
         }
     }, this), true);
     return this;
