@@ -1103,8 +1103,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $('.leaflet-marker-shadow').remove();
     $('svg').html('');
     $('.leaflet-routing-container').remove();
-    document.getElementById('permalink').innerHTML = "";
-    window.location.hash = "";
     $scope.appView = 'control'
     locations = 0;
 
@@ -1121,6 +1119,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $("[name=dttype]").filter("[value='0']").prop("checked",true);
     $('input#datepicker').val("");
     Locations = [];
+    document.getElementById('permalink').innerHTML = "";
+    window.location.hash = "";
   }
 
   $("#showbtn").on("click", function() {
@@ -1145,33 +1145,3 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('graph').style.display = "none";
   });
 });
-
-/**
- * Helper AJAX / XMLHttpRequest GET
- *
- * @param {string} url - the url to GET
- * @param {function} callback - callback function to execute,
- *   passed Node.js-like err, res arguments.
- */
-function httpGet (url, callback) {
-  var request = new XMLHttpRequest();
-  request.open('GET', url, true);
-
-  request.onload = function () {
-    if (request.status >= 200 && request.status < 400) {
-      // Success!
-      var response = request.responseText;
-      callback(null, response);
-    } else {
-      // We reached our target server, but it returned an error
-      callback('Server returned an error', null);
-    }
-  };
-
-  request.onerror = function () {
-    callback('There was a connection error', null);
-    // There was a connection error of some sort
-  };
-
-  request.send();
-};

@@ -122,8 +122,8 @@ li .marker {
   text-align: center;
 }
 
-li .start { background-image:url(../resource/matrix_pin_start.png); }
-li .end { background-image:url(../resource/matrix_pin_end.png);}
+li .start { background-image:url(../../matrix/resource/matrix_pin_start.png); }
+li .end { background-image:url(../../matrix/resource/matrix_pin_end.png);}
 
 li .geocode {
   font-size: 14px;
