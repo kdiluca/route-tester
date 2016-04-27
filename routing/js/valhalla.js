@@ -382,7 +382,6 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $scope.$emit('resetRouteInstruction');
     remove_markers();
     locations = 0;
-    document.getElementById('permalink').innerHTML = "";
   };
 
   var resetFileLoader = function() {
