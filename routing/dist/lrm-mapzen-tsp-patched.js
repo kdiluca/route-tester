@@ -2389,13 +2389,14 @@ if (typeof module !== undefined) module.exports = polyline;
             $("#elevation_btn").trigger("click");
           }
         } else {
-          callback.call(context || callback, {
-            status: -1,
-            message: 'HTTP request failed: ' + err.response
-          });
-          alert("Travel Mode: "+ routeOptions.costing + ", status code: " + err.status + ", " + err.response);
+            callback.call(context || callback, {
+              status: -1,
+              message: 'HTTP request failed: ' + err.response
+            });
+            alert("Travel Mode: "+ routeOptions.costing + ", status code: " + err.status + ", " + err.response);
+          }
         }
-    }, this), true);
+      }, this), true);
     return this;
   },
 

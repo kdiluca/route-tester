@@ -65,9 +65,9 @@ function parseIsoDateTime(dtStr) {
 var dateStr = parseIsoDateTime(isoDateTime.toString());
 
 var inputElement = document.getElementById("inputFile");
-//inputElement.addEventListener("change", selectFiles, false);
+inputElement.addEventListener("change", selectFiles, false);
 
-/*function selectFiles(evt) {
+function selectFiles(evt) {
   if (typeof evt.target != "undefined") {
     var files = evt.target.files;
 
@@ -105,7 +105,7 @@ var inputElement = document.getElementById("inputFile");
     };
     reader.readAsText(file);
   }
-}*/
+}
 
 app.run(function($rootScope) {
   var hash_loc = hash_params ? hash_params : {
@@ -204,7 +204,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $scope.route_instructions = '';
 
   var Locations = [];
-  var mode = 'bicycle';
+  var mode = 'transit';
 
   var icon = L.icon({
     iconUrl : 'resource/via_dot.png',
@@ -398,13 +398,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getOriginIcon(m || 'bicycle')
+        icon : getOriginIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getDestinationIcon(m || 'bicycle')
+        icon : getDestinationIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -416,13 +416,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getOriginIcon(m || 'bicycle')
+        icon : getOriginIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getViaIcon(m || 'bicycle')
+        icon : getViaIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -434,11 +434,11 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $rootScope.$on('map.dropOriginMarker', function(ev, geo, m) {
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getFileOriginIcon(m || 'bicycle')
+        icon : getFileOriginIcon(m || 'transit')
       });
     } else {
       var marker = new L.marker(geo, {
-        icon : getFileOriginIcon(m || 'bicycle')
+        icon : getFileOriginIcon(m || 'transit')
       });
     }
     map.addLayer(marker);
@@ -448,11 +448,11 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $rootScope.$on('map.dropViaMarker', function(ev, geo, m) {
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getFileViaIcon(m || 'bicycle')
+        icon : getFileViaIcon(m || 'transit')
       });
     } else {
       var marker = new L.marker(geo, {
-        icon : getFileViaIcon(m || 'bicycle')
+        icon : getFileViaIcon(m || 'transit')
       });
     }
     map.addLayer(marker);
@@ -462,13 +462,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   $rootScope.$on('map.dropDestMarker', function(ev, geo, m) {
     if (locations == 0) {
       var marker = new L.marker(geo, {
-        icon : getFileDestIcon(m || 'bicycle')
+        icon : getFileDestIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
     } else {
       var marker = new L.marker(geo, {
-        icon : getFileDestIcon(m || 'bicycle')
+        icon : getFileDestIcon(m || 'transit')
       });
       marker.bindPopup("<a href = http://www.openstreetmap.org/#map=" + $rootScope.geobase.zoom + "/" + $rootScope.geobase.lat + "/" + $rootScope.geobase.lon
           + "&layers=Q target=_blank>Edit POI here<a/>");
@@ -529,7 +529,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       $scope.route_instructions = '';
     });
   });
-/*
+
   document.querySelector(".select").addEventListener('click', function(evt) {
     resetFileLoader();
     handleChange(evt);
@@ -660,14 +660,14 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
       }
     }
-  }, false);*/
+  }, false);
 
   // if the hash changes
   // L.DomEvent.addListener(window, "hashchange", hashRoute);
 
   // show something to start with but only if it was requested
   $(window).load(function(e) {
-    rr = L.Routing.mapzen(accessToken);
+    //rr = L.Routing.mapzen(accessToken);
     force = true;
     hashRoute();
   });
@@ -818,8 +818,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       if (!rr) return;
       getEnvToken();
       var costing = 'auto';
-      var calendarInput = "";
- //     var calendarInput = document.getElementById("datepicker").value;
+      var calendarInput = document.getElementById("datepicker").value;
       if (calendarInput != "") {
         dateStr = datetimeUpdate(calendarInput);
         var dtoptions = setDateTime(dateStr);
@@ -841,8 +840,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       var costing = 'bicycle';
       if (document.getElementById('bikeoptions').style.display == "block") {
         var bikeoptions = setBikeOptions();
-        var calendarInput = "";
-        //   var calendarInput = document.getElementById("datepicker").value;
+        var calendarInput = document.getElementById("datepicker").value;
         if (calendarInput != "") {
           dateStr = datetimeUpdate(calendarInput);
           var dtoptions = setDateTime(dateStr);
@@ -868,9 +866,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     walkBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
-      var costing = 'pedestrian'; 
-      var calendarInput = "";
-      //   var calendarInput = document.getElementById("datepicker").value;
+      var costing = 'pedestrian';
+      var calendarInput = document.getElementById("datepicker").value;
       if (calendarInput != "") {
         dateStr = datetimeUpdate(calendarInput);
         var dtoptions = setDateTime(dateStr); 
@@ -886,7 +883,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       updateHashCosting(costing,null,dtoptions);
     });
 
-    /*multiBtn.addEventListener('click', function(e) {
+    multiBtn.addEventListener('click', function(e) {
       if (!rr) return;
       getEnvToken();
       var costing = 'multimodal';
@@ -939,7 +936,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         });
       }
       updateHashCosting(costing,truckoptions,dtoptions);
-    });*/
+    });
     
     elevationBtn.addEventListener('click', function(e) {
       if (!rr) return;
@@ -976,7 +973,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       return bikeoptions;
     }
     
-   /* function setTransitOptions() {
+    function setTransitOptions() {
       var use_bus = document.getElementById("use_bus").value;
       var use_rail = document.getElementById("use_rail").value;
       var use_transfers = document.getElementById("use_transfers").value;
@@ -1016,7 +1013,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       };
       return truckoptions;
     }
-    */
+    
     function setDateTime(dateStr) {
       var dttype = document.getElementsByName("dttype");
       for (var i = 0; i < dttype.length; i++) {
@@ -1127,21 +1124,21 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   }
 
   $("#showbtn").on("click", function() {
-   // document.getElementById('driveoptions').style.display = "block";
+    document.getElementById('driveoptions').style.display = "block";
     document.getElementById('bikeoptions').style.display = "block";
-   /* document.getElementById('walkoptions').style.display = "block";
+    document.getElementById('walkoptions').style.display = "block";
     document.getElementById('transitoptions').style.display = "block";
     document.getElementById('truckoptions').style.display = "block";
-    document.getElementById('dtoptions').style.display = "block";*/
+    document.getElementById('dtoptions').style.display = "block";
   });
 
   $("#hidebtn").on("click", function() {
-  //  document.getElementById('driveoptions').style.display = "none";
+    document.getElementById('driveoptions').style.display = "none";
     document.getElementById('bikeoptions').style.display = "none";
-  /*  document.getElementById('walkoptions').style.display = "none";
+    document.getElementById('walkoptions').style.display = "none";
     document.getElementById('transitoptions').style.display = "none";
     document.getElementById('truckoptions').style.display = "none";
-    document.getElementById('dtoptions').style.display = "none";*/
+    document.getElementById('dtoptions').style.display = "none";
   });
 
   $("#hidechart").on("click", function() {
