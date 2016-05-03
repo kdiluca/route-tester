@@ -261,6 +261,8 @@ app.controller('TSPController', function($scope, $rootScope, $sce, $http) {
   };
 
   optimizeBtn.addEventListener('click', function(e) {
+    $('svg').html('');
+    $('.leaflet-routing-container').remove();
     var waypoints = [];
     var locationsArray = $scope.startPoints.concat($scope.endPoints);
 
