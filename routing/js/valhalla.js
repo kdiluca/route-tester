@@ -325,7 +325,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var updateHashCosting = function(costing, costingOptions, dateTime) {
     // update the permalink hash
     var pieces = parseHash();
-    if (pieces[2].indexOf('&costing=multimodal'))
+    if (pieces[2].indexOf('&costing='))
       extra = '&costing=' + JSON.stringify(costing);
 
     if (costingOptions != null)
