@@ -33,12 +33,12 @@
       </select>
       <div class = "tspWrapper">
         <div class = "{{startPoints.length != 0 ? 'block ' : ''}}matrixBlocker"></div>
-        <button id="many_to_many" ng-click="manyToManyClick()" class = "{{matrixType == 'many_to_many' ? 'selected' : ''}} stitched" type="0button"><h4 class="instruction"><u>Click Here To Optimize Your Route</u>!</button>
+        <button id="many_to_many" ng-click="manyToManyClick()" class = "{{matrixType == 'many_to_many' ? 'selected' : ''}} stitched" type="0button"><h4 class="instruction"><u>Click Here To Start!</u>!</button>
       </div>
 
       <div class = "startPointsWrapper">
         <div class="start" id="start" name="start">
-          <h4 class="instruction"> 1. Add start point </h4>
+          <h4 class="instruction"> 1. Add begin location </h4>
           <ol>
             <li id="startpt" ng-repeat="point in startPoints">
               <div class = "start marker">{{point.index}}</div>
@@ -58,7 +58,7 @@
 
       <div class = "endPointsWrapper">
         <div class="end" id="end" name="end">
-          <h4 class="instruction"> 2. Add intermediate points </h4>
+          <h4 class="instruction"> 2. Add locations </h4>
           <ol>
             <li ng-repeat="point in endPoints">
               <div class = "end marker">{{point.index}}</div>
@@ -74,6 +74,7 @@
         <div ng-show = "matrixType == ''||editingFocus=='start_points'" class = "block pointsBlocker"></div>
         
         <h4 class="instruction"> End Where You Started? </h4>
+        <h5> (If unchecked, your last location clicked will be your destination.) </h5>
           <div class="end_at_start"><input type="checkbox" id="end_at_start"/> </div>
       </div>
 

@@ -2394,7 +2394,7 @@ if (typeof module !== undefined) module.exports = polyline;
             alert("Travel Mode: "+ routeOptions.costing + ", status code: " + err.status + ", " + err.response);
           }
         }
-      }, this), true);
+     }, this), true);
     return this;
   },
 
@@ -2624,7 +2624,7 @@ if (typeof module !== undefined) module.exports = polyline;
               state: waypoints[i].state
             }
           }
-        }else{
+        } else {
           loc = {
               lat: parseFloat(locationKey[0]),
               lon: parseFloat(locationKey[1]),
