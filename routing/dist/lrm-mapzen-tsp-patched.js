@@ -1200,12 +1200,12 @@ if (typeof module !== undefined) module.exports = polyline;
 
 			this._routes = routes;
 
-			for (i = 0; i < this._routes.length; i++) {
-				alt = this._routes[i];
-				altDiv = this._createAlternative(alt, i);
-				this._altContainer.appendChild(altDiv);
-				this._altElements.push(altDiv);
-			}
+    			for (i = 0; i < this._routes.length; i++) {
+    				alt = this._routes[i];
+    				altDiv = this._createAlternative(alt, i);
+    				this._altContainer.appendChild(altDiv);
+    				this._altElements.push(altDiv);
+    			}
 
 			this._selectRoute({route: this._routes[0], alternatives: this._routes.slice(1)});
 
@@ -1270,7 +1270,8 @@ if (typeof module !== undefined) module.exports = polyline;
 			    icon;
 
 			container.appendChild(steps);
-
+                        var narrative_jump = false;
+                        var counter = 0;
 			for (i = 0; i < r.instructions.length; i++) {
 				instr = r.instructions[i];
 				//var travelmode = (typeof instr.travel_mode != "undefined" ? instr.travel_mode : "");
@@ -1285,7 +1286,16 @@ if (typeof module !== undefined) module.exports = polyline;
 			        distance = this._formatter.formatDistance(instr.distance);
 			        icon = this._formatter.getIconName(instr, i);
 			        step = this._itineraryBuilder.createStep(text, verbal_alert, depart_instr, verbal_depart, verbal_pre, verbal_post, arrive_instr, verbal_arrive, distance, icon, steps);
-			        this._addRowListeners(step, r.coordinates[instr.index]);
+                                if (optimize && (instr.type == '4' || instr.type == '5' || instr.type == '6')) {
+                                  //once we've hit the first destination, turn flag to true
+                                  narrative_jump = true;
+                                  //keep count of the multi-destinations, except for the first
+                                  counter++;
+                                }
+                                if (narrative_jump)
+                                  //this keeps the listener matched with the correct index
+                                  this._addRowListeners(step, r.coordinates[instr.index + counter]);
+			        else this._addRowListeners(step, r.coordinates[instr.index]);
 			}
 
 			return container;
