@@ -12,6 +12,7 @@ var envServer = "development";
 var envToken = accessToken.dev;
 var sentManyToManyEnd = false;
 var optimize = true;
+var tspMarkers = [];
 
 function selectEnv() {
   $("option:selected").each(function() {
@@ -297,10 +298,11 @@ app.controller('TSPController', function($scope, $rootScope, $sce, $http) {
   var rr;
 
   var createRouting = function(options, createMarkers) {
+    tspMarkers = markers;
     var defaultOptions = {
       geocoder : null,
       routeWhileDragging : false,
-      router : L.Routing.mapzen(envToken, options, optimize),
+      router : L.Routing.mapzen(envToken, options, optimize, tspMarkers),
       summaryTemplate : '<div class="start">{name}</div><div class="info {costing}">{distance}, {time}</div>',
 
       formatter : new L.Routing.Mapzen.Formatter(),

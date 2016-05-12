@@ -209,7 +209,7 @@ return marker;
 
 var getOriginIcon = function() {
   return new L.Icon({
-    iconUrl : '../routing/resource/startmarker@2x.png',
+    iconUrl : '../matrix/resource/matrix_pin_start.png',
     iconSize : [ 40, 50 ],
     iconAnchor : [ 22, 42 ],
     shadowUrl: null
@@ -1272,6 +1272,7 @@ if (typeof module !== undefined) module.exports = polyline;
 			container.appendChild(steps);
                         var narrative_jump = false;
                         var counter = 0;
+                        var startManeuver = 0;
 			for (i = 0; i < r.instructions.length; i++) {
 				instr = r.instructions[i];
 				//var travelmode = (typeof instr.travel_mode != "undefined" ? instr.travel_mode : "");
@@ -1285,7 +1286,9 @@ if (typeof module !== undefined) module.exports = polyline;
 			        verbal_arrive = (typeof instr.verbal_arrive_instruction != "undefined" ?  "VERBAL_ARRIVE: " + instr.verbal_arrive_instruction : "");
 			        distance = this._formatter.formatDistance(instr.distance);
 			        icon = this._formatter.getIconName(instr, i);
-			        step = this._itineraryBuilder.createStep(text, verbal_alert, depart_instr, verbal_depart, verbal_pre, verbal_post, arrive_instr, verbal_arrive, distance, icon, steps);
+			        if (icon == 'kStart' || icon == 'kStartRight' || icon == 'kStartLeft')
+			          startManeuver++;
+			        step = this._itineraryBuilder.createStep(text, verbal_alert, depart_instr, verbal_depart, verbal_pre, verbal_post, arrive_instr, verbal_arrive, distance, icon, steps, tspMarkers, startManeuver);
                                 if (optimize && (instr.type == '4' || instr.type == '5' || instr.type == '6')) {
                                   //once we've hit the first destination, turn flag to true
                                   narrative_jump = true;
@@ -1407,13 +1410,22 @@ if (typeof module !== undefined) module.exports = polyline;
 			return L.DomUtil.create('tbody', '');
 		},
 
-		createStep: function(text, verbal_alert, depart_instr, verbal_depart, verbal_pre, verbal_post, arrive_instr, verbal_arrive, distance, icon, steps) {
+		createStep: function(text, verbal_alert, depart_instr, verbal_depart, verbal_pre, verbal_post, arrive_instr, verbal_arrive, distance, icon, steps, tspMarkers, startManeuver) {
 		      var row = L.DomUtil.create('tr', '', steps),
 		        span,
+		        img,
 		        td,
 		        ul;
 		      td = L.DomUtil.create('td', '', row);
-		      span = L.DomUtil.create('span', 'leaflet-routing-icon leaflet-routing-icon-'+icon, td);
+                      if (icon == 'kDestination' || icon == 'kDestinationRight' || icon == 'kDestinationLeft'){
+		        span = L.DomUtil.create('span', 'leaflet-routing-icon leaflet-routing-icon-'+icon, td);
+		        img = document.createElement('img');
+		        img.setAttribute('src','../matrix/resource/matrix_pin_end.png');
+		        span.innerHTML = "<h2><b>"+startManeuver+"</b></h2>";
+		        span.appendChild(img);
+		      
+                      }
+                      else span = L.DomUtil.create('span', 'leaflet-routing-icon leaflet-routing-icon-'+icon, td);
 		      td.appendChild(span);
 		      td = L.DomUtil.create('td', 'text', row);
 		        ul = L.DomUtil.create('ul', 'depart_instr', row);
