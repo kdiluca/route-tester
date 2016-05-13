@@ -64,13 +64,12 @@
 
     .leaflet-routing-container .start {
       font-size: 18px;
-      min-height: 60px;
+      min-height: 40px;
       line-height: 60px;
       padding-left: 50px;
-      background-image: url('../../matrix/resource/matrix_pin_start.png');
+      background-image: url('../resource/startmarker@2x.png');
       background-repeat: no-repeat;
       background-position: 5px 8px;
-      background-size: 45px 55px;
       letter-spacing: 0.5px;
     }
 
@@ -79,10 +78,9 @@
       line-height:60px;
       min-height:40px;
       padding-left:50px;
-      background-image: url('../../matrix/resource/matrix_pin_end.png');
+      background-image: url('../resource/destmarker@2x.png');
       background-repeat: no-repeat;
       background-position: 5px 8px;
-      background-size: 45px 55px;
       letter-spacing: 0.5px;
     }
 
@@ -219,18 +217,17 @@
       background-color: #888;
     }
     
-    .leaflet-routing-icon h2{
-      width: 30px;
-      height: 30px;
-      margin-left: 10px;
-      color: white;
-    }
-    
-    .leaflet-routing-icon img{
-      z-index: -1;
-      margin-top: -48px;
-      position: relative;
-    }
+.leaflet-routing-icon {
+  -webkit-background-size: 240px 20px;
+  background-size: 240px 20px;
+  background-repeat: no-repeat;
+  margin: 0;
+  content: '';
+  display: inline-block;
+  vertical-align: top;
+  width: 20px;
+  height: 20px;
+}
 
     .leaflet-routing-icon-continue         { background-position: 0 0; }
     .leaflet-routing-icon-sharp-right      { background-position: -20px 0; }

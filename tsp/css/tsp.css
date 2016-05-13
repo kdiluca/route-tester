@@ -170,6 +170,61 @@ li .placeholder.geocode {
   border-color: #31783c;
 }
 
+.leaflet-routing-alt tr {
+    min-height: 40px;
+    height: 80px;
+    border-bottom: 1px solid #eee;
+}
+
+.leaflet-routing-icon {
+  -webkit-background-size: 240px 20px;
+  background-size: 240px 20px;
+  background-repeat: no-repeat;
+  margin: 0;
+  content: '';
+  display: inline-block;
+  vertical-align: top;
+  width: 20px;
+}
+
+.leaflet-routing-icon h2 {
+  width: 20px;
+  margin-left: 11px;
+  margin-bottom: 20px;
+  color: white;
+}
+
+.leaflet-routing-icon img{
+  z-index: -1;
+  margin-top: -60px;
+  position: relative;
+  bottom: -15px;
+ }
+
+.leaflet-routing-container .start {
+  font-size: 18px;
+  min-height: 60px;
+  line-height: 60px;
+  padding-left: 50px;
+  background-image: url('../../matrix/resource/matrix_pin_start.png');
+  background-repeat: no-repeat;
+  background-position: 5px 8px;
+  background-size: 45px 55px;
+  letter-spacing: 0.5px;
+}
+
+.leaflet-routing-container .dest{
+  font-size: 18px;
+  line-height:60px;
+  min-height:40px;
+  padding-left:50px;
+  background-image: url('../../matrix/resource/matrix_pin_end.png');
+  background-repeat: no-repeat;
+  background-position: 5px 8px;
+  background-size: 45px 55px;
+  letter-spacing: 0.5px;
+}
+
 /* vehicle mode*/
 
 .vehicleBox {
