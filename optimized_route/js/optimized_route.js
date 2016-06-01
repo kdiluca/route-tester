@@ -1,4 +1,4 @@
-var app = angular.module('tsp', []);
+var app = angular.module('optimized_route', []);
 var hash_params = L.Hash.parseHash(location.hash);
 var mode_mapping = {
     'foot'    : 'pedestrian',
@@ -11,7 +11,7 @@ var serviceUrl;
 var envServer = "development";
 var envToken = accessToken.dev;
 var sentManyToManyEnd = false;
-var optimize = true;
+var optimized_route = true;
 var tspMarkers = [];
 
 function selectEnv() {
@@ -68,7 +68,7 @@ app.run(function($rootScope) {
 });
 
 //hooks up to the div whose data-ng-controller attribute matches this name
-app.controller('TSPController', function($scope, $rootScope, $sce, $http) {
+app.controller('OptimizedRouteController', function($scope, $rootScope, $sce, $http) {
   var road = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
   }), zinc = Tangram.leafletLayer({
@@ -243,7 +243,7 @@ app.controller('TSPController', function($scope, $rootScope, $sce, $http) {
     counterText = 0;
     markers = [];
     document.getElementById("end_at_start").checked = false;
-    document.getElementById("optimizedResponse") == "";
+    document.getElementById("optimized_routeResponse") == "";
   }
 
 
@@ -302,7 +302,7 @@ app.controller('TSPController', function($scope, $rootScope, $sce, $http) {
     var defaultOptions = {
       geocoder : null,
       routeWhileDragging : false,
-      router : L.Routing.mapzen(envToken, options, optimize, tspMarkers),
+      router : L.Routing.mapzen(envToken, options, optimized_route, tspMarkers),
       summaryTemplate : '<div class="start">{name}</div><div class="info {costing}">{distance}, {time}</div>',
 
       formatter : new L.Routing.Mapzen.Formatter(),

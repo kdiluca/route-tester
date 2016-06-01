@@ -1,4 +1,4 @@
-<html class="tsp-widget" data-ng-app="tsp">
+<html class="optimized_route-widget" data-ng-app="optimized_route">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   
@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="css/classic.css" />
   <link rel="stylesheet" href="css/leaflet.label.css" />
   <link rel="stylesheet" href="../routing/css/valhalla.css" />
-  <link rel="stylesheet" href="css/tsp.css" />
+  <link rel="stylesheet" href="css/optimized_route.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.4.1/leaflet-geocoder-mapzen.css">
   
   <script src="conf/env.conf"></script>
@@ -20,7 +20,7 @@
 </head>
 <body>
 
-<div class="container-fluid row" ng-controller="TSPController">
+<div class="container-fluid row" ng-controller="OptimizedRouteController">
   <div id="controls" class = "control-container">
     <img src="../routing/images/turnbyturnlogo.png" alt="logo">
     <!---------control view ------>
@@ -100,7 +100,7 @@
       <div class="routingBtns">
         <button  class="btnMatrix"s ng-click="clearAll()"> start over </button>
       </div>
-      <div id="optimizedResponse" style="display:inline-block;">JSON Optimized Route Response Link</div>
+      <div id="optimized_routeResponse" style="display:inline-block;">JSON Optimized Route Response Link</div>
     </div>
   </div>
   <div id="route_inst" ng-bind-html="renderHtml(route_instructions)"></div>
@@ -110,9 +110,9 @@
 <script type="text/javascript" src="../routing/js/leaflet-hash.js"></script>
 
 <script src="../matrix/js/leaflet.label.js"></script>
-<script type="text/javascript" src="js/tsp.js"></script>
+<script type="text/javascript" src="js/optimized_route.js"></script>
 <script src='../routing/dist/leaflet-routing-machine.js'></script>
-<script src='../routing/dist/lrm-mapzen-tsp-patched.js'></script>
+<script src='../routing/dist/lrm-mapzen-optimized-route-patched.js'></script>
 <script type="text/javascript" src="../routing/js/locate/L.Locate.js"></script>
 
 <!-- Load geocoding plugin after Leaflet -->

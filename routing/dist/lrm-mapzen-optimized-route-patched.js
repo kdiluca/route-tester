@@ -1200,12 +1200,12 @@ if (typeof module !== undefined) module.exports = polyline;
 
 			this._routes = routes;
 
-    			for (i = 0; i < this._routes.length; i++) {
-    				alt = this._routes[i];
-    				altDiv = this._createAlternative(alt, i);
-    				this._altContainer.appendChild(altDiv);
-    				this._altElements.push(altDiv);
-    			}
+			for (i = 0; i < this._routes.length; i++) {
+				alt = this._routes[i];
+				altDiv = this._createAlternative(alt, i);
+				this._altContainer.appendChild(altDiv);
+				this._altElements.push(altDiv);
+			}
 
 			this._selectRoute({route: this._routes[0], alternatives: this._routes.slice(1)});
 
@@ -1289,7 +1289,7 @@ if (typeof module !== undefined) module.exports = polyline;
 			        if (icon == 'kStart' || icon == 'kStartRight' || icon == 'kStartLeft')
 			          startManeuver++;
 			        step = this._itineraryBuilder.createStep(text, verbal_alert, depart_instr, verbal_depart, verbal_pre, verbal_post, arrive_instr, verbal_arrive, distance, icon, steps, tspMarkers, startManeuver);
-                                if (optimize && (instr.type == '4' || instr.type == '5' || instr.type == '6')) {
+                                if (optimized_route && (instr.type == '4' || instr.type == '5' || instr.type == '6')) {
                                   //once we've hit the first destination, turn flag to true
                                   narrative_jump = true;
                                   //keep count of the multi-destinations, except for the first
@@ -2351,7 +2351,7 @@ if (typeof module !== undefined) module.exports = polyline;
       if (typeof options.costing != 'undefined') 
         routeOptions = options;
 
-      if (optimize)
+      if (optimized_route)
         url = this.buildRouteUrl(waypoints, routeOptions, true);
       else url = this.buildRouteUrl(waypoints, routeOptions);
       /******************************/
@@ -2389,7 +2389,7 @@ if (typeof module !== undefined) module.exports = polyline;
             if (document.getElementById('graph') && document.getElementById('graph').style.display==="block") {
               $("#elevation_btn").trigger("click");
             }
-            if (optimize){
+            if (optimized_route){
               $('.leaflet-marker-icon').remove();
               $('.leaflet-label').remove();
               var marker=0;
@@ -2416,7 +2416,7 @@ if (typeof module !== undefined) module.exports = polyline;
             alert("Travel Mode: "+ routeOptions.costing + ", status code: " + err.status + ", " + err.response);
           }
         }
-     }, this), true);
+    }, this), true);
     return this;
   },
 
@@ -2611,7 +2611,7 @@ if (typeof module !== undefined) module.exports = polyline;
       return wps;
     },
     /***************************** Patched for demo *****************************/
-    buildRouteUrl: function(waypoints, options, optimize) {
+    buildRouteUrl: function(waypoints, options, optimized_route) {
       var locs = [],
           locationKey,
           hint;
@@ -2624,7 +2624,7 @@ if (typeof module !== undefined) module.exports = polyline;
       for (var i = 0; i < waypoints.length; i++) {
         var loc;
         locationKey = this._locationKey(waypoints[i].latLng).split(',');
-        if (!optimize) {
+        if (!optimized_route) {
           if(i === 0 || i === waypoints.length-1){
             loc = {
               lat: parseFloat(locationKey[0]),
@@ -2672,8 +2672,8 @@ if (typeof module !== undefined) module.exports = polyline;
       (typeof serviceUrl != 'undefined' || serviceUrl != null) ? this.options.serviceUrl=serviceUrl : this.options.serviceUrl=server.dev;
       (typeof envToken != "undefined" || envToken != null) ? this._accessToken=envToken : this._accessToken=accessToken.dev;
 
-      if (optimize)
-        var action = 'optimized';
+      if (optimized_route)
+        var action = 'optimized_route';
       else action = 'route';
      
       console.log(this.options.serviceUrl + action + '?json=' +
