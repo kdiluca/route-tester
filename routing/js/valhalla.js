@@ -15,6 +15,7 @@ var elevToken = elevAccessToken.prod;
 var envServer = server.prod;
 var elevServiceUrl = elevationServer.prod;
 var environmentExists = false; 
+var locale = "en-US";
 
 function selectEnv() {
   $("option:selected").each(function() {
@@ -51,6 +52,12 @@ function getEnvToken() {
     elevToken = elevAccessToken.prod;
     break;
   }
+}
+
+function selectLocale() {
+  $("option:selected").each(function() {
+    locale = $(this).text();
+  });
 }
 
 //format needs to be YYYY-MM-DDTHH:MM
@@ -306,7 +313,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     var pieces = parseHash();
     var extra = '';
     pieces.forEach(function(e, i, a) {
-      if (e.length && e.slice(0, 'locations='.length) != 'locations=' && e.slice(0, 'costing='.length) != 'costing=')
+      if (e.length && e.slice(0, 'locations='.length) != 'locations=' && e.slice(0, 'costing='.length) != 'costing=' && e.slice(0, 'directions_options='.length) != 'directions_options=')
         extra = extra + (extra.length ? '&' : '') + e;
     });
     var hash_locs = [];
@@ -322,7 +329,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     document.getElementById('permalink').innerHTML = "<a href='http://valhalla.github.io/demos/routing/index.html" + window.location.hash + "' target='_top'>Route Permalink</a>";
   };
 
-  var updateHashCosting = function(costing, costingOptions, dateTime) {
+  var updateHashCosting = function(costing, costingOptions, directionsOptions, dateTime) {
     // update the permalink hash
     var pieces = parseHash();
     if (pieces[2].indexOf('&costing='))
@@ -330,6 +337,9 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (costingOptions != null)
       extra = extra + '&costingoptions=' + JSON.stringify(costingOptions);
+    
+    if (directionsOptions != null)
+      extra = extra + '&directionsoptions=' + JSON.stringify(directionsOptions);
 
     if (dateTime != null)
       extra = extra + '&datetime=' + JSON.stringify(dateTime);
@@ -360,6 +370,9 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     if (parameters.costingoptions !== undefined)
       var costing_options = JSON.parse(parameters.costingoptions);
+    
+    if (parameters.directionsoptions !== undefined)
+      var directions_options = JSON.parse(parameters.directionsoptions);
 
     if (parameters.datetime !== undefined)
       var date_time = JSON.parse(parameters.datetime);
@@ -368,6 +381,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
       waypoints: locs,
       costing : costing,
       costing_options: costing_options,
+      directions_options: directions_options,
       date_time : date_time
     }, true);
     
@@ -758,6 +772,8 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     var rr;
 
     var createRouting = function(options, createMarkers) {
+        selectLocale();
+        options.directions_options = { "language" : locale };
         var defaultOptions = {
           geocoder : null,
           routeWhileDragging : false,
@@ -821,20 +837,23 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         if (!rr) return;
         getEnvToken();
         var costing = 'auto';
+        var directionsoptions = { "language" : locale };
         var calendarInput = document.getElementById("datepicker").value;
         if (calendarInput != "") {
           dateStr = datetimeUpdate(calendarInput);
           var dtoptions = setDateTime(dateStr);
           rr.route({
             costing : costing,
+            directions_options : directionsoptions,
             date_time : dtoptions
           });
         } else {
           rr.route({
-            costing : costing
+            costing : costing,
+            directions_options : directionsoptions
           });
         }
-        updateHashCosting(costing,null,dtoptions);
+        updateHashCosting(costing,null,directionsoptions,dtoptions);
       });
     }
 
@@ -845,6 +864,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         if (!rr) return;
         getEnvToken();
         var costing = 'bicycle';
+        var directionsoptions = { "language" : locale };
         if (document.getElementById('bikeoptions').style.display == "block") {
           var bikeoptions = setBikeOptions();
           var calendarInput = document.getElementById("datepicker").value;
@@ -854,20 +874,23 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
             rr.route({
               costing : costing,
               costing_options : bikeoptions,
+              directions_options : directionsoptions,
               date_time : dtoptions
             });
           } else {
             rr.route({
               costing : costing,
-              costing_options : bikeoptions
+              costing_options : bikeoptions,
+              directions_options : directionsoptions
             });
           }
         } else {
           rr.route({
             costing : costing,
+            directions_options : directionsoptions
           });
         }
-        updateHashCosting(costing,bikeoptions,dtoptions);
+        updateHashCosting(costing,bikeoptions,directionsoptions,dtoptions);
       });
     }
     
@@ -878,20 +901,23 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         if (!rr) return;
         getEnvToken();
         var costing = 'pedestrian';
+        var directionsOptions = { "language" : locale };
         var calendarInput = document.getElementById("datepicker").value;
         if (calendarInput != "") {
           dateStr = datetimeUpdate(calendarInput);
           var dtoptions = setDateTime(dateStr); 
           rr.route({
             costing : costing,
+            directions_options : directionsoptions,
             date_time : dtoptions
           });
         } else {
           rr.route({
-            costing : costing
+            costing : costing,
+            directions_options : directionsoptions
           });
         }
-        updateHashCosting(costing,null,dtoptions);
+        updateHashCosting(costing,null,directionsoptions,dtoptions);
       });
     }
     
@@ -902,6 +928,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         if (!rr) return;
         getEnvToken();
         var costing = 'multimodal';
+        var directionsoptions = { "language" : locale };
         var calInput = document.getElementById("datepicker").value;
         var dtoptions = "";
         if (calInput != "undefined") {
@@ -913,15 +940,17 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           rr.route({
             costing : costing,
             costing_options : transitoptions,
+            directions_options : directionsoptions,
             date_time : dtoptions
           });
         } else {
           rr.route({
             costing : costing,
+            directions_options : directionsoptions,
             date_time : dtoptions
           });
         }
-        updateHashCosting(costing,transitoptions,dtoptions);
+        updateHashCosting(costing,transitoptions,directionsoptions,dtoptions);
       });
     }
     
