@@ -18,7 +18,7 @@ var environmentExists = false;
 var locale = "en-US";
 
 function selectEnv() {
-  $("option:selected").each(function() {
+  $("#env_dropdown").find("option:selected").each(function() {
     environmentExists = true; 
     envServer = $(this).text();
     serviceUrl = document.getElementById(envServer).value;
@@ -55,7 +55,7 @@ function getEnvToken() {
 }
 
 function selectLocale() {
-  $("option:selected").each(function() {
+  $("#locale_dropdown").find("option:selected").each(function() {
     locale = $(this).text();
   });
 }
