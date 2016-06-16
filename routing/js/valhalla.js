@@ -140,13 +140,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   var road = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
   }), zinc = Tangram.leafletLayer({
-    scene: 'zinc_style.yaml',
+    scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), zinc_transit = Tangram.leafletLayer({
-    scene: 'zinc_transit.yaml',
+    scene: 'https://raw.githubusercontent.com/kdiluca/route-tester/gh-pages/routing/zinc_transit.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), outdoor = Tangram.leafletLayer({
-    scene: 'out_doors.yaml',
+    scene: 'https://raw.githubusercontent.com/kdiluca/route-tester/gh-pages/routing/out_doors.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
