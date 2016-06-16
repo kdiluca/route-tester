@@ -144,10 +144,10 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), outdoor = Tangram.leafletLayer({
-    scene: 'https://raw.githubusercontent.com/kdiluca/route-tester/gh-pages/routing/out-doors.yaml',
+    scene: '../map_style/out-doors.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), */zinc_transit = Tangram.leafletLayer({
-    scene: 'zinc-transit.yaml',
+    scene: '../map_style/zinc-transit.yaml',
     attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
   }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
     attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
