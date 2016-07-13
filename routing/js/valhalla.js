@@ -906,7 +906,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
         if (!rr) return;
         getEnvToken();
         var costing = 'pedestrian';
-        var directionsOptions = { "language" : locale };
+        var directionsoptions = { "language" : locale };
         var calendarInput = document.getElementById("datepicker").value;
         if (calendarInput != "") {
           dateStr = datetimeUpdate(calendarInput);
