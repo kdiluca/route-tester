@@ -69,6 +69,7 @@ var inputElement = document.getElementById("inputFile");
 inputElement.addEventListener("change", selectFiles, false);
 
 function selectFiles(evt) {
+  selectEnv();
   if (typeof evt.target != "undefined") {
     var files = evt.target.files;
 
