@@ -1,12 +1,6 @@
 var app = angular.module('routing', []);
 var hash_params = L.Hash.parseHash(location.hash);
-var mode_mapping = {
-  'foot'    : 'pedestrian',
-  'car'     : 'auto',
-  'bicycle' : 'bicycle',
-  'transit' : 'multimodal',
-  'truck'   : 'truck'  
-};
+
 var date = new Date();
 var isoDateTime = date.toISOString(); // "2015-06-12T15:28:46.493Z"
 var serviceUrl = server.prod;
@@ -137,40 +131,19 @@ app.run(function($rootScope) {
 });
 
 app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
-  var road = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
-  }), /* Can only load one tangram layer at a time
-    zinc = Tangram.leafletLayer({
-    scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
-    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }), outdoor = Tangram.leafletLayer({
-    scene: 'https://raw.githubusercontent.com/kdiluca/route-tester/gh-pages/routing/map_style/out-doors.yaml',
-    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }), */zinc_transit = Tangram.leafletLayer({
-    scene: 'https://raw.githubusercontent.com/kdiluca/route-tester/gh-pages/routing/map_style/zinc-transit.yaml',
-    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
-  }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
-    attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-  }), elevation = L.tileLayer('http://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
-    attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-  }), transit = L.tileLayer(' http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
-    attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
-  });
-
+  //map layers & default layer are defined in the index.html
   var baseMaps = {
     "Road" : road,
-   // "Zinc" : zinc,
     "Zinc Transit" : zinc_transit,
     "Cycle" : cycle,
-    "Elevation" : elevation,
-   // "Outdoor" : outdoor,
+    "Outdoors" : outdoors,
     "Transit" : transit
   };
 
   var map = L.map('map', {
     zoom : $rootScope.geobase.zoom,
     zoomControl : true,
-    layers : [ road ],
+    layers : [ (typeof defaultMapLayer != undefined ? defaultMapLayer : road) ],
     center : [ $rootScope.geobase.lat, $rootScope.geobase.lon ]
   });
   
@@ -213,8 +186,12 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
   $scope.route_instructions = '';
 
+  $scope.setMode = function(mode){
+    $scope.mode = mode;
+  }
+
   var Locations = [];
-  var mode = 'transit';
+  $scope.mode = (typeof defaultMode != 'undefined' ? defaultMode : 'auto');
 
   var icon = L.icon({
     iconUrl : 'resource/via_dot.png',
@@ -404,6 +381,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     $scope.$emit('resetRouteInstruction');
     remove_markers();
     locations = 0;
+    document.getElementById('permalink').innerHTML = "";
   };
 
   var resetFileLoader = function() {
@@ -709,7 +687,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           lat : geo.lat,
           lon : geo.lon
         });
-        $rootScope.$emit('map.dropMultiLocsMarker', [ geo.lat, geo.lon ], mode);
+        $rootScope.$emit('map.dropMultiLocsMarker', [ geo.lat, geo.lon ], $scope.mode);
         locations++;
         return;
       } else {
@@ -717,7 +695,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           lat : geo.lat,
           lon : geo.lon
         });
-        $rootScope.$emit('map.dropMultiLocsMarker', [ geo.lat, geo.lon ], mode);
+        $rootScope.$emit('map.dropMultiLocsMarker', [ geo.lat, geo.lon ], $scope.mode);
         locations++;
         return;
       }
@@ -727,7 +705,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           lat : geo.lat,
           lon : geo.lon
         });
-        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
+        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], $scope.mode);
         locations++;
         return;
       } else if (locations > 1) {
@@ -738,7 +716,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
           lat : geo.lat,
           lon : geo.lon
         });
-        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
+        $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], $scope.mode);
         locations++;
         return;
       }
@@ -763,13 +741,13 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
 
     waypoints.push(L.latLng(geo.lat, geo.lon));
 
-    $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], mode);
+    $rootScope.$emit('map.dropMarker', [ geo.lat, geo.lon ], $scope.mode);
     locations++;
+    
+    selectEnv();
 
-    var valhalla_mode = mode_mapping[mode];
-
-    rr = createRouting({waypoints: waypoints, costing: valhalla_mode});
-    update(true, waypoints, valhalla_mode);
+    rr = createRouting({waypoints: waypoints, costing: $scope.mode});
+    update(true, waypoints, $scope.mode);
   });
 
     var rr;
@@ -1133,7 +1111,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
     }
 
     $(document).on('mode-alert', function(e, m) {
-      mode = m;
+      $scope.mode = m;
       reset();
       Locations = [];
     });

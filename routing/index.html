@@ -58,15 +58,16 @@
         <div class="col-md-2 info">
           <div id="instructions">
             <img src="images/turnbyturnlogo.png" alt="logo">
-            <h6><b>Point & click on the map to select a start & end point.</b></h6>
-            <h5><b>Defaults to transit.</b></h5>
-            <h6>Change route to use other methods of travel (auto, bicycle, pedestrian, or transit) from one of the mode buttons below.</h6>
+            <p><h6><b>Point & click on the map to select a start & end point.</b><br>
+            <b>Defaults to auto.</b><br>
+            Change route to use other methods of travel (auto, bicycle, pedestrian, or transit) from one of the mode buttons below.</h6></p>
+            <h5><b><a target="_blank" href='https://github.com/valhalla/valhalla-docs/blob/master/api-reference.md'>Turn-by-Turn API reference</a></b></h5>
             <hr>
             <span style="color:black" class="descriptions">Select an environment:</span><br>
 			<select id = "env_dropdown" onchange="selectEnv()">
-				<option id=localhost value="http://localhost:8002/">localhost</option>
+				<option id=localhost selected="selected" value="http://localhost:8002/">localhost</option>
 				<option id=development value="https://valhalla.dev.mapzen.com/">development</option>
-				<option id=production selected="selected" value="https://valhalla.mapzen.com/">production</option>
+				<option id=production value="https://valhalla.mapzen.com/">production</option>
 			</select>
 		    <br><br>
 		    <span style="color:black" class="descriptions">Select a locale:</span><br>
@@ -75,6 +76,8 @@
 				<option id=de-DE value="de-DE">de-DE</option>
 				<option id=it-IT  value="it-IT">it-IT</option>
 				<option id=cs-CZ  value="cs-CZ">cs-CZ</option>
+				<option id=fr-FR  value="fr-FR">fr-FR</option>
+				<option id=es-ES  value="es-ES">es-ES</option>
 			</select>
 		    <br><br>
 		    <div>
@@ -197,7 +200,26 @@
     
     <!-- Load geocoding plugin after Leaflet -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.4.1/leaflet-geocoder-mapzen.js"></script>
-    
+
+	<script>
+	  var defaultMode = 'auto';
+
+	  var defaultMapLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
+	  }), road = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	    attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
+	  }), zinc_transit = Tangram.leafletLayer({
+	    scene: 'https://raw.githubusercontent.com/valhalla/demos/gh-pages/routing/map_style/zinc-transit.yaml',
+	    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
+	  }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+	    attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+	  }), outdoors = L.tileLayer('https://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+        attribution : 'Maps &copy; <a href="https://www.thunderforest.com">Thunderforest</a> | Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+	  }), transit = L.tileLayer(' http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
+	    attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
+	  });
+	</script>
+
     <!-- Adding a script block to post message to the parent container (think iframed demos) -->
     <script type="text/javascript">
       window.addEventListener("hashchange",function(){parent.postMessage(window.location.hash, "*")});

@@ -29,26 +29,6 @@
     function corslite(url, callback, cors) {
       var sent = false;
 
-/*
-      $.ajax({
-        url : url,
-        data : data,
-        type : "POST",
-        dataType : "json",
-        contentType : 'text/plain',
-        success : function(data) {
-          alert("Data from Server" + JSON.stringify(data));
-        },
-        error : function(jqXHR, textStatus, errorThrown) {
-          alert("You can not send Cross Domain AJAX requests: " + errorThrown);
-        }
-      });
-
-      // GET
-      $.getJSON('http://jsonmoon.jsapp.us/').done(function(data) {
-        console.log(data.name.first);
-      });*/
-
       if (typeof window.XMLHttpRequest === 'undefined') {
         return callback(Error('Browser not supported'));
       }
@@ -177,9 +157,6 @@
                       below : 0,
                       color : "#eee"
                     },
-                    legend : {
-                      show : false
-                    },
                     grid : {
                      // hoverable : true,
                      /// clickable : true,
@@ -227,8 +204,7 @@
                       },
                     },
                     legend : {
-                      labelBoxBorderColor : "none",
-                      position : "right"
+                      show: false
                     },
                     lines : {
                       fill : true,

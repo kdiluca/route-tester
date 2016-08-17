@@ -185,6 +185,7 @@ polyline.encode = function(coordinates, precision) {
 dropOriginMarker = function(geo) {
 
   var marker = new L.marker(geo, {
+      draggable : true,
       icon : getOriginIcon()
       })
  return marker;
@@ -193,6 +194,7 @@ dropOriginMarker = function(geo) {
 dropDestMarker = function(geo, locCount) {
 
   var marker = new L.marker(geo, {
+    draggable : true,
     icon : getDestinationIcon()
   }).bindLabel((locCount).toString(), (locCount < 10) ? {
     position: [geo.lat,geo.lon],
@@ -209,7 +211,7 @@ return marker;
 
 var getOriginIcon = function() {
   return new L.Icon({
-    iconUrl : '../matrix/resource/matrix_pin_start.png',
+   iconUrl : '../matrix/resource/matrix_pin_start.png',
     iconSize : [ 40, 50 ],
     iconAnchor : [ 22, 42 ],
     shadowUrl: null

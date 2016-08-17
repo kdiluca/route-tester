@@ -23,6 +23,7 @@
 <div class="container-fluid row" ng-controller="OptimizedRouteController">
   <div id="controls" class = "control-container">
     <img src="../routing/images/turnbyturnlogo.png" alt="logo">
+
     <!---------control view ------>
     <div ng-hide="appView == 'tspTable'" class = "not-table ng-hide">
       <div class = "tspWrapper">
@@ -78,7 +79,6 @@
             <button ng-click="setMode('auto')" name="auto" class = "{{mode == 'auto' ? 'active ' : ''}}vehicle auto"> </button>
             <button ng-click="setMode('bicycle')" name="bike" class = "{{mode == 'bicycle' ? 'active ' : ''}}vehicle bike"> </button>
             <button ng-click="setMode('pedestrian')" name="pedestrian" class = "{{mode == 'pedestrian' ? 'active ' : ''}}vehicle pedestrian"> </button>
-            <button name="multimodal" class = "{{mode == 'multimodal' ? 'active ' : ''}}vehicle multimodal"> </button>
           </div>
           <button id="optimize_btn" class ="btnOptimize" type="button">Optimize Your Route</button>
         </div>
@@ -86,7 +86,7 @@
         <button ng-click="clearAll()" class="plain" id="clear_btn" type="button">Clear All</button>
       </div>
     </div>
-
+    <h5><b><a target="_blank" href='https://github.com/valhalla/valhalla-docs/blob/master/optimized_route/api-reference.md'>Optimized Route API reference</a></b></h5>
     <!---------table view ------>
     <div ng-hide="appView == 'control'" class = "tableView ng-hide">
       <button class = "plain" ng-click="backToControlView()"> &lt; Back</button>
@@ -111,6 +111,25 @@
 
 <!-- Load geocoding plugin after Leaflet -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.4.1/leaflet-geocoder-mapzen.js"></script>
+
+<script>
+  var defaultMode = 'auto';
+
+  var defaultMapLayer = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
+  }), road = L.tileLayer('http://b.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution : '&copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributers'
+  }), zinc = Tangram.leafletLayer({
+    scene: 'https://mapzen.com/carto/zinc-style/2.0/zinc-style.yaml',
+    attribution: '<a href="https://mapzen.com/tangram">Tangram</a> | &copy; OSM contributors | <a href="https://mapzen.com/">Mapzen</a>'
+  }), cycle = L.tileLayer('http://b.tile.thunderforest.com/cycle/{z}/{x}/{y}.png', {
+    attribution : 'Maps &copy; <a href="http://www.thunderforest.com">Thunderforest, </a>;Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }), outdoors = L.tileLayer('https://b.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png', {
+    attribution : 'Maps &copy; <a href="https://www.thunderforest.com">Thunderforest</a> | Data &copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+  }), transit = L.tileLayer(' http://{s}.tile.thunderforest.com/transport/{z}/{x}/{y}.png', {
+    attribution : 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a>'
+  });
+</script>
 
 <script type="text/javascript">
   // Apply special root-element class for iframed demo situations
