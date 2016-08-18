@@ -64,7 +64,7 @@
             <h5><b><a target="_blank" href='https://github.com/valhalla/valhalla-docs/blob/master/api-reference.md'>Turn-by-Turn API reference</a></b></h5>
             <hr>
             <span style="color:black" class="descriptions">Select an environment:</span><br>
-			<select id = "env_dropdown" onchange="selectEnv()">
+			<select id="env_dropdown" onchange="selectEnv()">
 				<option id=localhost selected="selected" value="http://localhost:8002/">localhost</option>
 				<option id=development value="https://valhalla.dev.mapzen.com/">development</option>
 				<option id=production value="https://valhalla.mapzen.com/">production</option>
@@ -157,18 +157,20 @@
             <button id="multi_btn" class = "transparent_btn" type="button">Transit</button>
             <button id="truck_btn" class = "transparent_btn" type="button">Truck</button>
 		  </div>
+		  <br><br>
+          <button id="elevation_btn" class = "transparent_btn" type="button">Get Elevation</button>
+          <button id="hidechart" name="hidebtn" type="button">Hide Chart</button><br>
 		  <div id='permalink' style='display:inline-block;'></div>
-          <br>
+          <br><br>
+          <hr>
           <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:black"/>
-          <select id="selector" class="select" style="width:50px; position:absolute;"></select><br>
-          <span style="color:black" class="load_desc">The test file sample <b>demo_routes.txt</b> can be loaded from the scripts directory of the Thor repo.</span>
-          <br> 
+          <select id="fileSelector" class="select" style="width:50px; position:absolute;"></select><br><br>
+          <span style="color:black" class="load_desc">The test file samples <b>ie. demo_routes.txt</b> can be loaded from the test_requests directory in the tools repo.</span>
+          <br>
         <!--  <div id="routeResponse" style="display:inline-block;">JSON Route Response Link</div>-->
           <div class = "col-md-15" >
       	    <div id="graph" style= "display:none; height:200px; width: 100%; position: bottom; float:center;"></div>
-          </div><br>
-          <button id="elevation_btn" class = "transparent_btn" type="button">Get Elevation</button>
-          <button id="hidechart" name="hidebtn" type="button">Hide Chart</button>
+          </div>
           
           <div id="route_inst" ng-bind-html="renderHtml(route_instructions)"></div>
           <!--
@@ -177,7 +179,7 @@
           ctrl key + click on map to add additional stops along your way.  Finally, press & hold on the shift
           key + click on your destination.  Clear your routes by clicking the red 'Clear Routes' button. </h6>
           -->
-        <div>
+        <div><br>
           <button  class="reset" ng-click="clearAll()"> clear all </button>
         </div>
        

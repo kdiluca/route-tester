@@ -21,7 +21,7 @@ function selectEnv() {
 }
 
 function handleChange(evt) {
-  var sel = document.getElementById('selector');
+  var sel = document.getElementById('fileSelector');
   for (var i = 0; i < sel.options.length; i++) {
     var results = sel.options[i].text + "  " + sel.options[i].value;
     sel.options[i].innerHTML = results;
@@ -85,7 +85,7 @@ function selectFiles(evt) {
       if (evt.target.readyState == FileReader.DONE) {
         var lines = evt.target.result.split(delimiter);
         var index;
-        var select = document.getElementById('selector').options.length = 0;
+        var select = document.getElementById('fileSelector').options.length = 0;
         if (lines[0] == "") {
           for (index = 1; index < lines.length; index++) {
             var newOption = document.createElement('option');
@@ -95,7 +95,7 @@ function selectFiles(evt) {
             newOption.value = lines[index];
             newOption.text = index;
             // reset selector options
-            select = document.getElementById('selector');
+            select = document.getElementById('fileSelector');
             try {
               select.add(newOption, null);
             } catch (ex) {
@@ -535,7 +535,7 @@ app.controller('RouteController', function($scope, $rootScope, $sce, $http) {
   document.querySelector(".select").addEventListener('click', function(evt) {
     resetFileLoader();
     handleChange(evt);
-    var select = document.getElementById('selector');
+    var select = document.getElementById('fileSelector');
     var i;
     for (i = 0; i < select.length; i++) {
       if (select.options[i].selected) {
