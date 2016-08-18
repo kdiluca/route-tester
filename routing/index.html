@@ -63,6 +63,7 @@
             Change route to use other methods of travel (auto, bicycle, pedestrian, or transit) from one of the mode buttons below.</h6></p>
             <h5><b><a target="_blank" href='https://github.com/valhalla/valhalla-docs/blob/master/api-reference.md'>Turn-by-Turn API reference</a></b></h5>
             <hr>
+            <h4>Point & Click Route Testing</h4>
             <span style="color:black" class="descriptions">Select an environment:</span><br>
 			<select id="env_dropdown" onchange="selectEnv()">
 				<option id=localhost selected="selected" value="http://localhost:8002/">localhost</option>
@@ -159,17 +160,17 @@
             <br>
             <div id='permalink' style='display:inline-block;'></div>
 		  </div>
-
-		  <hr>
           <button id="elevation_btn" class = "transparent_btn" type="button">Elevation</button>
           <button id="hidechart" name="hidebtn" type="button">Hide Chart</button>
           <div class = "col-md-15" >
       	  <div id="graph" style= "display:none; height:200px; width: 100%; position: bottom; float:center;"></div>
           </div>
           <hr>
+          <h4>Test File Route Testing</h4>
           <input type="file" id="inputFile" onchange="selectFiles(this.files)" style="color:black"/>
           <select id="fileSelector" class="select" style="width:50px; position:absolute;"></select><br><br>
-          <span style="color:black" class="load_desc">The test file samples <b>ie. demo_routes.txt</b> can be loaded from the test_requests directory in the tools repo.</span>
+          <span style="color:black" class="load_desc">The test file samples <b>ie. demo_routes.txt</b> can be loaded from the test_requests directory in the tools repo.
+          <b>Note:</b>You cannot run Test File Routes and then click above to run Point & Click Route Test options.  You must CLEAR ALL between testing sections.</span>
           <br>
         <!--  <div id="routeResponse" style="display:inline-block;">JSON Route Response Link</div>-->
           
@@ -189,7 +190,6 @@
         <div id="mapwrapper" class="col-md-10">
           <div id="map"></div>
         </div>
-        
     </div>
     
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet.js"></script>
